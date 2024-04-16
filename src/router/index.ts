@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AuthenticationView from '@/views/AuthenticationView.vue'
+import LoginForm from '@/components/LoginForm.vue'
+import SignUpForm from '@/components/SignUpForm.vue'
+import CompleteAccountForm from '@/components/CompleteAccountForm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,8 +24,25 @@ const router = createRouter({
     {
       path: '/authentication',
       name: 'authentication',
-      component: AuthenticationView
-    }
+      component: AuthenticationView,
+      children: [
+        {
+          path: '',
+          name: 'login',
+          component: LoginForm
+        },
+        {
+          path: 'signup',
+          name: 'signup',
+          component: SignUpForm
+        },
+        {
+          path: 'complete-account',
+          name: 'complete-account',
+          component: CompleteAccountForm
+        }
+      ]
+    },
   ]
 })
 

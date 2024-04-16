@@ -11,18 +11,25 @@
 				<label for="age">👴Age</label>
 				<input type="age" id="age" v-model="age" />
 			</div>
-			<button type="submit">Complete</button>
+			<button type="submit" @click="goToLogin">Complete</button>
 		</form>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const name = ref('')
 const age = ref('')
 
 const completeAccount = () => {
 	console.log('Completing account with', name.value, age.value)
+}
+
+const goToLogin = () => {
+	console.log('Going to login')
+	router.push({ name: 'login' })
 }
 </script>

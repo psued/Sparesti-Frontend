@@ -17,7 +17,9 @@
 
 <script setup lang="ts">
 import { ref, defineEmits } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const email = ref('');
 const password = ref('');
 const emit = defineEmits(['change-view']);
@@ -28,7 +30,7 @@ const login = () => {
 };
 
 const goToSignUp = () => {
-	emit('change-view', 'SignUpForm');
+	router.push({name: 'signup'});
 };
 </script>
 
