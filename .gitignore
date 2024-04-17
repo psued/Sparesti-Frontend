@@ -1,0 +1,22 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore build output
+/dist/
+
+# Ignore IDE and editor files
+.idea/
+.vscode/
+
+# Ignore logs and cache files
+*.log
+*.cache
+
+# Ignore environment-specific files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore compiled files
+*.map
