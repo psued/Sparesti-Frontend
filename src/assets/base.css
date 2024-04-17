@@ -19,6 +19,12 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+
+  --vt-c-button-base-light: #A6CD94;
+  --vt-c-button-hover-light: #4B644A;
+
+  --vt-c-button-base-dark: #ffff19;
+  --vt-c-button-hover-dark: #4a534a;
 }
 
 /* Defualt Light theme */
@@ -34,20 +40,26 @@
   --color-text: var(--vt-c-black-soft);
 
   --section-gap: 160px;
+
+  --color-button-base: var(--vt-c-button-base-light);
+  --color-button-hover: var(--vt-c-button-hover-light);
 }
 
 /* Dark theme */ 
 body.dark {
-  --color-background: var(--vt-c-black);
+  --color-background: var(--vt-c-black-soft);
   --color-background-soft: var(--vt-c-black-soft);
   --color-background-mute: var(--vt-c-black-mute);
+
   --color-border: var(--vt-c-divider-dark-2);
   --color-border-hover: var(--vt-c-divider-dark-1);
+
   --color-heading: var(--vt-c-text-dark-1);
   --color-text: var(--vt-c-text-dark-2);
+
+  --color-button-base: var(--vt-c-button-base-dark);
+  --color-button-hover: var(--vt-c-button-hover-dark);
 }
-
-
 
 *,
 *::before,
@@ -82,4 +94,15 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  background-color: var(--color-button-base);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: var(--color-button-hover);
 }
