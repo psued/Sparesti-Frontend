@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+
     <div class="logo-container">
       <img src="/public/pig_logo.png" alt="Pig Logo" class="pig-logo" />
     </div>
@@ -10,7 +11,7 @@
       </div>
     </div>
 
-    <div class="background-container">
+    <div class="path-container">
       <img src="/path.webp" alt="Path" id="path-image" />
 
       <div class="checkpoints">
@@ -21,6 +22,10 @@
           :class="['checkpoint', checkpoint.status]"
         ></div>
       </div>
+    </div>
+
+    <div class="background-container">
+      <img src="/public/landscape.webp" alt="Landscape" id="landscape-image" />
     </div>
   </div>
 </template>
@@ -68,9 +73,16 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  width: 100%; 
   height: 100vh;
-  background-color: lightpink;
+}
+
+.background-container {
+  background-size: cover;
+  background-repeat: repeat;
+  filter: blur(5px);
+  z-index: -1;
+  position: absolute;
 }
 
 .logo-container {
@@ -80,11 +92,11 @@ export default defineComponent({
 }
 
 .pig-logo {
-  width: 300px;
+  width: 250px;
   height: auto;
 }
 
-.background-container {
+.path-container {
   width: 100%;
   height: auto;
   position: relative;
@@ -92,6 +104,7 @@ export default defineComponent({
   z-index: 2;
   text-align: center;
   width: 50vh;
+  filter: none;
 }
 
 #path-image {
@@ -146,8 +159,9 @@ export default defineComponent({
 }
 
 .checkpoint.finish-line {
-  background-image: "/finish-line.jpeg";
-  background-color: none;
+  background: url("/finish-line.jpeg");
+  background-size: 1px;
   border-color: #000000;
 }
+
 </style>
