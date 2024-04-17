@@ -22,8 +22,5 @@ const onClick = (event: Event) => {
 </script>
 
 <style scoped>
-.form-button {
-  color: white;
-}
 
 </style>
