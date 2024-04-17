@@ -9,7 +9,7 @@
 			<div>
 				<input type="password" id="password" v-model="password" required placeholder="🔒Password"/>
 			</div>
-			<button type="submit">Login</button>
+			<FormButton type="submit">Login</FormButton>
 		</form>
 		<p>Don't have an account? <button @click="goToSignUp">Sign Up</button></p>
 	</div>
@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import { ref, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
+import FormButton from '@/components/forms/FormButton.vue';
 
 const router = useRouter();
 const email = ref('');
@@ -36,6 +37,7 @@ const goToSignUp = () => {
 
 <style scoped>
 .login-container {
-	color: black;
+	text-align: center;
 }
+
 </style>

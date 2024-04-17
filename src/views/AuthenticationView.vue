@@ -13,16 +13,12 @@
 </script>
 
 <style scoped>
-
-
 .authentication-container {
   display: grid;
   grid-template-columns: 2fr 1fr; 
   align-items: center; 
   justify-content: center; 
   min-height: 100vh; 
-  background-color: aqua;
-	width: 100%;
 }
 
 .dynamic-content {
@@ -32,7 +28,6 @@
 	font-size: 1.5rem;
 	text-align: left;
 	margin-top: 2rem;
-	color: #000;
 }
 
 @media (max-width: 768px) {

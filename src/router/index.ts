@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AuthenticationView from '@/views/AuthenticationView.vue'
-import LoginForm from '@/components/LoginForm.vue'
-import SignUpForm from '@/components/SignUpForm.vue'
-import CompleteAccountForm from '@/components/CompleteAccountForm.vue'
+import LoginForm from '@/components/forms/LoginForm.vue'
+import SignUpForm from '@/components/forms/SignUpForm.vue'
+import CompleteAccountForm from '@/components/forms/CompleteAccountForm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

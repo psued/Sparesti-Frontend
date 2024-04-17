@@ -1,9 +1,24 @@
 <script setup lang="ts">
+import { useDark, useToggle } from '@vueuse/core'
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+
+const isDark = useDark();
+const toggleDark = useToggle(isDark);
+function toggleTheme() {
+  toggleDark(); 
+  document.body.classList.toggle('dark', isDark.value);
+}
+document.body.classList.toggle('dark', isDark.value);
+
 </script>
 
 <template>
+  <p>Dark theme: {{ isDark }}</p>
+
+  <button @click="toggleTheme()">
+    Toggle Color Mode
+  </button>
 
   <RouterView />
 </template>
@@ -27,7 +42,6 @@ nav {
 }
 
 nav a.router-link-exact-active {
-  color: var(--color-text);
 }
 
 nav a.router-link-exact-active:hover {
