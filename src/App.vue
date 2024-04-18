@@ -14,11 +14,6 @@ document.body.classList.toggle('dark', isDark.value);
 </script>
 
 <template>
-  <p>Dark theme: {{ isDark }}</p>
-
-  <button @click="toggleTheme()">
-    Toggle Color Mode
-  </button>
 
   <RouterView />
 </template>

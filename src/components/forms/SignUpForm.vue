@@ -11,7 +11,9 @@
 			</div>
 			<FormButton type="submit" @click="goToCompleteAccount">Sign up</FormButton>
 		</form>
-		<p>Already have an account? <button @click="goToLogin">Login</button></p>
+		<div class="login-link">
+			<p>Already have an account? <button @click="goToLogin">Login</button></p>
+		</div>
 	</div>
 </template>
 
@@ -46,4 +48,18 @@ const goToCompleteAccount = () => {
 .signup-container {
 	text-align: center;
 }
+
+.login-link {
+	margin-top: 15vw;
+}
+
+.login-link button {
+	background-color: transparent;
+	border: none;
+	color: var(--color-primary);
+	cursor: pointer;
+	font: bold;
+}
+
+
 </style>

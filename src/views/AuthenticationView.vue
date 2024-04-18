@@ -1,18 +1,27 @@
 <template>
-	<div class="authentication-container">
-		<div class="static-content">
-			<p>Welcome to SpareSti! <br>Application to make your wallet happier. <br>Free to use, money back guarantee.</p>
-		</div>
-		<div class="dynamic-content">
-			<router-view></router-view>
-		</div>
-	</div>
+  <div class="authentication-wrapper">
+    <div class="piggy-bank-image">
+      <img src="/public/long-logo.png" alt="piggy-bank on a walk" />
+    </div>
+    <div class="authentication-container">
+      <div class="static-content">
+        <p>Welcome to SpareSti! <br>Application to make your wallet happier. <br>Free to use, money back guarantee.</p>
+      </div>
+      <div class="dynamic-content">
+        <router-view></router-view>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 </script>
 
 <style scoped>
+.authentication-wrapper {
+  overflow: hidden;
+  
+}
 .authentication-container {
   display: grid;
   grid-template-columns: 2fr 1fr; 
@@ -20,6 +29,16 @@
   justify-content: center; 
   min-height: 100vh;
   place-items: center;
+  position: relative;
+}
+
+.piggy-bank-image img {
+  max-width: 70%; 
+  height: auto; 
+  position: absolute;
+  top: -2vw; 
+  left: -13vw;
+  z-index: -1;
 }
 
 .static-content {
@@ -27,6 +46,7 @@
   height: 100%;
   align-content: center; 
   border-right: 1px solid var(--color-border);
+  padding-left: 5rem;
 }
 
 .dynamic-content {

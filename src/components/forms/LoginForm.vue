@@ -11,7 +11,9 @@
 			</div>
 			<FormButton type="submit">Login</FormButton>
 		</form>
-		<p>Don't have an account? <button @click="goToSignUp">Sign Up</button></p>
+		<div class="sign-up-link">
+			<p>Don't have an account? <button @click="goToSignUp">Sign Up</button></p>
+		</div>
 	</div>
 </template>
 
@@ -28,7 +30,6 @@ const emit = defineEmits(['change-view']);
 
 const login = () => {
 	console.log('Logging in with', email.value, password.value);
-	// Implement your login logic here
 };
 
 const goToSignUp = () => {
@@ -42,8 +43,15 @@ const goToSignUp = () => {
 	height:100%;
 	text-align: center;
 }
-.header {
-	margin-bottom: 200px;
+.sign-up-link {
+	margin-top: 15vw;
+}
+
+.sign-up-link button {
+	background-color: transparent;
+	border: none;
+	color: var(--color-primary);
+	cursor: pointer;
 }
 
 </style>
