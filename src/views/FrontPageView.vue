@@ -80,6 +80,16 @@ export default defineComponent({
 
         // Update avatar's position vertically
         avatar.style.top = verticalPosition + "px";
+        if (this.currentCheckpointIndex === 0) {
+          // Reset progress bar
+          const progressBarFill = document.querySelector(".progress-bar-fill") as HTMLElement;
+          progressBarFill.style.width = "0%";
+        } else {
+          // Update progress bar
+          const progressBarFill = document.querySelector(".progress-bar-fill") as HTMLElement;
+          const progress = (this.currentCheckpointIndex / this.checkpoints.length) * 100;
+          progressBarFill.style.width = progress + "%";
+        }
 
         // After a short delay, update avatar's position horizontally
         setTimeout(() => {
