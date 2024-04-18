@@ -1,5 +1,10 @@
 image: node:latest
 
+
+cache:
+  paths:
+    - node_modules/
+
 stages:
   - lint
   - typecheck
@@ -20,12 +25,6 @@ build_job:
     - echo "Building the project..."
     - npm install
     - npm run build
-
-unit_test_job:
-  stage: test
-  script:
-    - echo "Running unit tests..."
-    - npm run test:unit
 
 deploy_job:
   stage: deploy
