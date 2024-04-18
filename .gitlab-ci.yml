@@ -9,14 +9,14 @@ typecheck_job:
   stage: typecheck
   script:
     - echo "Running type checks..."
-    - npm install --no-audit
+    - npm install
     - npm run type-check
     
 build_job:
   stage: build
   script:
     - echo "Building the project..."
-    - npm install --no-audit
+    - npm install
     - npm run build
 
 unit_test_job:
