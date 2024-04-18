@@ -18,10 +18,19 @@
   grid-template-columns: 2fr 1fr; 
   align-items: center; 
   justify-content: center; 
-  min-height: 100vh; 
+  min-height: 100vh;
+  place-items: center;
+}
+
+.static-content {
+  width: 100%;
+  height: 100%;
+  align-content: center; 
+  border-right: 1px solid var(--color-border);
 }
 
 .dynamic-content {
+  width: 100%;
 }
 
 .static-content {
@@ -32,11 +41,11 @@
 
 @media (max-width: 768px) {
   .authentication-container {
-    grid-template-columns: 1fr; /* Makes it a single column layout */
+    grid-template-columns: 1fr;
   }
 
   .static-content {
-    display: none; /* Hides the static content */
+    display: none; 
   }
 
   .dynamic-content {

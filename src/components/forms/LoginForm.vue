@@ -4,10 +4,10 @@
 		<p>Sign in to your account</p>
 		<form @submit.prevent="login">
 			<div>
-				<input type="email" id="email" v-model="email" required placeholder="👤Email"/>
+				<FormInput type="email" placeholder="Enter your email" v-model="email" />
 			</div>
 			<div>
-				<input type="password" id="password" v-model="password" required placeholder="🔒Password"/>
+				<FormInput type="password" placeholder="Password" v-model="password" />
 			</div>
 			<FormButton type="submit">Login</FormButton>
 		</form>
@@ -19,6 +19,7 @@
 import { ref, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
 import FormButton from '@/components/forms/FormButton.vue';
+import FormInput from '@/components/forms/FormInput.vue';
 
 const router = useRouter();
 const email = ref('');
@@ -37,7 +38,12 @@ const goToSignUp = () => {
 
 <style scoped>
 .login-container {
+	width:100%;
+	height:100%;
 	text-align: center;
+}
+.header {
+	margin-bottom: 200px;
 }
 
 </style>

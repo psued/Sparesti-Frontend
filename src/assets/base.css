@@ -1,4 +1,4 @@
-/* color palette from <https://github.com/vuejs/theme> */
+/* color palette from me */
 :root {
   --vt-c-white: #f0f0f0;
   --vt-c-white-soft: #f8f8f8;
@@ -23,8 +23,8 @@
   --vt-c-button-base-light: #A6CD94;
   --vt-c-button-hover-light: #4B644A;
 
-  --vt-c-button-base-dark: #ffff19;
-  --vt-c-button-hover-dark: #4a534a;
+  --vt-c-button-base-dark: #757BFD;
+  --vt-c-button-hover-dark: #313273;
 }
 
 /* Defualt Light theme */
