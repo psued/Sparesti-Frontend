@@ -1,7 +1,7 @@
 <template>
   <div class="authentication-wrapper">
     <div class="piggy-bank-image">
-      <img src="/public/long-logo.png" alt="piggy-bank on a walk" />
+      <img v-bind:src="isDark ? '/public/long-logo-darkmode.png' : '/public/long-logo.png'" alt="piggy-bank on a walk" />
     </div>
     <div class="authentication-container">
       <div class="static-content">
@@ -15,6 +15,9 @@
 </template>
 
 <script setup lang="ts">
+import { useDark } from '@vueuse/core'
+
+const isDark = useDark();
 </script>
 
 <style scoped>
@@ -46,7 +49,7 @@
   height: 100%;
   align-content: center; 
   border-right: 1px solid var(--color-border);
-  padding-left: 5rem;
+  padding-left: 10rem;
 }
 
 .dynamic-content {
