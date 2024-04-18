@@ -1,0 +1,32 @@
+stages:
+  - lint
+  - typecheck
+  - build
+  - test
+  - deploy
+
+typecheck_job:
+  stage: typecheck
+  script:
+    - echo "Running type checks..."
+    - npm install --prefer-offline --no-audit
+    - npm run typecheck
+
+build_job:
+  stage: build
+  script:
+    - echo "Building the project..."
+    - npm install --prefer-offline --no-audit
+    - npm run build
+
+unit_test_job:
+  stage: test
+  script:
+    - echo "Running unit tests..."
+    - npm run test:unit
+
+deploy_job:
+  stage: deploy
+  script:
+    - echo "Deploying to staging server..."
+    - deploy_script_here
