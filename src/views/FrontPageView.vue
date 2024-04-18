@@ -2,7 +2,7 @@
   <div class="container">
 
     <div class="logo-container">
-      <img src="/public/pig_logo.png" alt="Pig Logo" class="pig-logo" />
+      <img src="/pig_logo.png" alt="Pig Logo" class="pig-logo" />
     </div>
 
     <div class="progress-bar-container">
@@ -13,6 +13,7 @@
 
     <div class="path-container">
       <img src="/path.webp" alt="Path" id="path-image" />
+      <img src="/avatar.png" alt="Avatar" class="avatar" />
 
       <div class="checkpoints">
         <div
@@ -53,9 +54,11 @@ export default defineComponent({
         { top: 112, left: 35, status: "finish-line" },
         // ... other checkpoints
       ],
+      currentCheckpointIndex: 0,
     };
   },
   mounted() {
+  this.moveAvatar();
   const clouds = document.querySelectorAll('.cloud');
   clouds.forEach((cloud) => {
     // Assert that cloud is an instance of HTMLElement
@@ -63,7 +66,34 @@ export default defineComponent({
     const randomWidth = Math.random() * (150 - 50) + 50; // Random width between 50px and 150px
     cloudElement.style.setProperty('--cloud-width', `${randomWidth}px`);
    });
-  }
+  },
+  methods: {
+    moveAvatar() {
+      // Update avatar's position based on current checkpoint
+      const avatar = document.querySelector(".avatar") as HTMLElement;
+      if (avatar) {
+        const currentCheckpoint = this.checkpoints[this.currentCheckpointIndex];
+
+        // Calculate intermediary coordinates to move vertically first
+        const verticalPosition = currentCheckpoint.top;
+        const horizontalPosition = currentCheckpoint.left;
+
+        // Update avatar's position vertically
+        avatar.style.top = verticalPosition + "px";
+
+        // After a short delay, update avatar's position horizontally
+        setTimeout(() => {
+          avatar.style.left = horizontalPosition + "%";
+
+          // Move to the next checkpoint after both vertical and horizontal movement
+          this.currentCheckpointIndex = (this.currentCheckpointIndex + 1) % this.checkpoints.length;
+
+          // Repeat the movement after a delay (e.g., 2 seconds)
+          setTimeout(this.moveAvatar, 2000);
+        }, 1000); // Adjust the delay according to your preference
+      }
+    },
+  },
 });
 </script>
 
@@ -215,5 +245,14 @@ export default defineComponent({
   background-size: 1px;
   border-color: #000000;
 }
+
+.avatar {
+  position: absolute;
+  width: 50px; /* Adjust width as needed */
+  height: auto;
+  z-index: 4; /* Ensure pig is above the checkpoints */
+  transition: all 2s ease; /* Add smooth transition effect */
+}
+
 
 </style>
