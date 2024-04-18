@@ -25,8 +25,15 @@
     </div>
 
     <div class="background-container">
-      <img src="/public/landscape.webp" alt="Landscape" id="landscape-image" />
+      <div class="background"></div>
+        <div class="clouds">
+          <img src="/cloud_1.png" alt="Cloud" class="cloud" />
+          <img src="/cloud_2.png" alt="Cloud" class="cloud" />
+          <img src="/cloud_3.png" alt="Cloud" class="cloud" />
+          <img src="/cloud_4.png" alt="Cloud" class="cloud" />
+        </div>
     </div>
+
   </div>
 </template>
 
@@ -48,23 +55,15 @@ export default defineComponent({
       ],
     };
   },
-  computed: {
-    lines() {
-      return this.checkpoints.slice(1).map((checkpoint, index) => {
-        const start = this.checkpoints[index];
-        const end = checkpoint;
-        return {
-          x1: start.left,
-          y1: start.top,
-          x2: end.left,
-          y2: end.top,
-        };
-      });
-    },
-    maxTop() {
-      return Math.max(...this.checkpoints.map((c) => c.top));
-    },
-  },
+  mounted() {
+  const clouds = document.querySelectorAll('.cloud');
+  clouds.forEach((cloud) => {
+    // Assert that cloud is an instance of HTMLElement
+    const cloudElement = cloud as HTMLElement;
+    const randomWidth = Math.random() * (150 - 50) + 50; // Random width between 50px and 150px
+    cloudElement.style.setProperty('--cloud-width', `${randomWidth}px`);
+   });
+  }
 });
 </script>
 
@@ -80,9 +79,62 @@ export default defineComponent({
 .background-container {
   background-size: cover;
   background-repeat: repeat;
-  filter: blur(5px);
   z-index: -1;
   position: absolute;
+  width: -webkit-fill-available;
+  height: 100%;
+}
+
+.background {
+  background: rgb(45,229,172);
+  background: linear-gradient(194deg, rgba(45,229,172,1) 0%, rgba(255,254,134,1) 100%);
+  width: -webkit-fill-available;
+  height: -webkit-fill-available;
+}
+
+.cloud {
+  position: absolute;
+  width: var(--cloud-width, 130px);  
+  height: auto;
+  animation: floatClouds linear infinite;
+  opacity: 0.8;
+  display: none;
+  left: -10%;
+}
+
+@keyframes floatClouds {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100vw);
+  }
+}
+
+.cloud:nth-child(1) {
+  animation-duration: 50s;
+  animation-delay: 0s;
+  top: 15%;
+  display: block;
+}
+.cloud:nth-child(2) {
+  animation-duration: 60s;
+  animation-delay: 5s;
+  top: 30%;
+  display: block;
+}
+.cloud:nth-child(3) {
+  animation-duration: 30s;
+  animation-delay: 10s;
+  top: 45%;
+  display: block;
+}
+
+.cloud:nth-child(4) {
+  animation-duration: 40s;
+  animation-delay: 13s;
+  top: 65%;
+  display: block;
 }
 
 .logo-container {
