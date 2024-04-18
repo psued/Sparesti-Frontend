@@ -10,7 +10,7 @@ typecheck_job:
   script:
     - echo "Running type checks..."
     - npm install --prefer-offline --no-audit
-    - npm run typecheck
+    - npm run type-check
     
 build_job:
   stage: build
