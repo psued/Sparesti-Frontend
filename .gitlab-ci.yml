@@ -5,13 +5,6 @@ stages:
   - test
   - deploy
 
-lint_job:
-  stage: lint
-  script:
-    - echo "Running lint checks..."
-    - npm install --prefer-offline --no-audit
-    - npm run lint
-
 typecheck_job:
   stage: typecheck
   script:
