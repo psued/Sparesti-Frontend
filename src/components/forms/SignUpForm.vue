@@ -4,22 +4,24 @@
 		<p>Create your account</p>
 		<form @submit.prevent="signUp">
 			<div>
-				<label for="email"></label>
-				<input type="email" id="email" v-model="email" required placeholder="👤Email"/>
+				<FormInput type="email" placeholder="Enter your email" v-model="email" />
 			</div>
 			<div>
-				<label for="password"></label>
-				<input type="password" id="password" v-model="password" required placeholder="🔒Password" />
+				<FormInput type="password" placeholder="Password" v-model="password" />
 			</div>
-			<button type="submit" @click="goToCompleteAccount">Sign Up</button>
+			<FormButton type="submit" @click="goToCompleteAccount">Sign up</FormButton>
 		</form>
-		<p>Already have an account? <button @click="goToLogin">Login</button></p>
+		<div class="login-link">
+			<p>Already have an account? <button @click="goToLogin">Login</button></p>
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import FormButton from '@/components/forms/FormButton.vue'
+import FormInput from '@/components/forms/FormInput.vue'
 
 const router = useRouter()
 const email = ref('')
@@ -27,6 +29,7 @@ const password = ref('')
 
 const signUp = () => {
 	console.log('Signing up with', email.value, password.value)
+	router.push({ name: 'complete-account' })
 }
 
 const goToLogin = () => {
@@ -40,3 +43,23 @@ const goToCompleteAccount = () => {
 }
 
 </script>
+
+<style scoped>
+.signup-container {
+	text-align: center;
+}
+
+.login-link {
+	margin-top: 15vw;
+}
+
+.login-link button {
+	background-color: transparent;
+	border: none;
+	color: var(--color-primary);
+	cursor: pointer;
+	font: bold;
+}
+
+
+</style>
