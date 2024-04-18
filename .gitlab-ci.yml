@@ -25,9 +25,3 @@ build_job:
     - echo "Building the project..."
     - npm install
     - npm run build
-
-deploy_job:
-  stage: deploy
-  script:
-    - echo "Deploying to staging server..."
-    - deploy_script_here
