@@ -16,12 +16,24 @@
       <img src="/avatar.png" alt="Avatar" class="avatar" />
 
       <div class="checkpoints">
-        <div
-          v-for="(checkpoint, index) in checkpoints"
-          :key="index"
-          :style="{ top: checkpoint.top + 'px', left: checkpoint.left + '%' }"
-          :class="['checkpoint', checkpoint.status]"
-        ></div>
+        <template v-for="(checkpoint, index) in sortedCheckpoints">
+        <img
+          v-if="checkpoint.status === 'completed'"
+          :src="checkCircleIcon"
+          alt="Completed Checkpoint"
+          class="checkpoint-icon check"
+          :style="{ top: checkpoint.top + 'px', left: checkpoint.left + 'px' }"
+          @click="openPopup(checkpoint.challenge || {} as Challenge, checkpoint.top, checkpoint.left)"
+        />
+        <img
+          v-else
+          :src="starCircleIcon"
+          alt="Incomplete Checkpoint"
+          class="checkpoint-icon star"
+          :style="{ top: checkpoint.top + 'px', left: checkpoint.left + 'px' }"
+          @click="openPopup(checkpoint.challenge || {} as Challenge, checkpoint.top, checkpoint.left)"
+        />
+      </template>
       </div>
     </div>
 
@@ -34,77 +46,115 @@
           <img src="/cloud_4.png" alt="Cloud" class="cloud" />
         </div>
     </div>
-
-  </div>
+    <ChallengeDetailsPopup :challenge="selectedChallengeForPopup" v-if="showPopup" @close="closePopup" :position="popupPosition" />  </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from "vue";
+<script setup lang="ts">
+import ChallengeDetailsPopup from "@/components/ChallengeDetailsPopup.vue";
+import { onMounted, computed, ref } from "vue";
+import { getChallengesByUser } from "@/api/challengeHooks";
+import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
 
-export default defineComponent({
-  name: "ProgressPath",
-  data() {
-    return {
-      checkpoints: [
-        { top: 590, left: 35, status: "completed" },
-        { top: 452, left: 62, status: "completed" },
-        { top: 382, left: 40, status: "in-progress" },
-        { top: 295, left: 48, status: "" },
-        { top: 217, left: 62, status: "" },
-        { top: 112, left: 35, status: "finish-line" },
-        // ... other checkpoints
-      ],
-      currentCheckpointIndex: 0,
-    };
-  },
-  mounted() {
-  this.moveAvatar();
-  const clouds = document.querySelectorAll('.cloud');
-  clouds.forEach((cloud) => {
-    // Assert that cloud is an instance of HTMLElement
-    const cloudElement = cloud as HTMLElement;
-    const randomWidth = Math.random() * (150 - 50) + 50; // Random width between 50px and 150px
-    cloudElement.style.setProperty('--cloud-width', `${randomWidth}px`);
-   });
-  },
-  methods: {
-    moveAvatar() {
-      // Update avatar's position based on current checkpoint
-      const avatar = document.querySelector(".avatar") as HTMLElement;
-      if (avatar) {
-        const currentCheckpoint = this.checkpoints[this.currentCheckpointIndex];
+import checkCircleIcon from "@/assets/check-circle.svg";
+import starCircleIcon from "@/assets/star-circle.svg";
 
-        // Calculate intermediary coordinates to move vertically first
-        const verticalPosition = currentCheckpoint.top;
-        const horizontalPosition = currentCheckpoint.left;
+interface Checkpoint {
+  top: number;
+  left: number;
+  status: string;
+  expiryDate: string;
+  challenge: Challenge | null;
+}
 
-        // Update avatar's position vertically
-        avatar.style.top = verticalPosition + "px";
-        if (this.currentCheckpointIndex === 0) {
-          // Reset progress bar
-          const progressBarFill = document.querySelector(".progress-bar-fill") as HTMLElement;
-          progressBarFill.style.width = "0%";
-        } else {
-          // Update progress bar
-          const progressBarFill = document.querySelector(".progress-bar-fill") as HTMLElement;
-          const progress = (this.currentCheckpointIndex / this.checkpoints.length) * 100;
-          progressBarFill.style.width = progress + "%";
-        }
+const selectedChallenge = ref<Challenge | null>(null);
+const showPopup = ref(false);
+const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 
-        // After a short delay, update avatar's position horizontally
-        setTimeout(() => {
-          avatar.style.left = horizontalPosition + "%";
+const checkpoints = ref<{ top: number; left: number; status: string; expiryDate: string; challenge: Challenge | null }[]>([]);
+const bottomLeftCoordinate = ref<{ x: number; y: number }>({ x: 0, y: 0 });
 
-          // Move to the next checkpoint after both vertical and horizontal movement
-          this.currentCheckpointIndex = (this.currentCheckpointIndex + 1) % this.checkpoints.length;
+onMounted(async () => {
+  const userId = 2; // Change this to the actual user ID
+  const challengesResponse = await getChallengesByUser(userId);
+  console.log(challengesResponse)
 
-          // Repeat the movement after a delay (e.g., 2 seconds)
-          setTimeout(this.moveAvatar, 2000);
-        }, 1000); // Adjust the delay according to your preference
+  const pathContainer = document.querySelector(".path-container");
+  if (pathContainer) {
+    const { left, bottom } = pathContainer.getBoundingClientRect();
+    bottomLeftCoordinate.value = { x: left, y: bottom };
+    console.log(bottomLeftCoordinate.value)
+  } else {
+    console.error("path-container not found");
+  }
+
+  if (challengesResponse) {
+    const { purchaseChallenges, consumptionChallenges, savingChallenges } = challengesResponse;
+
+    // Merge all challenge types into a single array
+    const allChallenges = [...purchaseChallenges, ...consumptionChallenges, ...savingChallenges];
+
+    const sortedChallenges = allChallenges.sort((a, b) => {
+      // First, sort by completion status
+      if (a.completed && !b.completed) return -1; // a comes before b if a is completed and b is not
+      if (!a.completed && b.completed) return 1; // b comes before a if b is completed and a is not
+
+      // If completion status is the same, sort by expiry date
+      const dateComparison = new Date(b.expiryDate).getTime() - new Date(a.expiryDate).getTime();
+      if (dateComparison !== 0) {
+        return dateComparison; // If expiry dates are different, return the comparison result
       }
-    },
-  },
+
+      // If expiry dates are the same, sort by challenge ID
+      return a.id - b.id;
+    });
+
+
+    // Initial coordinates
+    let initial_top = bottomLeftCoordinate.value.y - 190;
+    let initial_left = bottomLeftCoordinate.value.x - 330;
+
+    // Structure the checkpoints array
+    checkpoints.value = sortedChallenges.map((challenge, index) => ({    
+      top: calculateTop(initial_top, index),
+      left: calculateLeft(initial_left, index),
+      status: challenge.completed ? "completed" : "in-progress", 
+      expiryDate: challenge.expiryDate,
+      challenge: challenge as unknown as Challenge || null, // Assign the challenge object itself
+    }));
+  } else {
+    console.error('Failed to fetch challenges.');
+  }
+})
+
+// Function to calculate the top coordinate based on the index
+const calculateTop = (initial_top: number, index: number) => {
+  return initial_top - Math.floor(index / 2) * 80;
+}
+
+// Function to calculate the left coordinate based on the index
+const calculateLeft = (initial_left: number, index: number) => {
+  const offset = (index % 2 === 0) ? -90 : -10;
+  return initial_left + offset;
+}
+
+const sortedCheckpoints = computed(() => {
+  return [...checkpoints.value];
 });
+
+const selectedChallengeForPopup = computed(() => selectedChallenge.value || ({} as Challenge));
+
+const openPopup = (challenge: Challenge, top: number, left: number) => {
+  selectedChallenge.value = challenge;
+  showPopup.value = true;
+  popupPosition.value = { top, left };
+  console.log("Popup opened");
+  console.log(challenge);
+}
+
+const closePopup = () => {
+  selectedChallenge.value = null;
+  showPopup.value = false;
+}
 </script>
 
 <style scoped>
@@ -264,5 +314,18 @@ export default defineComponent({
   transition: all 2s ease; /* Add smooth transition effect */
 }
 
+.checkpoint-icon {
+  position: absolute;
+}
+
+.check {
+  background-color: rgb(23, 228, 23);
+  border-radius: 50%;
+}
+
+.star {
+  background-color: rgb(255, 192, 55);
+  border-radius: 50%;
+}
 
 </style>
