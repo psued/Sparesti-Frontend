@@ -50,7 +50,6 @@ const goToSignUp = () => {
 .sign-up-link button {
 	background-color: transparent;
 	border: none;
-	color: var(--color-primary);
 	cursor: pointer;
 }
 

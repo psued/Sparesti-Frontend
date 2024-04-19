@@ -14,7 +14,6 @@ document.body.classList.toggle('dark', isDark.value);
 </script>
 
 <template>
-   
 
   <RouterView />
 </template>
