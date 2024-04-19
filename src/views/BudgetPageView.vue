@@ -30,6 +30,9 @@
   <script lang="ts">
   import { defineComponent } from "vue";
   import BudgetProgressBar from "./BudgetProgressBar.vue";
+  import { useRouter } from "vue-router";
+  const router = useRouter();
+
   
   export default defineComponent({
     components: {
@@ -68,7 +71,7 @@
 
     methods: {
       showDetails() {
-        this.$emit("showDetails");
+        router.push("/details")
       },
   },
   });

@@ -5,6 +5,7 @@ import LoginForm from "@/components/forms/LoginForm.vue";
 import SignUpForm from "@/components/forms/SignUpForm.vue";
 import CompleteAccountForm from "@/components/forms/CompleteAccountForm.vue";
 import BudgetPageView from "@/views/BudgetPageView.vue";
+import BudgetDetails from "@/views/BudgetDetails.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +21,11 @@ const router = createRouter({
       name: "budgetpage",
       component: BudgetPageView,
     },
+        {
+        path: "/details",
+        name: "budgetdetails",
+        component: BudgetDetails,
+        },
 
     {
       path: "/about",
