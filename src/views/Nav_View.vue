@@ -1,30 +1,46 @@
+/**
+ * @file Nav_View.vue
+ * @description This file contains the implementation of the navigation view component.
+ * The component includes a top bar with a logo, a hamburger menu, and a sidebar.
+ * It also includes a phone bar for mobile devices.
+ * The component handles dark mode and theme changes.
+ */
 <template>
+  <!-- Top bar -->
   <div class="top-bar" :class="darkMode ? 'top-bar-dark' : ''">
     <RouterLink class="logo" to="/">
       <img :src="darkMode ?  './logo_long_dark.png' : './logo_long.png'" alt="logo" class="logo" />
     </RouterLink>
-    <div :class="['hamburger', {darkMode: 'hamburger-dark'}]">
-      <div class="hamburger-box" @click="toggleSidebar()">
-        <span :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"></span>
-        <span :class="['hamburger-line', 'middle', { 'hamburger-line-dark': darkMode }]"></span>
-        <span :class="['hamburger-line', 'bottom', { 'hamburger-line-dark': darkMode }]"></span>
-      </div>
-    </div>
-    <Transition name="move">
-      <sidebar :darkMode="darkMode" @theme="handleThemeChange" @bar="toggleSidebar" v-if="isSidebarOpen" />
-    </Transition>
-    <div class="phone-bar" v-if="isPhone" :class="{'phone-bar-dark' : darkMode}" >
-      <RouterLink class="phone-bar-item" :class="{'phone-bar-item-dark': darkMode}" to="/">
-        <i :class="darkMode ? 'icon-home-dark' : 'icon-home'"></i>
-      </RouterLink>
-      <RouterLink class="phone-bar-item" :class="{'phone-bar-item-dark': darkMode}" to="/challenges">
-        <i :class="darkMode ? 'icon-challenges-dark' : 'icon-challenges'"></i>
-      </RouterLink>
-      <RouterLink class="phone-bar-item" :class="{'phone-bar-item-dark': darkMode}" to="/budget">
-        <i :class="darkMode ? 'icon-budget-dark' : 'icon-budget'"></i>
-      </RouterLink>
+  </div>
+
+  <!-- Hamburger menu -->
+  <div :class="['hamburger', {darkMode: 'hamburger-dark'}]">
+    <div class="hamburger-box" @click="toggleSidebar()">
+      <span :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"></span>
+      <span :class="['hamburger-line', 'middle', { 'hamburger-line-dark': darkMode }]"></span>
+      <span :class="['hamburger-line', 'bottom', { 'hamburger-line-dark': darkMode }]"></span>
     </div>
   </div>
+
+  <!-- Sidebar -->
+  <Transition name="move">
+    <sidebar :darkMode="darkMode" @theme="handleThemeChange" @bar="toggleSidebar" v-if="isSidebarOpen" />
+  </Transition>
+
+  <!-- Phone bar -->
+  <div class="phone-bar" v-if="isPhone" :class="{'phone-bar-dark' : darkMode}" >
+    <RouterLink class="phone-bar-item" :class="{'phone-bar-item-dark': darkMode}" to="/">
+      <i :class="darkMode ? 'icon-home-dark' : 'icon-home'"></i>
+    </RouterLink>
+    <RouterLink class="phone-bar-item" :class="{'phone-bar-item-dark': darkMode}" to="/challenges">
+      <i :class="darkMode ? 'icon-challenges-dark' : 'icon-challenges'"></i>
+    </RouterLink>
+    <RouterLink class="phone-bar-item" :class="{'phone-bar-item-dark': darkMode}" to="/budget">
+      <i :class="darkMode ? 'icon-budget-dark' : 'icon-budget'"></i>
+    </RouterLink>
+  </div>
+
+  <!-- Blur screen -->
   <Transition name="fade">
     <div class="blur-screen" v-if="isSidebarOpen" @click="toggleSidebar" />
   </Transition>
@@ -35,13 +51,18 @@ import { onMounted, ref} from 'vue'
 import { Transition } from 'vue'
 import "@/assets/icons.css";
 import sidebar from '../components/nav/Sidebar.vue'
-const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-const darkMode = ref(prefersDarkMode);
-const isSidebarOpen = ref(false)
-const isPhone = ref(window.matchMedia('(max-width: 480px)').matches)
 
+// Dark mode preference based on user's system settings
+const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+const darkMode = ref(prefersDarkMode);
+
+// Sidebar and phone bar state
+const isSidebarOpen = ref(false)
+const isPhone = ref(window.matchMedia && window.matchMedia('(max-width: 480px)').matches)
+
+// Handle window resize event for mobile devices
 onMounted(() => {
-  window.matchMedia('(max-width: 480px)').addEventListener('change', (e) => {
+  window.matchMedia && window.matchMedia('(max-width: 480px)').addEventListener('change', (e) => {
     if(isSidebarOpen.value) {
       toggleSidebar();
     }
@@ -49,6 +70,7 @@ onMounted(() => {
   })
 });
 
+// Toggle sidebar visibility
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value
   const top = document.querySelector('.top')
@@ -75,7 +97,7 @@ const toggleSidebar = () => {
   }
 }
 
-
+// Handle theme change event
 const handleThemeChange = () => {
   darkMode.value = !darkMode.value
   if(isSidebarOpen.value) {
@@ -103,7 +125,7 @@ const handleThemeChange = () => {
   height: 90px;
   background-color: #ecffda;
   border-bottom: 1px solid #4b644a;
-  z-index: 998;
+  z-index: 996;
   overflow: hidden;
 }
 .top-bar-dark{
@@ -112,7 +134,7 @@ const handleThemeChange = () => {
 }
 .logo {
   cursor: pointer;
-  z-index: 999;
+  z-index: 996;
   position: relative;
   top: 5px;
   height: 100px;
@@ -152,7 +174,7 @@ const handleThemeChange = () => {
   border-radius: 20px;
   height: 6px;
   width: 100%;
-  background-color: #a6cd94;
+  background-color: #8fbf7f;
 }
 .hamburger-line-dark {
   background-color: #757bfd;
@@ -397,7 +419,7 @@ const handleThemeChange = () => {
   height: 60px;
   background-color: #ecffda;
   border-top: 2px solid #4b644a;
-  z-index: 998;
+  z-index: 996;
 }
 .phone-bar-dark {
   background-color: #23244b;
@@ -419,5 +441,6 @@ const handleThemeChange = () => {
 .phone-bar-item-dark:hover{
   background-color: #757bfd;
 }
+
 
 </style>let
