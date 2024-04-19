@@ -20,6 +20,4 @@ node_modules/
 .env.production.local
 
 # Ignore compiled files
-*.js
-*.css
 *.map
