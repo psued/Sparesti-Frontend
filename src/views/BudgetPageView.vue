@@ -81,7 +81,6 @@
   border-radius: 10px;
   margin: -1px;
   height: 17vh;
-  width: -webkit-fill-available;
   }
 
   .budget-summary h2 {
@@ -96,7 +95,7 @@
   bottom: -1px; 
   width: 100%; 
   height: 3px; 
-  background-color: #000; 
+  background-color: #443e3e; 
   }
 
   .budget-summary p, span {
@@ -127,7 +126,6 @@
   width: -webkit-fill-available;
   height: 100%;
   left: 0;
-  overflow: hidden;
 }
 
 .background {
@@ -148,7 +146,7 @@
   animation: floatClouds linear infinite;
   opacity: 0.8;
   display: none;
-  left: -15%;
+  left: -10%;
 }
 
 @keyframes floatClouds {
