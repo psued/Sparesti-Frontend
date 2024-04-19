@@ -2,9 +2,6 @@
     <div class="sidebar" ref="sidebarRef" :class="{ 'sidebar-open': isOpen, 'sidebar-dark': darkMode}">
         <div class="line" :class="{'line-dark' : darkMode}" />
         <div class="top-bar-items" >
-            <div class="sign-out"  :class="{'sign-out-dark': darkMode}" @click="toggleBar" @mouseenter="toggleHoverSign" @mouseleave="toggleHoverSign" >
-                <i :class="darkMode ?  'icon-sign-out-dark' : (!hoverSign ? 'icon-sign-out' : 'icon-sign-out-dark')"  />
-            </div>
             <div class="theme-mode" :class="{'theme-mode-dark': darkMode}" @click="toggleTheme" @mouseenter="toggleHoverTheme" @mouseleave="toggleHoverTheme">
                 <i :class="[darkMode ? 'icon-light-mode' : (!hoverTheme ? 'icon-dark-mode' : 'icon-dark-mode-hover')]" />
             </div>
@@ -22,6 +19,9 @@
             <router-link v-if=(!isPhone) class="bar-item-desktop" :class="[{'text-dark' : darkMode}]" @click="toggleBar" to="/challenges">
                 <text>Challenges</text>
             </router-link>
+            <div v-if="getToken()" class="bar-item-sign"  :class="[{'text-dark' : darkMode}]" @click="toggleBar" @mouseenter="toggleHoverSign" @mouseleave="toggleHoverSign" >
+                <text>Sign out</text>
+            </div>
             <router-link class="bar-item-desktop" :class="[isPhone ? '' : 'contact', {'text-dark' : darkMode}]" @click="toggleBar"  to="/contact">
                 <text>Contact</text>
             </router-link>
@@ -100,26 +100,6 @@ onMounted(() => {
     overflow: hidden;
 }
 
-.sign-out{
-    height: 120px;
-    width: 120px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border-right: 2px solid #4b644a;
-    transition: 0.5s; 
-}
-.sign-out-dark{
-    border-right: 2px solid #757bfd;
-}
-
-.sign-out:hover {
-    background-color: rgba(255, 0, 0, 0.8);
-    color: #f0f0f0;
-}
-
 .theme-mode{
     height: 120px;
     width: 120px;
@@ -128,14 +108,9 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border-right: 2px solid #4b644a;
     transition: 0.5s; 
 }
 
-.theme-mode-dark{
-    border-right: 2px solid #757bfd;
-
-}
 
 .theme-mode:hover {
     background-color: #4b644a;
@@ -149,13 +124,13 @@ onMounted(() => {
     background: #757bfd;
 }
 
-
 .line {
     margin-top: 89px;
     width: 100%;
     height: 2px;
     background-color: #4b644a;
 }
+
 .line-dark {
     background-color: #757bfd;
 }
@@ -190,6 +165,25 @@ onMounted(() => {
 
 .bar-item-desktop:hover {
     background-color: #4b644a;
+    color: #f0f0f0;
+}
+
+.bar-item-sign {
+    cursor: pointer;
+    color: #000000;
+    height: 80px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.5s;
+}
+.bar-item-sign.text-dark{
+    color: #f0f0f0;
+}
+
+.bar-item-sign:hover {
+    background-color: rgba(255,0,0, 0.8);
     color: #f0f0f0;
 }
 

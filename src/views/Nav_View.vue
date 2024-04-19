@@ -3,7 +3,7 @@
     <RouterLink class="logo" to="/">
       <img :src="darkMode ?  './logo_long_dark.png' : './logo_long.png'" alt="logo" class="logo" />
     </RouterLink>
-    <div :class="['hamburger']">
+    <div :class="['hamburger', {darkMode: 'hamburger-dark'}]">
       <div class="hamburger-box" @click="toggleSidebar()">
         <span :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"></span>
         <span :class="['hamburger-line', 'middle', { 'hamburger-line-dark': darkMode }]"></span>
@@ -132,10 +132,12 @@ const handleThemeChange = () => {
   height: 70px;
   width: 80px;
   background-color: transparent;
-  border-radius: 100px;
 }
 .hamburger-dark {
   background-color: #f0f0f0;
+}
+.hamburger-dark:hover{
+  background-color: #757bfd;
 }
 .hamburger-box {
   height: 60%;
