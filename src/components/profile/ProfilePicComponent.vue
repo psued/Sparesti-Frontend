@@ -13,7 +13,6 @@ const props = defineProps<{
 </script>
 
 <style scoped>
-
 .profile-pic {
   width: 100%;
   height: 100%;

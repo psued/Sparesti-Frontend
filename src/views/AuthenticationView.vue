@@ -5,7 +5,7 @@
     </div>
     <div class="authentication-container">
       <div class="static-content">
-        <p>Welcome to SpareSti! <br>Application to make your wallet happier. <br>Free to use, money back guarantee.</p>
+        <p>Velkommmen til SpareSti! <br>Applikasjonen som gjør lommeboken lykkeligere. <br>Gratis å bruke, vi følger forbruksloven. 👍</p>
       </div>
       <div class="dynamic-content">
         <router-view></router-view>

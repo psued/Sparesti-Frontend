@@ -3,6 +3,7 @@
     <section class="user-info-section">
       <div class="profile-pic-container">
         <ProfilePicComponent :userProfilePic="user.pictureUrl" />
+        <TotalSavingsComponent :totalSavings="user.totalSavings" />
       </div>
       <UserInfoComponent :user="user" />
       <SettingsLinkComponent />
@@ -14,11 +15,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import ProfilePicComponent from '@/components/profile/ProfilePicComponent.vue'; 
 import UserInfoComponent from '@/components/profile/UserInfoComponent.vue'; 
+import TotalSavingsComponent from '@/components/profile/TotalSavingsComponent.vue';
 
 
+const user = ref<User>({
+  name: 'vilde min',
+  email: 'vilde@min.com',
+  username: 'VildeMin',
+  pictureUrl: 'https://cdn.discordapp.com/attachments/702511885370654732/1152222819816579172/c0sc95nulakb1.png?ex=662ba11f&is=66192c1f&hm=937bea25d8566aaeb42ebbd0197fc652a6b55cd71e3ab59334a14ec0287e5b6b&', 
+  badges: [] ,
+  totalSavings:5000,
+});
 </script>
 
 <style scoped>
@@ -44,8 +54,6 @@ import UserInfoComponent from '@/components/profile/UserInfoComponent.vue';
   /* Styles to ensure the profile pic and total savings are of the same size */
   .profile-pic-container,
   .total-savings-container {
-    width: 10vw;
-    height: 10vw;
   }
 }
 .profile-page-container {
@@ -77,8 +85,8 @@ import UserInfoComponent from '@/components/profile/UserInfoComponent.vue';
   }
 
   .profile-pic-container {
-    width: 50vw; 
-    height: 50vw; 
+    width: 150px; 
+    height: 150px; 
   }
 }
 </style>

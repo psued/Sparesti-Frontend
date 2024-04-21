@@ -2,21 +2,37 @@
 	<div class="user-info">
 		<div class="user-details">
 			<p>
-				<strong>Name:</strong> {{ user.name }}
+				Name:
+				<div class="profile-info-border"> {{ user.name }}</div>
 			</p>
 			<p>
-				<strong>Email:</strong> {{ user.email }}
+				Email:
+				<div class="profile-info-border"> {{ user.email }}</div>
 			</p>
 			<p>
-				<strong>Username:</strong> {{ user.username }}
+				Username:
+				<div class="profile-info-border"> {{ user.username }}</div>
 			</p>
 		</div>
 	</div>
 </template>
 
+
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import { UserDto } from '@/types';
+import type { User } from '@/types/User';
 
-const props = defineProps<{ user: UserDto }>();
+const props = defineProps<{
+	user: User;
+}>();
 </script>
+
+<style scoped>
+
+.profile-info-border {
+	border: 1px solid ;
+	border-radius:5px;
+	padding: 5px;
+	background-color: white;
+}
+</style>@/types/User

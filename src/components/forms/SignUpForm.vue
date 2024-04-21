@@ -1,18 +1,18 @@
 <template>
 	<div class="signup-container">
-		<h1>Sign up</h1>
-		<p>Create your account</p>
+		<h1>Meld deg på</h1>
+		<p>Lag din egen bruker</p>
 		<form @submit.prevent="signUp">
 			<div>
-				<FormInput type="email" placeholder="Enter your email" v-model="email" />
+				<FormInput type="email" placeholder="Skriv inn email" v-model="email" />
 			</div>
 			<div>
-				<FormInput type="password" placeholder="Password" v-model="password" />
+				<FormInput type="password" placeholder="Passord" v-model="password" />
 			</div>
 			<FormButton type="submit" @click="goToCompleteAccount">Sign up</FormButton>
 		</form>
 		<div class="login-link">
-			<p>Already have an account? <button @click="goToLogin">Login</button></p>
+			<p>Har allerede bruker? <button @click="goToLogin">Logg inn</button></p>
 		</div>
 	</div>
 </template>
