@@ -2,7 +2,7 @@ import axios from "axios";
 import router from "@/router";
 import { useUserStore } from "@/stores/userStore";
 
-const baseURL = "https://localhost:8443"; // Adjust this to our backend API URL
+const baseURL = "http://localhost:8080"; // Adjust this to our backend API URL
 
 const api = axios.create({
   baseURL: baseURL + "/api",
