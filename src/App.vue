@@ -1,7 +1,13 @@
+<template>
+   <NAV />
+
+  <RouterView />
+</template>
+
 <script setup lang="ts">
-import { useDark, useToggle } from "@vueuse/core";
-import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
+import { useDark, useToggle } from '@vueuse/core'
+import { RouterLink, RouterView } from 'vue-router'
+import NAV from './views/Nav_View.vue';
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
@@ -9,19 +15,10 @@ function toggleTheme() {
   toggleDark();
   document.body.classList.toggle("dark", isDark.value);
 }
-document.body.classList.toggle("dark", isDark.value);
+document.body.classList.toggle('dark', isDark.value);
 </script>
 
-<template>
-  <RouterView />
-</template>
-
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
 .logo {
   display: block;
   margin: 0 auto 2rem;
