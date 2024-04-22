@@ -2,7 +2,7 @@ import { api } from "@/api/axiosConfig";
 
 export const getUserByUsername = async (username: string): Promise<any | null> => {
   try {
-    const response = await api.get(`/api/users/${username}`);
+    const response = await api.get(`/users/${username}`);
     return response.data || null;
   } catch (error) {
     console.error('Error getting user by username:', error);
