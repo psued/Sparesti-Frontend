@@ -10,6 +10,16 @@ export const getUserByUsername = async (username: string): Promise<any | null> =
   }
 };
 
+export const getUserByDisplayName = async (displayName: string): Promise<any | null> => {
+  try {
+    const response = await api.get(`/users/info/${displayName}`);
+    return response.data || null;
+  } catch(error) {
+    console.error('Error getting user by display name:', error);
+    return null;
+  }
+};
+
 export const getSavingsGoalsByUserId = async (userId: number): Promise<any[] | null> => {
   try {
     const response = await api.get(`/api/users/${userId}/savings-goals`);

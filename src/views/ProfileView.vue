@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { getUserByUsername } from '@/api/userHooks';
+import { getUserByDisplayName } from '@/api/userHooks';
 import type { User } from '@/types/User';
 import ProfilePicComponent from '@/components/profile/ProfilePicComponent.vue'; 
 import UserInfoComponent from '@/components/profile/UserInfoComponent.vue'; 
@@ -38,7 +38,7 @@ import TotalSavingsComponent from '@/components/profile/TotalSavingsComponent.vu
 const user = ref<User | null>(null);
 
 onMounted(async () => {
-  user.value = await getUserByUsername('vildemin');
+	user.value = await getUserByDisplayName('porkypanda');
 	console.log(user.value);
 });
 
