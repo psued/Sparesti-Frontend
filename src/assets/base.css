@@ -20,10 +20,10 @@
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
 
-  --vt-c-button-base-light: #A6CD94;
-  --vt-c-button-hover-light: #4B644A;
+  --vt-c-button-base-light: #a6cd94;
+  --vt-c-button-hover-light: #4b644a;
 
-  --vt-c-button-base-dark: #757BFD;
+  --vt-c-button-base-dark: #757bfd;
   --vt-c-button-hover-dark: #313273;
 }
 
@@ -45,7 +45,7 @@
   --color-button-hover: var(--vt-c-button-hover-light);
 }
 
-/* Dark theme */ 
+/* Dark theme */
 body.dark {
   --color-background: var(--vt-c-black-soft);
   --color-background-soft: var(--vt-c-black-soft);
@@ -81,14 +81,14 @@ body {
     Inter,
     -apple-system,
     BlinkMacSystemFont,
-    'Segoe UI',
+    "Segoe UI",
     Roboto,
     Oxygen,
     Ubuntu,
     Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
     sans-serif;
   font-size: 15px;
   text-rendering: optimizeLegibility;
@@ -106,4 +106,3 @@ button {
 button:hover {
   background-color: var(--color-button-hover);
 }
-

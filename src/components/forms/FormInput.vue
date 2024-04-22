@@ -1,16 +1,16 @@
 <template>
   <div class="input-wrapper">
-    <input 
-      :type="type" 
-      :placeholder="placeholder" 
-      :value="modelValue" 
-      @input="updateValue($event)" 
+    <input
+      :type="type"
+      :placeholder="placeholder"
+      :value="modelValue"
+      @input="updateValue($event)"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits } from "vue";
 
 const props = defineProps({
   type: String,
@@ -18,11 +18,11 @@ const props = defineProps({
   modelValue: [String, Number],
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(["update:modelValue"]);
 
 const updateValue = (event: Event) => {
   const target = event.target as HTMLInputElement;
-  emit('update:modelValue', target.value);
+  emit("update:modelValue", target.value);
 };
 </script>
 
