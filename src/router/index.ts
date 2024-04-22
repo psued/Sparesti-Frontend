@@ -15,18 +15,6 @@ const router = createRouter({
       name: "home",
       component: HomeView,
     },
-
-    {
-      path: "/budgetpage",
-      name: "budgetpage",
-      component: BudgetPageView,
-    },
-    {
-      path: "/details",
-      name: "budgetdetails",
-      component: BudgetDetails,
-    },
-
     {
       path: "/about",
       name: "about",

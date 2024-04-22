@@ -21,4 +21,14 @@ const onClick = (event: Event) => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.form-button {
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  margin: 10px;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+</style>

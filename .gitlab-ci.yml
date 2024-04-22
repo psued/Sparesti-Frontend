@@ -1,0 +1,27 @@
+image: node:latest
+
+
+cache:
+  paths:
+    - node_modules/
+
+stages:
+  - lint
+  - typecheck
+  - build
+  - test
+  - deploy
+
+typecheck_job:
+  stage: typecheck
+  script:
+    - echo "Running type checks..."
+    - npm install
+    - npm run type-check
+    
+build_job:
+  stage: build
+  script:
+    - echo "Building the project..."
+    - npm install
+    - npm run build
