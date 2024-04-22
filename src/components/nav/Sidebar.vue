@@ -27,7 +27,7 @@
                 <text>Profile</text>
             </router-link>
             <!-- Budget link -->
-            <router-link v-if="!isPhone" class="bar-item-desktop" :class="[{'text-dark' : darkMode}]" @click="toggleBar"  to="/budget">
+            <router-link v-if="!isPhone" class="bar-item-desktop" :class="[{'text-dark' : darkMode}]" @click="toggleBar"  to="/budgetpage">
                 <text>Budget</text>
             </router-link>
             <!-- Challenges link -->
