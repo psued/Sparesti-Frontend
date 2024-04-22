@@ -117,7 +117,7 @@ const handleThemeChange = () => {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 997;
 }
-.top-bar {
+.top-bar{
   top: 0;
   left: 0;
   width: 100%;
@@ -431,7 +431,6 @@ const handleThemeChange = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 .phone-bar-item:hover{

@@ -34,20 +34,17 @@ const isDark = useDark();
 }
 .authentication-container {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  align-items: center;
-  justify-content: center;
+  grid-template-columns: 2fr 1fr; 
   min-height: 100vh;
   place-items: center;
-  position: relative;
 }
 
 .piggy-bank-image img {
-  max-width: 70%;
-  height: auto;
+  max-width: 60%; 
+  height: auto; 
   position: absolute;
-  top: -2vw;
-  left: -13vw;
+  top: -2vw; 
+  left: -15vw;
   z-index: -1;
 }
 
@@ -56,11 +53,13 @@ const isDark = useDark();
   height: 100%;
   align-content: center;
   border-right: 1px solid var(--color-border);
-  padding-left: 10rem;
+  padding-left: 20rem;
 }
 
 .dynamic-content {
   width: 100%;
+  align-items: center;
+  text-align:center;
 }
 
 .static-content {

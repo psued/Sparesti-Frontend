@@ -1,7 +1,9 @@
 <template>
-   <NAV />
+  <div class="layout">
+  <NAV />
 
   <RouterView />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -46,6 +48,12 @@ nav a {
 
 nav a:first-of-type {
   border: 0;
+}
+.layout{
+  display: flex;
+  flex-direction: column;
+
+
 }
 
 @media (min-width: 1024px) {
