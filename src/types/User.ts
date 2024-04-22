@@ -1,7 +1,8 @@
 export interface User {
-    id: number;
     name: string;
     username: string;
     email: string;
-    profilePictureUrl?: string;
+    pictureUrl: string ;
+    badges: any[];
+    totalSavings: number;
 }

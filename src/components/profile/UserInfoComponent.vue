@@ -1,20 +1,20 @@
 <template>
-	<div class="user-info">
-		<div class="user-details">
-			<p>
-				Name:
-				<div class="profile-info-border"> {{ user.name }}</div>
-			</p>
-			<p>
-				Email:
-				<div class="profile-info-border"> {{ user.email }}</div>
-			</p>
-			<p>
-				Username:
-				<div class="profile-info-border"> {{ user.username }}</div>
-			</p>
-		</div>
-	</div>
+  <div class="user-info">
+    <div class="user-details">
+      <div class="detail">
+        <span class="label">Name:</span>
+        <span class="value">{{ user.name }}</span>
+      </div>
+      <div class="detail">
+        <span class="label">Email:</span>
+        <span class="value">{{ user.email }}</span>
+      </div>
+      <div class="detail">
+        <span class="label">Username:</span>
+        <span class="value">{{ user.username }}</span>
+      </div>
+    </div>
+  </div>
 </template>
 
 
@@ -28,11 +28,20 @@ const props = defineProps<{
 </script>
 
 <style scoped>
+.user-info {
+}
 
-.profile-info-border {
-	border: 1px solid ;
-	border-radius:5px;
-	padding: 5px;
-	background-color: white;
+.user-details .detail {
+  margin-bottom: 0.5em;
+}
+
+.user-details .label {
+  font-weight: bold;
+}
+
+.user-details .value {
+  display: block;
+  border-bottom: 1px solid;
+  padding-bottom: 0.2em;
 }
 </style>@/types/User

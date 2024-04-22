@@ -1,6 +1,7 @@
 <template>
   <div class="total-savings-container">
-    <div class="total-savings-amount">{{ totalSavingsFormatted }}</div>
+    <div class="total-savings-label">Total Savings:</div>
+    <div class="total-savings-amount">{{ formattedTotalSavings }}</div>
   </div>
 </template>
 
@@ -8,17 +9,30 @@
 import { defineProps, computed } from 'vue';
 
 const props = defineProps({
-  totalSavings: Number
+  totalSavings: {
+    type: Number,
+    default: 0,
+  }
 });
 
-const totalSavingsFormatted = computed(() => {
-	return 5000;
+const formattedTotalSavings = computed(() => {
+  return new Intl.NumberFormat('no-NO', {
+    style: 'currency',
+    currency: 'NOK'
+  }).format(props.totalSavings);
 });
 </script>
 
 <style scoped>
-.total-savings{
-	width: 100%;
-  height: 100%;
+.total-savings-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
+
+.total-savings-label {
+  font-weight: bold;
+}
+
 </style>

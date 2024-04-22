@@ -8,7 +8,7 @@
 import { defineProps } from 'vue';
 
 const props = defineProps<{
-  userProfilePic: string
+  userProfilePic:string,
 }>();
 </script>
 
