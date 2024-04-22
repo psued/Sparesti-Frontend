@@ -1,3 +1,37 @@
+.road-start-light{
+    background-image: url(src/assets/svg_icons/road-start-light.svg);
+    display: inline-block;
+    width: 320px; 
+    height: 120px;
+    margin-left: 25.5px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.road-left-light{
+    background-image: url(src/assets/svg_icons/road-left-light.svg);
+    display: inline-block;
+    width: 320px; 
+    height: 120px; 
+    margin-left: 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.road-right-light{
+    background-image: url(src/assets/svg_icons/road-right-light.svg);
+    display: inline-block;
+    width: 320px; 
+    height: 120px;
+    margin-right: 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+
 .icon-sign-out {
     background-image: url(@/assets/svg_icons/logout.svg);
     display: inline-block;
