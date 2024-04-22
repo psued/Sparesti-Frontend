@@ -431,7 +431,6 @@ const handleThemeChange = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 
 .phone-bar-item:hover{

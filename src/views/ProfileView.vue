@@ -1,7 +1,9 @@
 <template>
   <div class="profile-page-container">
     <section class="user-info-section">
-      <h1>Your profile</h1>
+      <div class="header">
+        <h1>Your profile</h1>
+      </div>  
       <section class="top-part-profile">
         <div class="profile-pic-container">
           <ProfilePicComponent :userProfilePic="user.pictureUrl " />
@@ -54,6 +56,10 @@ const user = ref<User>({
 <style scoped>
 /* Desktop View */
 @media (min-width: 769px) {
+  .header{
+    padding-bottom: 2rem;
+    font-size: 1.5rem;
+  }
   .profile-page-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -69,15 +75,15 @@ const user = ref<User>({
   }
   .top-part-profile {
     display: flex;
-    gap: 2rem;
+    gap: 5rem;
     align-items: center;
     justify-content: center;
     margin-bottom: 2rem;
   }
   .profile-pic-container,
   .total-savings-container {
-    height: 10vw;
-    width: 10vw;
+    height: 12vw;
+    width: 12vw;
     border-radius: 50%;
     overflow: hidden; 
     border: 2px solid #729960; 
@@ -91,7 +97,7 @@ const user = ref<User>({
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 10vw;
+    padding-top: 5%;
   }
   .settings-button {
     display: flex;
@@ -100,6 +106,9 @@ const user = ref<User>({
     gap: 1rem;
     padding: 1rem;
     border-radius: 1rem;
+  }
+  .user-info-section {
+    padding-right: 2rem;
   }
 }
 
