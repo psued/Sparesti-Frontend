@@ -5,18 +5,18 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
+import type { PropType } from "vue";
 
 const props = defineProps({
   type: {
-      type: String as PropType<'button' | 'submit' | 'reset'>,
-      default: 'button'
-  }
+    type: String as PropType<"button" | "submit" | "reset">,
+    default: "button",
+  },
 });
 
 const onClick = (event: Event) => {
-  if (props.type !== 'submit') {
-      event.preventDefault();
+  if (props.type !== "submit") {
+    event.preventDefault();
   }
 };
 </script>

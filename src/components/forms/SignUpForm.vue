@@ -23,9 +23,9 @@ import { useRouter } from 'vue-router'
 import FormButton from '@/components/forms/FormButton.vue'
 import FormInput from '@/components/forms/FormInput.vue'
 
-const router = useRouter()
-const email = ref('')
-const password = ref('')
+const router = useRouter();
+const email = ref("");
+const password = ref("");
 
 const signUp = () => {
 	console.log('Signing up with', email.value, password.value)
@@ -33,9 +33,9 @@ const signUp = () => {
 }
 
 const goToLogin = () => {
-	console.log('Going to login')
-	router.push({ name: 'login' })
-}
+  console.log("Going to login");
+  router.push({ name: "login" });
+};
 
 const goToCompleteAccount = () => {
 	console.log('Going to complete account')

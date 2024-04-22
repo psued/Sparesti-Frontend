@@ -24,16 +24,16 @@ import FormButton from '@/components/forms/FormButton.vue';
 import FormInput from '@/components/forms/FormInput.vue';
 
 const router = useRouter();
-const email = ref('');
-const password = ref('');
-const emit = defineEmits(['change-view']);
+const email = ref("");
+const password = ref("");
+const emit = defineEmits(["change-view"]);
 
 const login = () => {
 	console.log('Logging in with', email.value, password.value);
 };
 
 const goToSignUp = () => {
-	router.push({name: 'signup'});
+  router.push({ name: "signup" });
 };
 </script>
 

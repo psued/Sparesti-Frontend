@@ -57,9 +57,9 @@ const isDark = useDark();
 }
 
 .static-content {
-	font-size: 1.5rem;
-	text-align: left;
-	margin-top: 2rem;
+  font-size: 1.5rem;
+  text-align: left;
+  margin-top: 2rem;
 }
 
 @media (max-width: 768px) {

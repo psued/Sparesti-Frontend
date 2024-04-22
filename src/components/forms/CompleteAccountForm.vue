@@ -22,13 +22,13 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import FormButton from '@/components/forms/FormButton.vue'
 
-const router = useRouter()
-const name = ref('')
-const age = ref('')
+const router = useRouter();
+const name = ref("");
+const age = ref("");
 
 const completeAccount = () => {
-	console.log('Completing account with', name.value, age.value)
-}
+  console.log("Completing account with", name.value, age.value);
+};
 
 const goToPersonalisation = () => {
 	console.log('Going to personalisation')
