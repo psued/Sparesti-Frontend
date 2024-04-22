@@ -30,7 +30,7 @@ export default defineComponent({
 <style>
 .progress-bar {
   height: 20px;
-  width: 100%;
+  width: 70%;
   background-color: #d75a01;
   border: 2px solid #000;
   border-radius: 7px;

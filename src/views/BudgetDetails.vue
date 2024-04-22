@@ -1,21 +1,21 @@
 <template>
-  <router-link to="/budgetpage" class="back-arrow"> ← Monthly Budget </router-link>
+  <router-link to="/budgetpage" class="back-arrow"> ← Månedtlig Budsjett </router-link>
 
   <div class="budget-details">
     <div class="budget-left">
-      <h2>Left to Spend</h2>
-      <p>{{ remainingBudget }} kr out of {{ totalBudget }} kr</p>
+      <h2>Resterende budsjett</h2>
+      <p>{{ remainingBudget }} kr av {{ totalBudget }} kr</p>
       <progress-bar :value="remainingBudget" :max="totalBudget"></progress-bar>
     </div>
   </div>
 
   <div class="expenses">
-      <h3>Expenses</h3>
+      <h3>Utgifter</h3>
       <ul>
         <li v-for="(expense, category) in expenses" :key="category">
           <span class="emoji">{{ expense.emoji }}</span>
           <span class="category">{{ category }}</span>
-          <span class="amount">{{ expense.left }} kr left of {{ expense.total }} kr</span>
+          <span class="amount">{{ expense.left }} kr igjen av {{ expense.total }} kr</span>
           <progress-bar :value="expense.left" :max="expense.total"></progress-bar>
         </li>
       </ul>
@@ -44,10 +44,11 @@ export default defineComponent({
   data() {
     return {
       expenses: {
-        Bills: { left: 2000, total: 4000, emoji: '🧾' },
-        Food: { left: 1500, total: 2500, emoji: '🍞' },
-        Clothes: { left: 400, total: 1000, emoji: '👕' },
-        FreeTime: { left: 2700, total: 3000, emoji: '🍻' }
+        Kvitteringer: { left: 2000, total: 4000, emoji: '🧾' },
+        Mat: { left: 1500, total: 2500, emoji: '🍞' },
+        Klær: { left: 400, total: 1000, emoji: '👕' },
+        Fritid: { left: 2700, total: 3000, emoji: '🍻' },
+        Betting: { left: 1250, total: 2000, emoji: '🎲' }
       }
     }
   }
@@ -93,6 +94,10 @@ export default defineComponent({
     text-align: left;
     color: #eeeeee;
     padding: 3px;
+  }
+
+  .expenses {
+    margin: 15px;
   }
 
   .expenses h3 {

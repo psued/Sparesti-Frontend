@@ -1,9 +1,9 @@
 <template>
   <router-link to="/details" tag="div" class="budget-overview">
     <div class="budget-summary">
-      <h2>Monthly Budget</h2>
-      <p>{{ budget }} kr of {{ totalBudget }} kr</p>
-      <span>{{ daysLeft }} Days Left</span>
+      <h2>Månedtlig Budsjett</h2>
+      <p>{{ budget }} kr av {{ totalBudget }} kr</p>
+      <span>{{ daysLeft }} Dager Igjen</span>
       <progress-bar :value="budget" :max="totalBudget"></progress-bar>
     </div>
   </router-link>
@@ -45,7 +45,7 @@ export default defineComponent({
   border: solid 1px #c9d6b8; 
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-  margin: -1px;
+  margin: 15px;
   height: 17vh;
   display: block;
 }
@@ -53,6 +53,7 @@ export default defineComponent({
 .budget-summary h2 {
   position: relative;
   display: inline-block;
+  color: black;
 }
 
 .budget-summary h2::after {
