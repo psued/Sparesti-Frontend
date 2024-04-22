@@ -2,7 +2,7 @@
   <div class="user-info">
     <div class="user-details">
       <div class="detail">
-        <span class="label">Name:</span>
+        <span class="label">Navn:</span>
         <span class="value"><i class="icon-user"></i>{{ user.name }}</span>
       </div>
       <div class="detail">
@@ -10,7 +10,7 @@
         <span class="value"><i class="icon-mail"></i>{{ user.email }}</span>
       </div>
       <div class="detail">
-        <span class="label">Username:</span>
+        <span class="label">Brukernavn:</span>
         <span class="value"><i class="icon-user"></i>{{ user.username }}</span>
       </div>
     </div>
