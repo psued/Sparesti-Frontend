@@ -127,7 +127,7 @@ const handleThemeChange = () => {
   z-index: 996;
   overflow: hidden;
 }
-.top-bar-dark{
+.top-bar-dark {
   background-color: #23244b;
   border-bottom: 1px solid #757bfd;
 }

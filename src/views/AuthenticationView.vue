@@ -1,11 +1,19 @@
 <template>
   <div class="authentication-wrapper">
     <div class="piggy-bank-image">
-      <img v-bind:src="isDark ? '/public/long-logo-darkmode.png' : '/public/long-logo.png'" alt="piggy-bank on a walk" />
+      <img
+        v-bind:src="
+          isDark ? '/public/long-logo-darkmode.png' : '/public/long-logo.png'
+        "
+        alt="piggy-bank on a walk"
+      />
     </div>
     <div class="authentication-container">
       <div class="static-content">
-        <p>Velkommmen til SpareSti! <br>Applikasjonen som gjør lommeboken lykkeligere. <br>Gratis å bruke, vi følger forbruksloven. 👍</p>
+        <p>
+          Welcome to SpareSti! <br />Application to make your wallet happier.
+          <br />Free to use, money back guarantee.
+        </p>
       </div>
       <div class="dynamic-content">
         <router-view></router-view>
@@ -15,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { useDark } from '@vueuse/core'
+import { useDark } from "@vueuse/core";
 
 const isDark = useDark();
 </script>
@@ -23,7 +31,6 @@ const isDark = useDark();
 <style scoped>
 .authentication-wrapper {
   overflow: hidden;
-  
 }
 .authentication-container {
   display: grid;
@@ -56,9 +63,9 @@ const isDark = useDark();
 }
 
 .static-content {
-	font-size: 1.5rem;
-	text-align: left;
-	margin-top: 2rem;
+  font-size: 1.5rem;
+  text-align: left;
+  margin-top: 2rem;
 }
 
 @media (max-width: 768px) {
@@ -67,7 +74,7 @@ const isDark = useDark();
   }
 
   .static-content {
-    display: none; 
+    display: none;
   }
 
   .dynamic-content {

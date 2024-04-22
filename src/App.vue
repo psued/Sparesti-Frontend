@@ -14,8 +14,8 @@ import NAV from './views/Nav_View.vue';
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
 function toggleTheme() {
-  toggleDark(); 
-  document.body.classList.toggle('dark', isDark.value);
+  toggleDark();
+  document.body.classList.toggle("dark", isDark.value);
 }
 document.body.classList.toggle('dark', isDark.value);
 </script>

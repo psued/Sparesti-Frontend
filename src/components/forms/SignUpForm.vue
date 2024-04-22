@@ -18,39 +18,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import FormButton from '@/components/forms/FormButton.vue'
-import FormInput from '@/components/forms/FormInput.vue'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import FormButton from "@/components/forms/FormButton.vue";
+import FormInput from "@/components/forms/FormInput.vue";
 
-const router = useRouter()
-const email = ref('')
-const password = ref('')
+const router = useRouter();
+const email = ref("");
+const password = ref("");
 
 const signUp = () => {
-	console.log('Signing up with', email.value, password.value)
-	router.push({ name: 'complete-account' })
-}
+  console.log("Signing up with", email.value, password.value);
+  router.push({ name: "complete-account" });
+};
 
 const goToLogin = () => {
-	console.log('Going to login')
-	router.push({ name: 'login' })
-}
+  console.log("Going to login");
+  router.push({ name: "login" });
+};
 
 const goToCompleteAccount = () => {
-	console.log('Going to complete account')
-	router.push({ name: 'complete-account' })
-}
-
+  console.log("Going to complete account");
+  router.push({ name: "complete-account" });
+};
 </script>
 
 <style scoped>
 .signup-container {
-	text-align: center;
+  text-align: center;
 }
 
 .login-link {
-	margin-top: 15vw;
+  margin-top: 15vw;
 }
 
 .login-link button {
@@ -59,6 +58,4 @@ const goToCompleteAccount = () => {
 	cursor: pointer;
 	font: bold;
 }
-
-
 </style>

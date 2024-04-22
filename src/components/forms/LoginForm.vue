@@ -18,33 +18,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
-import { useRouter } from 'vue-router';
-import FormButton from '@/components/forms/FormButton.vue';
-import FormInput from '@/components/forms/FormInput.vue';
+import { ref, defineEmits } from "vue";
+import { useRouter } from "vue-router";
+import FormButton from "@/components/forms/FormButton.vue";
+import FormInput from "@/components/forms/FormInput.vue";
 
 const router = useRouter();
-const email = ref('');
-const password = ref('');
-const emit = defineEmits(['change-view']);
+const email = ref("");
+const password = ref("");
+const emit = defineEmits(["change-view"]);
 
 const login = () => {
-	console.log('Logging in with', email.value, password.value);
+  console.log("Logging in with", email.value, password.value);
 };
 
 const goToSignUp = () => {
-	router.push({name: 'signup'});
+  router.push({ name: "signup" });
 };
 </script>
 
 <style scoped>
 .login-container {
-	width:100%;
-	height:100%;
-	text-align: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
 }
 .sign-up-link {
-	margin-top: 15vw;
+  margin-top: 15vw;
 }
 
 .sign-up-link button {
@@ -52,5 +52,4 @@ const goToSignUp = () => {
 	border: none;
 	cursor: pointer;
 }
-
 </style>
