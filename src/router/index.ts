@@ -9,10 +9,16 @@ import BudgetDetails from "@/views/BudgetDetails.vue";
 import ProfileView from '@/views/ProfileView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import BadgesView from "@/views/BadgesView.vue";
+import FrontPageView from "@/views/FrontPageView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: "/",
+      name: "frontpage",
+      component: FrontPageView,
+    },
     {
       path: '/profile',
       name: 'profile',
