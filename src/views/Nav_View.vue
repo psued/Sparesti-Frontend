@@ -117,8 +117,7 @@ const handleThemeChange = () => {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 997;
 }
-.top-bar{
-  position: fixed;
+.top-bar {
   top: 0;
   left: 0;
   width: 100%;
@@ -128,7 +127,7 @@ const handleThemeChange = () => {
   z-index: 996;
   overflow: hidden;
 }
-.top-bar-dark{
+.top-bar-dark {
   background-color: #23244b;
   border-bottom: 1px solid #757bfd;
 }

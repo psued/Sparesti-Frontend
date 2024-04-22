@@ -25,6 +25,16 @@ const router = createRouter({
       component: () => import("../views/AboutView.vue"),
     },
     {
+      path: "/budgetpage",
+      name: "budget",
+      component: BudgetPageView,
+    },
+    {
+      path: "/details",
+      name: "budget-details",
+      component: BudgetDetails,
+    },
+    {
       path: "/authentication",
       name: "authentication",
       component: AuthenticationView,
