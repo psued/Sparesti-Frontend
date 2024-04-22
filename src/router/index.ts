@@ -4,6 +4,7 @@ import AuthenticationView from "@/views/AuthenticationView.vue";
 import LoginForm from "@/components/forms/LoginForm.vue";
 import SignUpForm from "@/components/forms/SignUpForm.vue";
 import CompleteAccountForm from "@/components/forms/CompleteAccountForm.vue";
+import LoadingView from "@/views/LoadingView.vue";
 import BudgetPageView from "@/views/BudgetPageView.vue";
 import BudgetDetails from "@/views/BudgetDetails.vue";
 
@@ -44,6 +45,11 @@ const router = createRouter({
           component: CompleteAccountForm,
         },
       ],
+    },
+    {
+      path: "/token",
+      name: "token",
+      component: LoadingView,
     },
   ],
 });

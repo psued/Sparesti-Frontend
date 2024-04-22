@@ -23,7 +23,7 @@
   --vt-c-button-base-light: #a6cd94;
   --vt-c-button-hover-light: #4b644a;
 
-  --vt-c-button-base-dark: #757BFD;
+  --vt-c-button-base-dark: #757bfd;
   --vt-c-button-hover-dark: #313273;
 }
 
@@ -43,6 +43,22 @@
 
   --color-button-base: var(--vt-c-button-base-light);
   --color-button-hover: var(--vt-c-button-hover-light);
+}
+
+/* Dark theme */
+body.dark {
+  --color-background: var(--vt-c-black-soft);
+  --color-background-soft: var(--vt-c-black-soft);
+  --color-background-mute: var(--vt-c-black-mute);
+
+  --color-border: var(--vt-c-divider-dark-2);
+  --color-border-hover: var(--vt-c-divider-dark-1);
+
+  --color-heading: var(--vt-c-text-dark-1);
+  --color-text: var(--vt-c-text-dark-2);
+
+  --color-button-base: var(--vt-c-button-base-dark);
+  --color-button-hover: var(--vt-c-button-hover-dark);
 }
 
 *,
@@ -90,4 +106,3 @@ button {
 button:hover {
   background-color: var(--color-button-hover);
 }
-
