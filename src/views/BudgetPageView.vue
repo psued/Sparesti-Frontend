@@ -1,52 +1,31 @@
 <template>
-
-    <div class ="budget-container">
-      <div class="budget-overview" @click="showDetails">
-        <div class="budget-summary">
-          <h2>Monthly Budget</h2>
-
-          <p>{{ budget }} kr of {{ totalBudget }} kr</p>
-
-          <span>{{ daysLeft }} Days Left</span>
-
-          <progress-bar :value="budget" :max="totalBudget"></progress-bar>
-        </div>
-      </div>
-
-      <div class="container">
-      <div class="background-container">
-        <div class="background"></div>
-          <div class="clouds">
-            <img src="/cloud_1.png" alt="Cloud" class="cloud" />
-            <img src="/cloud_2.png" alt="Cloud" class="cloud" />
-            <img src="/cloud_3.png" alt="Cloud" class="cloud" />
-            <img src="/cloud_4.png" alt="Cloud" class="cloud" />
-          </div>
-      </div>
+  <router-link to="/details" tag="div" class="budget-overview">
+    <div class="budget-summary">
+      <h2>Monthly Budget</h2>
+      <p>{{ budget }} kr of {{ totalBudget }} kr</p>
+      <span>{{ daysLeft }} Days Left</span>
+      <progress-bar :value="budget" :max="totalBudget"></progress-bar>
     </div>
-  </div>
-  </template>
-  
-  <script lang="ts">
-  import { defineComponent } from "vue";
-  import BudgetProgressBar from "./BudgetProgressBar.vue";
-  import { useRouter } from "vue-router";
-  const router = useRouter();
+  </router-link>
+</template>
 
-  
-  export default defineComponent({
-    components: {
-      'progress-bar': BudgetProgressBar,
-    },
+<script lang="ts">
+import { defineComponent } from "vue";
+import BudgetProgressBar from "./BudgetProgressBar.vue";
 
-    props: {
+export default defineComponent({
+  components: {
+    "progress-bar": BudgetProgressBar,
+  },
+
+  props: {
     budget: {
       type: Number,
-      default: () => Math.floor(Math.random() * 10000), 
+      default: () => Math.floor(Math.random() * 10000),
     },
     totalBudget: {
       type: Number,
-      default: () => 10000, 
+      default: () => 10000,
     },
     remainingBudget: {
       type: Number,
@@ -54,137 +33,45 @@
     },
     daysLeft: {
       type: Number,
-      default: () => Math.floor(Math.random() * 30), 
+      default: () => Math.floor(Math.random() * 30),
     },
   },
+});
+</script>
 
-    mounted() {
-      console.log(this.budget, this.totalBudget, this.remainingBudget, this.daysLeft);
-      const clouds = document.querySelectorAll(".cloud");
-      clouds.forEach((cloud) => {
-      // Assert that cloud is an instance of HTMLElement
-      const cloudElement = cloud as HTMLElement;
-      const randomWidth = Math.random() * (150 - 50) + 50; // Random width between 50px and 150px
-      cloudElement.style.setProperty("--cloud-width", `${randomWidth}px`);
-      });
-    },
-
-    methods: {
-      showDetails() {
-        router.push("/details")
-      },
-  },
-  });
-  </script>
-
-  <style scoped>
-  .budget-overview {
+<style scoped>
+.budget-overview {
   background-color: #a6cd94;
-  border-style: solid;
+  border: solid 1px #c9d6b8; 
   border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
   margin: -1px;
   height: 17vh;
-  }
+  display: block;
+}
 
-  .budget-summary h2 {
+.budget-summary h2 {
   position: relative;
-  display: inline-block; 
-  }
+  display: inline-block;
+}
 
-  .budget-summary h2::after {
-  content: '';
+.budget-summary h2::after {
+  content: "";
   position: absolute;
   left: 0;
-  bottom: -1px; 
-  width: 100%; 
-  height: 3px; 
-  background-color: #443e3e; 
-  }
+  bottom: -1px;
+  width: 100%;
+  height: 3px;
+  background-color: #443e3e;
+}
 
-  .budget-summary p, span {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    text-align: right; 
-    color: #EEEEEE;
-    padding: 3px;
-  }
-
-  .container {
-  background-color: #f0f0f0;
+.budget-summary p,
+span {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 100%; 
-  height: 100vh;
-  z-index: 1;
-  margin-top: 5px;
-}
-
-.background-container {
-  background-size: cover;
-  background-repeat: repeat;
-  z-index: -1;
-  position: absolute;
-  width: -webkit-fill-available;
-  height: 100%;
-  left: 0;
-}
-
-.background {
-  background: rgb(45, 229, 172);
-  background: linear-gradient(
-    194deg,
-    rgba(45, 229, 172, 1) 0%,
-    rgba(255, 254, 134, 1) 100%
-  );
-  width: -webkit-fill-available;
-  height: -webkit-fill-available;
-}
-
-.cloud {
-  position: absolute;
-  width: var(--cloud-width, 130px);  
-  height: auto;
-  animation: floatClouds linear infinite;
-  opacity: 0.8;
-  display: none;
-  left: -10%;
-}
-
-@keyframes floatClouds {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100vw);
-  }
-}
-
-.cloud:nth-child(1) {
-  animation-duration: 50s;
-  animation-delay: 0s;
-  top: 15%;
-  display: block;
-}
-.cloud:nth-child(2) {
-  animation-duration: 60s;
-  animation-delay: 5s;
-  top: 30%;
-  display: block;
-}
-.cloud:nth-child(3) {
-  animation-duration: 30s;
-  animation-delay: 10s;
-  top: 45%;
-  display: block;
-}
-
-.cloud:nth-child(4) {
-  animation-duration: 40s;
-  animation-delay: 13s;
-  top: 65%;
-  display: block;
+  align-items: flex-end;
+  text-align: right;
+  color: #eeeeee;
+  padding: 3px;
 }
 </style>
-  

@@ -21,11 +21,11 @@ const router = createRouter({
       name: "budgetpage",
       component: BudgetPageView,
     },
-        {
-        path: "/details",
-        name: "budgetdetails",
-        component: BudgetDetails,
-        },
+    {
+      path: "/details",
+      name: "budgetdetails",
+      component: BudgetDetails,
+    },
 
     {
       path: "/about",
