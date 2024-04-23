@@ -10,49 +10,43 @@
   </div>
 
   <div class="expenses">
-      <h3>Utgifter</h3>
-      <ul>
-        <li v-for="(expense, category) in expenses" :key="category">
-          <span class="emoji">{{ expense.emoji }}</span>
-          <span class="category">{{ category }}</span>
-          <span class="amount">{{ expense.left }} kr igjen av {{ expense.total }} kr</span>
-          <progress-bar :value="expense.left" :max="expense.total"></progress-bar>
-        </li>
-      </ul>
-    </div>
-
+    <h3>Utgifter</h3>
+    <ul>
+      <li v-for="(expense, category) in expenses" :key="category">
+        <span class="emoji">{{ expense.emoji }}</span>
+        <span class="category">{{ category }}</span>
+        <span class="amount">{{ expense.left }} kr igjen av {{ expense.total }} kr</span>
+        <progress-bar :value="expense.left" :max="expense.total"></progress-bar>
+      </li>
+    </ul>
+  </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import BudgetProgressBar from "./BudgetProgressBar.vue";
+import { ref, reactive } from 'vue';
 
-export default defineComponent({
-  components: {
-    'progress-bar': BudgetProgressBar,
-  },
-  props: {
-    remainingBudget: {
+const props = defineProps({
+  remainingBudget: {
     type: Number,
-    default: () => 6969,
-    },
-    totalBudget: {
-    type: Number,
-    default: () => 10000,
-    }
+    default: 6969,
   },
-  data() {
-    return {
-      expenses: {
-        Kvitteringer: { left: 2000, total: 4000, emoji: '🧾' },
-        Mat: { left: 1500, total: 2500, emoji: '🍞' },
-        Klær: { left: 400, total: 1000, emoji: '👕' },
-        Fritid: { left: 2700, total: 3000, emoji: '🍻' },
-        Betting: { left: 1250, total: 2000, emoji: '🎲' }
-      }
-    }
+  totalBudget: {
+    type: Number,
+    default: 10000,
   }
 });
+
+const expenses = reactive({
+  Kvitteringer: { left: 2000, total: 4000, emoji: '🧾' },
+  Mat: { left: 1500, total: 2500, emoji: '🍞' },
+  Klær: { left: 400, total: 1000, emoji: '👕' },
+  Fritid: { left: 2700, total: 3000, emoji: '🍻' },
+  Betting: { left: 1250, total: 2000, emoji: '🎲' }
+});
+
+// Components must be registered in setup if used in the template
+const ProgressBar = BudgetProgressBar;
 </script>
 
 <style scoped>
@@ -123,10 +117,6 @@ export default defineComponent({
     padding-bottom: 10px; 
   }
 
-  .expenses li:not(:last-of-type) {
-    border-bottom: 1px solid #171814; 
-  }
-
   .emoji {
     font-size: 24px;
     margin-right: 10px;
@@ -144,5 +134,4 @@ export default defineComponent({
     flex-shrink: 0;
     margin-right: 10px;
   }
-
 </style>

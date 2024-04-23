@@ -32,14 +32,14 @@
       id: 1,
       title: 'Kaffe Elskeren',
       description: 'Spar 100 kr på kaffe i uken.',
-      imageUrl: 'coffee.png',
+      imageUrl: 'badge_coffee.png',
       highlighted: false
     },
     {
       id: 2,
       title: 'Energi Drikk',
       description: 'Spar 100 kr på energidrikk i løpet av uken.',
-      imageUrl: 'energydrink.png',
+      imageUrl: 'badge_red_bull.png',
       highlighted: true
     },
     {
@@ -67,7 +67,7 @@
       id: 6,
       title: 'Mester i Sparing!',
       description: 'Spart innenfor ukentlig budsjett',
-      imageUrl: 'budget-saver.png',
+      imageUrl: 'badge_pig.png',
       highlighted: false
     }
   ]);

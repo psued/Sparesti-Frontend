@@ -9,34 +9,31 @@
   </router-link>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref, computed } from 'vue';
 import BudgetProgressBar from "./BudgetProgressBar.vue";
+import { defineProps } from 'vue';
 
-export default defineComponent({
-  components: {
-    "progress-bar": BudgetProgressBar,
+const props = defineProps({
+  budget: {
+    type: Number,
+    default: () => Math.floor(Math.random() * 10000),
   },
-
-  props: {
-    budget: {
-      type: Number,
-      default: () => Math.floor(Math.random() * 10000),
-    },
-    totalBudget: {
-      type: Number,
-      default: () => 10000,
-    },
-    remainingBudget: {
-      type: Number,
-      default: () => 6969,
-    },
-    daysLeft: {
-      type: Number,
-      default: () => Math.floor(Math.random() * 30),
-    },
+  totalBudget: {
+    type: Number,
+    default: () => 10000,
+  },
+  remainingBudget: {
+    type: Number,
+    default: () => 6969,
+  },
+  daysLeft: {
+    type: Number,
+    default: () => Math.floor(Math.random() * 30),
   },
 });
+
+const ProgressBar = BudgetProgressBar;
 </script>
 
 <style scoped>
