@@ -5,7 +5,7 @@
       <span>{{ item.name }}</span>
       <span>{{ item.frequency }}</span>
       <span>{{ item.price }}</span>
-      <button @click="removeProduct(index)">X</button>
+      <button @click="(index)">X</button>
     </div>
     <div class="new-product">
       <input v-model="newProduct.name" placeholder="Product name" />
@@ -18,27 +18,22 @@
       <input v-model="newProduct.price" placeholder="Unit price" />
       <button @click="addProduct">Add</button>
     </div>
-    <FormButton @click="goToNextStep">Next</FormButton>
+    <FormButton @click="">Next</FormButton>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, defineEmits, onMounted } from 'vue';
 import { useQuestionnaireStore } from '@/stores/questionnaireStore';
+import type { Product } from '@/types/questionnaireData';
 import FormButton from '@/components/forms/FormButton.vue';
-
-interface ProductItem {
-  name: string;
-  frequency: string;
-  price: string;
-  timeUnit: string;
-}
 
 
 const emit = defineEmits(['update-step']);
 
-const products = ref<ProductItem[]>([]);
+const products = ref<Product[]>([]);
 const newProduct = ref({ name: '', frequency: '', timeUnit: 'day', price: '' });
+
 
 function addProduct() {
   if (newProduct.value.name && newProduct.value.frequency && newProduct.value.price) {
@@ -47,36 +42,7 @@ function addProduct() {
   }
 }
 
-function removeProduct(index) {
-  products.value.splice(index, 1);
-}
 
-function saveStepData() {
-  const stepData = {
-    products: products.value
-  };
-  localStorage.setItem('stepFourData', JSON.stringify(stepData));
-}
-
-function loadStepData() {
-  const savedStepData = localStorage.getItem('stepFourData');
-  if (savedStepData) {
-    const stepData = JSON.parse(savedStepData);
-    // ... load your other step data
-    products.value = stepData.products || [];
-  }
-}
-
-function goToNextStep() {
-  if (isFormValid()) {
-    saveStepData();
-    emit('update-step', 4); 
-  } else {
-    alert('Please fill in all fields before proceeding.');
-  }
-}
-
-onMounted(loadStepData);
 </script>
 
 <style scoped>
