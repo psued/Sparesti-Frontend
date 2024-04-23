@@ -1,21 +1,77 @@
 <template>
-    <div>
-      <h2>Lets get you started 3...</h2>
-      <input v-model="annualIncome" placeholder="Annual Income" />
-      <input type="range" v-model="changeWillingness" min="1" max="5" />
-      <button @click="emitUpdateStep(4)">Next</button>
-    </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref, defineEmits, watchEffect } from 'vue';
-  
-  const emit = defineEmits(['update-step']);
-  const annualIncome = ref('');
-  const changeWillingness = ref(3);
-  
-  function emitUpdateStep(step: number) {
-    emit('update-step', step);
+  <div class="form-container">
+    <h2>Halvveis ferdig!</h2>
+    
+    <label for="annual-income">Hvor mye tjener du i året?</label>
+    <input
+      type="range"
+      id="annual-income"
+      v-model="annualIncome"
+			min="0"
+			max="1000000"
+      required
+    />
+    
+    <label for="willingness-range">På en skala fra 1 til 5, hvor villig er du til å endre sparevanene?</label>
+    <input
+      type="range"
+      id="willingness-range"
+      v-model="changeWillingness"
+      min="1"
+      max="5"
+    />
+    <span>{{ changeWillingness }}</span>
+    
+    <!-- Navigation Buttons -->
+    <FormButton type="submit" @click="goToNextStep">Next</FormButton>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, defineEmits, onMounted } from 'vue';
+import FormButton from '@/components/forms/FormButton.vue';
+
+const emit = defineEmits(['update-step']);
+const annualIncome = ref('');
+const changeWillingness = ref(3);
+
+function goToNextStep() {
+  if (isFormValid()) {
+    saveStepData();
+    emit('update-step', 4); 
+  } else {
+    alert('Please fill in all fields before proceeding.');
   }
-  </script>
-  
+}
+
+function isFormValid() {
+  return annualIncome.value && parseFloat(annualIncome.value) > 0;
+}
+
+function saveStepData() {
+  const stepData = {
+    annualIncome: annualIncome.value,
+    changeWillingness: changeWillingness.value
+  };
+  localStorage.setItem('stepThreeData', JSON.stringify(stepData));
+}
+
+function loadStepData() {
+  const savedStepData = localStorage.getItem('stepThreeData');
+  if (savedStepData) {
+    const stepData = JSON.parse(savedStepData);
+    annualIncome.value = stepData.annualIncome;
+    changeWillingness.value = stepData.changeWillingness;
+  }
+}
+
+onMounted(loadStepData);
+</script>
+
+<style scoped>
+.form-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+</style>

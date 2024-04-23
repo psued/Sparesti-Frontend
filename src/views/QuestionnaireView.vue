@@ -13,8 +13,14 @@ import StepThree from '@/components/questionnaire/StepThree.vue';
 import StepFour from '@/components/questionnaire/StepFour.vue';
 import StepFive from '@/components/questionnaire/StepFive.vue';
 
+const firstName = ref('');
+
 const components = [StepOne, StepTwo, StepThree, StepFour, StepFive];
 const currentStep = ref(1);
+
+function setFirstName(name: string) {
+	firstName.value = name;
+}
 
 const currentComponent = computed(() => {
 return components[currentStep.value - 1];
@@ -25,19 +31,32 @@ currentStep.value = step;
 };
 
 const goBack = () => {
-if (currentStep.value > 1) {
+  if (currentStep.value > 1) {
+    const currentComponentInstance = currentComponent.value.instance;
+    currentComponentInstance?.saveStepData?.();
+
     currentStep.value--;
-}
+  }
 };
 
 watch(currentStep, (newStep, oldStep) => {
-  history.replaceState({ step: newStep }, `Step ${newStep}`, `?step=${newStep}`);
+  if (newStep > oldStep) {
+    history.pushState({ step: newStep }, `Step ${newStep}`, `?step=${newStep}`);
+  } else {
+    history.replaceState({ step: newStep }, `Step ${newStep}`, `?step=${newStep}`);
+  }
 });
 
 // Handle browser back button navigation
-window.onpopstate = (event: PopStateEvent) => {
+window.onpopstate = (event) => {
   if (event.state?.step) {
-    currentStep.value = event.state.step as number;
+    const stepFromHistory = event.state.step;
+    if (stepFromHistory !== currentStep.value) {
+      currentStep.value = stepFromHistory;
+    }
+  } else {
+    currentStep.value = 1;
+    history.replaceState({ step: 1 }, 'Step 1', '?step=1');
   }
 };
 </script>
