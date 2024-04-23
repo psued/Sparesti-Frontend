@@ -60,36 +60,43 @@ const handleAccountDeletion = (password: string) => {
 .flex-container {
   display: flex;
   width: 100%;
-	justify-content: space-around;
+  justify-content: space-between;
 }
+
 .accounts-section, .settings-section {
+  flex: 1;
   display: flex;
   flex-direction: column;
-	width: 45%;
+  padding: 20px;
 }
-.delete-button {
-  background-color: #d9534f;
-  color: white;
-}
-.delete-button:hover {
-	background-color: #c9302c;
-}
-.settings-buttons {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	margin-top: 10px; /* Add top margin only to separate buttons */
 
-	width: 45%;
+.accounts-section {
+  border-right: 2px solid; 
 }
+
+.settings-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+}
+
 .button, .delete-button {
   border: none;
   border-radius: 6px;
   padding: 10px;
-  margin: 10px;
-  width: 100%;
-  max-width: 300px;
+  margin: 10px 0;
+	width: 50%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.delete-button {
+  background-color: #d9534f;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c9302c;
 }
 
 @media (max-width: 768px) {

@@ -1,105 +1,48 @@
 <template>
-    <div class="challenge-container">
-      <h1>Din Utfordrings Prosess</h1>
-      <div class="badges">
-        <div
-          v-for="badge in badges"
-          :key="badge.id"
-          class="badge"
-          :class="{ 'highlighted': badge.highlighted }"
-        >
-          <img :src="badge.imageUrl" :alt="badge.title" />
-          <p>{{ badge.title }}</p>
-          <small>{{ badge.description }}</small>
+  <div class="challenge-container">
+    <h1>Dine Medaljer</h1>
+    <div class="badges">
+      <div class="badges-page">
+        <div class="badge-list">
+          <BadgeComponent v-for="badge in badges" :key="badge.id" :badge="badge" />
         </div>
       </div>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref } from 'vue';
-  
-  interface Badge {
-    id: number;
-    title: string;
-    description: string;
-    imageUrl: string;
-    highlighted: boolean;
-  }
-  
-  const badges = ref<Badge[]>([
-    {
-      id: 1,
-      title: 'Kaffe Elskeren',
-      description: 'Spar 100 kr på kaffe i uken.',
-      imageUrl: 'badge_coffee.png',
-      highlighted: false
-    },
-    {
-      id: 2,
-      title: 'Energi Drikk',
-      description: 'Spar 100 kr på energidrikk i løpet av uken.',
-      imageUrl: 'badge_red_bull.png',
-      highlighted: true
-    },
-    {
-      id: 3,
-      title: '3 Utfordringer Fullført',
-      description: 'Fullfør 3 utfordringer i løpet av uken.',
-      imageUrl: '3-challenges.png',
-      highlighted: true
-    },
-    {
-      id: 4,
-      title: '10 Utfordringer Fullført',
-      description: 'Fullfør 10 utfordringer i løpet av uken.',
-      imageUrl: '10-challenges.png',
-      highlighted: false
-    },
-    {
-      id: 5,
-      title: '15 Utfordringer Fullført',
-      description: 'Fullfør 15 utfordringer i løpet av uken.',
-      imageUrl: '15-challenges.png',
-      highlighted: false
-    },
-    {
-      id: 6,
-      title: 'Mester i Sparing!',
-      description: 'Spart innenfor ukentlig budsjett',
-      imageUrl: 'badge_pig.png',
-      highlighted: false
-    }
-  ]);
-  </script>
-  
-  <style scoped>
-  .challenge-container {
-    text-align: center;
-  }
-  
-  .badges {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
-  
-  .badge {
-    width: 150px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    text-align: center;
-  }
-  
-  .badge img {
-    width: 100%;
-  }
-  
-  .badge.highlighted {
-    border-color: rgb(9, 169, 9);
-  }
+  </div>
+</template>
 
-  </style>
-  
+<script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import BadgeComponent from '@/components/badge/Badge.vue';
+import { type Badge } from '@/types/Badge';
+import { getAllBadges } from '@/api/badgeHooks';
+
+const badges = ref<Badge[]>([]);
+
+onMounted(async () => {
+  badges.value = await getAllBadges() as Badge[];
+});
+</script>
+
+<style scoped>
+h1 {
+  font-size: 2.5em;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.badges-page {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 5%;
+  margin-top: 20px;
+}
+
+.badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+</style>

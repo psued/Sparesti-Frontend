@@ -29,7 +29,7 @@ onMounted(() => {
     .then(() => router.push("/"))
     .catch(() => {
       console.error("Failed to get tokens, returning to main menu");
-      router.push("/");
+      //router.push("/");
     });
 });
 </script>
