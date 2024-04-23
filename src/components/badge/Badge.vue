@@ -66,7 +66,7 @@
     position: absolute;
     top: -30px; 
     left: 50%;
-    transform: translateX(125%);
+    transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 5px 10px;

@@ -1,6 +1,6 @@
 <template>
   <div class="challenge-container">
-    <h1>Din Utfordrings Prosess</h1>
+    <h1>Dine Medaljer</h1>
     <div class="badges">
       <div class="badges-page">
         <div class="badge-list">
@@ -25,10 +25,19 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+h1 {
+  font-size: 2.5em;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
 .badges-page {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  margin-bottom: 5%;
+  margin-top: 20px;
 }
 
 .badge-list {

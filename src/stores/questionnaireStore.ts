@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { useStorage } from '@vueuse/core';
-import type { QuestionnaireData } from '@/types/questionnaireData'; // Check this path!
+import type { QuestionnaireData } from '@/types/QuestionnaireData'; // Check this path!
 
 export const useQuestionnaireStore = defineStore('questionnaireStore', {
   state: () => ({
