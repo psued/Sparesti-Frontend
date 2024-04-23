@@ -33,9 +33,6 @@ export const useQuestionnaireStore = defineStore('questionnaireStore', {
     stepFourData: (state) => state.questionnaireData.stepFour,
   },
   actions: {
-    setStepData(step: keyof QuestionnaireData, data: QuestionnaireData[keyof QuestionnaireData]) {
-      this.questionnaireData[step] = data;
-    },
     updateStepOneData(data: QuestionnaireData['stepOne']) {
       this.questionnaireData.stepOne = data;
     },

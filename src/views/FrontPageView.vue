@@ -85,7 +85,7 @@ onMounted(async () => {
   }
 
 
-  const userId = 2; // Change this to the actual user ID
+  const userId = 6; // Change this to the actual user ID
   const challengesResponse = await getChallengesByUser(userId);
   console.log(challengesResponse)
 
