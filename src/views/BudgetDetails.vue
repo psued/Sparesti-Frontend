@@ -41,7 +41,7 @@ const props = defineProps({
   }
 });
 
-const expenses = reactive({
+const expenses: { [key: string]: { left: number; total: number; emoji: string } } = reactive({
   Kvitteringer: { left: 2000, total: 4000, emoji: '🧾' },
   Mat: { left: 1500, total: 2500, emoji: '🍞' },
   Klær: { left: 400, total: 1000, emoji: '👕' },
@@ -49,37 +49,37 @@ const expenses = reactive({
   Betting: { left: 1250, total: 2000, emoji: '🎲' }
 });
 
+interface ExpenseRow {
+  id: number;
+  name: string;
+  usedAmount: number;
+  maxAmount: number;
+  category: string; // Or you can use an enum if categories are predefined
+}
+
 onMounted(async () => {
   try {
     const username = userStore.getUserName;
 
     const response = await axios.get('http://localhost:8080/api/users/Ari');
-
-    console.log(response.data);
-
     const userId = response.data.id;
 
-    console.log(userId);
-
     const expensesResponse = await axios.get(`http://localhost:8080/api/budget/${userId}/budgets`);
+    const rows: ExpenseRow[] = expensesResponse.data; // Assuming expensesResponse.data is an array of ExpenseRow
 
-    console.log(expensesResponse.data);
-
-    for (const entry of expensesResponse.data) {
-      for (const row of entry.row) {
-        const {category, usedAmount, maxAmount} = row;
-        // Use category from row as the key for expenses
-        expenses[category] = {
-          left: usedAmount, // Assuming usedAmount represents the left amount
-          total: maxAmount, // Assuming maxAmount represents the total amount
-          emoji: '🧾' // Hardcoding emoji for now
-        };
-      }
+    for (const row of rows) {
+      const { category, usedAmount, maxAmount } = row;
+      expenses[category as keyof typeof expenses] = {
+        left: usedAmount,
+        total: maxAmount,
+        emoji: '🧾'
+      };
     }
   } catch (error) {
     console.error(error);
   }
 });
+
 
 // Components must be registered in setup if used in the template
 const ProgressBar = BudgetProgressBar;
