@@ -1,10 +1,6 @@
 <template>
   <div class="container">
 
-    <div class="logo-container">
-      <img src="/pig_logo.png" alt="Pig Logo" class="pig-logo" />
-    </div>
-
     <div class="progress-bar-container">
       <div class="progress-bar">
         <div class="progress-bar-fill" style="width: 30%"></div>
@@ -225,17 +221,6 @@ const closePopup = () => {
   animation-delay: 13s;
   top: 65%;
   display: block;
-}
-
-.logo-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.pig-logo {
-  width: 250px;
-  height: auto;
 }
 
 .path-container {
