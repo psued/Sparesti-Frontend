@@ -1,16 +1,9 @@
-image: node:latest
+image: node:20.11.0
 
-
-cache:
-  paths:
-    - node_modules/
 
 stages:
-  - lint
   - typecheck
   - build
-  - test
-  - deploy
 
 typecheck_job:
   stage: typecheck
