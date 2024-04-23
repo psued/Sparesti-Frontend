@@ -16,7 +16,6 @@ import { onMounted, ref } from 'vue';
 import BadgeComponent from '@/components/badge/Badge.vue';
 import { type Badge } from '@/types/Badge';
 import { getAllBadges } from '@/api/badgeHooks';
-import { getUserByUsername } from '@/api/userHooks';
 
 const badges = ref<Badge[]>([]);
 

@@ -4,26 +4,25 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from "vue";
+<script setup lang="ts">
+import { computed } from 'vue';
 
-export default defineComponent({
-  props: {
-    value: Number,
-    max: Number,
+const props = defineProps({
+  value: {
+    type: Number,
+    default: 43,
   },
-  setup(props) {
-    const progressWidth = computed(() => {
-      const val = props.value || 43;
-      const max = props.max || 100;
-      const percentage = max > 0 ? (val / max) * 100 : 0;
-      return `${percentage}%`;
-    });
+  max: {
+    type: Number,
+    default: 100,
+  }
+});
 
-    return {
-      progressWidth,
-    };
-  },
+const progressWidth = computed(() => {
+  const val = props.value;
+  const max = props.max;
+  const percentage = max > 0 ? (val / max) * 100 : 0;
+  return `${percentage}%`;
 });
 </script>
 
