@@ -11,16 +11,15 @@
     <RouterLink class="logo" to="/">
       <img :src="darkMode ?  './logo_long_dark.png' : './logo_long.png'" alt="logo" class="logo" />
     </RouterLink>
-  </div>
-
-  <!-- Hamburger menu -->
-  <div :class="['hamburger', {darkMode: 'hamburger-dark'}]">
-    <div class="hamburger-box" @click="toggleSidebar()">
-      <span :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"></span>
-      <span :class="['hamburger-line', 'middle', { 'hamburger-line-dark': darkMode }]"></span>
-      <span :class="['hamburger-line', 'bottom', { 'hamburger-line-dark': darkMode }]"></span>
+    <!-- Hamburger menu -->
+    <div :class="['hamburger', {darkMode: 'hamburger-dark'}]">
+      <div class="hamburger-box" @click="toggleSidebar()">
+        <span :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"></span>
+        <span :class="['hamburger-line', 'middle', { 'hamburger-line-dark': darkMode }]"></span>
+        <span :class="['hamburger-line', 'bottom', { 'hamburger-line-dark': darkMode }]"></span>
+      </div>
     </div>
-  </div>
+  </div>  
 
   <!-- Sidebar -->
   <Transition name="move">
@@ -118,8 +117,8 @@ const handleThemeChange = () => {
   z-index: 997;
 }
 .top-bar{
-  top: 0;
-  left: 0;
+  display: flex;
+  flex-direction: row;
   width: 100%;
   height: 90px;
   background-color: #ecffda;
@@ -141,7 +140,8 @@ const handleThemeChange = () => {
 }
 .hamburger {
   cursor: pointer;
-  position: fixed;
+  margin-left: auto;
+  width: fit-content;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -441,4 +441,4 @@ const handleThemeChange = () => {
 }
 
 
-</style>let
+</style>

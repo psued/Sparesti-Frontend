@@ -8,18 +8,25 @@ import BudgetPageView from "@/views/BudgetPageView.vue";
 import BudgetDetails from "@/views/BudgetDetails.vue";
 import ProfileView from '@/views/ProfileView.vue'
 import SettingsView from '@/views/SettingsView.vue'
+<<<<<<< HEAD
 import BadgesView from "@/views/BadgesView.vue";
 import FrontPageView from "@/views/FrontPageView.vue";
+=======
+import QuestionnaireView from "@/views/QuestionnaireView.vue";
+>>>>>>> origin/30-fix-frontend-backend-profile
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+<<<<<<< HEAD
       path: "/",
       name: "frontpage",
       component: FrontPageView,
     },
     {
+=======
+>>>>>>> origin/30-fix-frontend-backend-profile
       path: '/profile',
       name: 'profile',
       component: ProfileView
@@ -30,6 +37,22 @@ const router = createRouter({
       component: SettingsView
     },
     {
+<<<<<<< HEAD
+=======
+      path: "/questionnaire",
+      name: "questionnaire",
+      component: QuestionnaireView,
+    },
+    {
+      path: "/about",
+      name: "about",
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import("../views/AboutView.vue"),
+    },
+    {
+>>>>>>> origin/30-fix-frontend-backend-profile
       path: "/budgetpage",
       name: "budget",
       component: BudgetPageView,

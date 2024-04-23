@@ -1,8 +1,8 @@
 <template>
 	<div class="profile-page-container">
-		<section class="user-info-section">
+		<section v-if="user" class="user-info-section">
 			<div class="header">
-				<h1>Your profile</h1>
+				<h1>{{ user.displayName }}'s profile</h1>
 			</div>  
 			<section class="top-part-profile">
 				<div class="profile-pic-container">
@@ -16,15 +16,7 @@
 		</section>
 		<section class="badges-section">
 			<h2>Recent Badges</h2>
-			<div class="badges-list">
-				<div class="badge" v-for="badge in user.badges" :key="badge.id">
-					<img :src="badge.imageUrl" alt="Badge" class="badge-icon" />
-					<div class="badge-info">
-						<h3>{{ badge.name }}</h3>
-						<p>{{ badge.description }}</p>
-					</div>
-				</div>
-			</div>    
+			  
 		</section>
 		<section class="settings-section">
 			<router-link to="/settings" class="settings-button">
@@ -37,20 +29,18 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { getUserByDisplayName } from '@/api/userHooks';
 import type { User } from '@/types/User';
 import ProfilePicComponent from '@/components/profile/ProfilePicComponent.vue'; 
 import UserInfoComponent from '@/components/profile/UserInfoComponent.vue'; 
 import TotalSavingsComponent from '@/components/profile/TotalSavingsComponent.vue';
 import { getUserInfo } from '@/api/userHooks';
 
+const user = ref<User | null>(null);
 
-const user = ref<User>({
-	name: 'vilde min',
-	email: 'vilde@min.com',
-	username: 'VildeMin',
-	pictureUrl: 'https://cdn.discordapp.com/attachments/702511885370654732/1152222819816579172/c0sc95nulakb1.png?ex=662ba11f&is=66192c1f&hm=937bea25d8566aaeb42ebbd0197fc652a6b55cd71e3ab59334a14ec0287e5b6b&', 
-	badges: [] ,
-	totalSavings: 5000,
+onMounted(async () => {
+	user.value = await getUserByDisplayName('porkypanda');
+	console.log(user.value);
 });
 
 onMounted(() => {
