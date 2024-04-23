@@ -26,7 +26,7 @@
 import { ref, defineEmits, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuestionnaireStore } from '@/stores/questionnaireStore';
-import type { Product } from '@/types/questionnaireData';
+import type { Product } from '@/types/QuestionnaireData';
 import FormButton from '@/components/forms/FormButton.vue';
 import router from '@/router';
 
