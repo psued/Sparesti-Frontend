@@ -18,6 +18,22 @@ export const getAllBadges = async (): Promise<Badge[] | null> => {
   }
 }
 
+export const getBadgeById = async (badgeId: number): Promise<Badge | null> => {
+    try {
+        const response = await api.get(`/badges/${badgeId}`);
+    
+        if (response.status === 200) {
+        return response.data;
+        } else {
+        console.error('Failed to fetch badge:', response.statusText);
+        return null;
+        }
+    } catch (error) {
+        console.error('Error fetching badge:', error);
+        return null;
+    }
+    }
+
 export const getBadgeRarity = async (badgeId: number): Promise<string | null> => {
     try {
         const response = await api.get(`/badges/rarity/${badgeId}`);
