@@ -39,6 +39,9 @@ export const useUserStore = defineStore({
     tokenIsExpired(): boolean {
       return Date.now() > this.expireTime;
     },
+    isLoggedIn(): boolean {
+      return this.userName !== null && !this.tokenIsExpired();
+    },
     logout() {
       this.accessToken = "";
       this.idToken = "";

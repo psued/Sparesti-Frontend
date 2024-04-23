@@ -1,6 +1,7 @@
 export interface User {
-    name: string;
-    username: string;
+    displayName: string;
+    firstName: string;
+    lastName: string;
     email: string;
     pictureUrl: string ;
     badges: any[];

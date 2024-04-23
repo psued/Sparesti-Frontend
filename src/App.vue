@@ -1,6 +1,7 @@
 <template>
   <div class="layout">
   <NAV />
+  
 
   <RouterView />
   </div>
