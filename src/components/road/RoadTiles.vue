@@ -1,3 +1,13 @@
+/**
+ * @component RoadTiles
+ * @description A Vue component that represents a road with nodes.
+ * @path src/components/road/RoadTiles.vue
+ */
+
+/**
+ * @template
+ * @description The template section of the RoadTiles component.
+ */
 <template>
     <div class="road-container">
         <div class="road-box">
@@ -14,17 +24,36 @@
     </div>
 </template>
 
+/**
+ * @script
+ * @description The script section of the RoadTiles component.
+ */
 <script setup lang="ts">
 import { ref } from 'vue';
 
+/**
+ * @interface Node
+ * @description Represents a node in the road.
+ * @property {string} direction - The direction of the node.
+ * @property {string} point - The direction of the point of the node.
+ * @property {string} name - The name of the node.
+ */
 interface Node {
   direction: string;
   point: string;
   name: string;
 }
 
+/**
+ * @constant nodes
+ * @description A reactive reference to the array of nodes.
+ */
 const nodes = ref<Node[]>([]);
 
+/**
+ * @function addNode
+ * @description Adds a new node/tile to the road.
+ */
 const addNode = () => {
   const direction = nodes.value.length % 2 === 0 ? 'road-right-light' : 'road-left-light';
   const point = nodes.value.length % 2 === 0 ? 'road-node-right' : 'road-node-left';
@@ -34,6 +63,10 @@ const addNode = () => {
 </script>
 
 
+/**
+ * @style
+ * @description The style section of the RoadTiles component.
+ */
 <style scoped>
     button {
     position: fixed;
