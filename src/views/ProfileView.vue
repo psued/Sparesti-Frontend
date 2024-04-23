@@ -38,10 +38,10 @@ import { getUserInfo } from '@/api/userHooks';
 
 const user = ref<User | null>(null);
 
-onMounted(async () => {
+/* onMounted(async () => {
 	user.value = await getUserByDisplayName('porkypanda');
 	console.log(user.value);
-});
+}); */
 
 onMounted(() => {
 	getUserInfo()
