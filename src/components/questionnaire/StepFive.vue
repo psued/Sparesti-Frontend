@@ -1,15 +1,31 @@
 <template>
-	<div class="step-one">
-		<button @click="emitUpdateStep(2)">Next</button>
-	</div>
+  <div class="form-container">
+    <h2>Your Bank Accounts</h2>
+    <div v-if="isLoading">Loading accounts...</div>
+    <div v-if="error">An error occurred: {{ error }}</div>
+    <div v-for="account in bankAccounts" :key="account.id" class="account-item">
+      <div>{{ account.name }}: {{ account.balance }}</div>
+      <ul>
+        <li v-for="transaction in account.transactions" :key="transaction.id">
+          {{ transaction.date }}: {{ transaction.description }} - {{ transaction.amount }}
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { defineEmits } from 'vue';
+import { ref, onMounted } from 'vue';
 
-const emit = defineEmits(['update-step']);
+const userId = '';
+const bankAccounts = ref<any[]>([]);
+const isLoading = ref(false);
+const error = ref<string | null>(null);
 
-function emitUpdateStep(step: number) {
-	emit('update-step', step);
-}
 </script>
+
+<style scoped>
+.account-item {
+  margin-bottom: 10px;
+}
+</style>

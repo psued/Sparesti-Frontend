@@ -43,8 +43,11 @@ const formErrors = ref({
 
 function goToNextStep() {
   if (isFormValid()) {
-    saveStepData();
-    emit('update-step', 4); 
+    store.updateStepThreeData({
+      annualIncome: annualIncome.value,
+      changeWillingness: changeWillingness.value
+    });
+    emit('update-step', 4);
   } else {
     alert('Please fill in all fields before proceeding.');
   }
@@ -68,24 +71,12 @@ function isFormValid() {
   return isValid;
 }
 
-function saveStepData() {
-  const stepData = {
-    annualIncome: annualIncome.value,
-    changeWillingness: changeWillingness.value
-  };
-  localStorage.setItem('stepThreeData', JSON.stringify(stepData));
-}
 
-function loadStepData() {
-  const savedStepData = localStorage.getItem('stepThreeData');
-  if (savedStepData) {
-    const stepData = JSON.parse(savedStepData);
-    annualIncome.value = stepData.annualIncome;
-    changeWillingness.value = stepData.changeWillingness;
-  }
-}
 
-onMounted(loadStepData);
+onMounted(() => {
+  annualIncome.value = store.stepThreeData.annualIncome;
+  changeWillingness.value = store.stepThreeData.changeWillingness;
+});
 </script>
 
 <style scoped>
@@ -94,4 +85,4 @@ onMounted(loadStepData);
 	flex-direction: column;
 	align-items: center;
 }
-</style>
+</style>@/stores/QuestionnaireStore@/stores/questionnaireStore

@@ -67,5 +67,44 @@ export const useQuestionnaireStore = defineStore('questionnaireStore', {
         },
       };
     },
+    async submitAllData() {
+      const userInfo = {
+        id: '', 
+        userId: '', 
+        displayName: `${this.questionnaireData.stepOne.firstName} ${this.questionnaireData.stepOne.lastName}`,
+        firstName: this.questionnaireData.stepOne.firstName,
+        lastName: this.questionnaireData.stepOne.lastName,
+        dateOfBirth: this.questionnaireData.stepOne.birthdate,
+        occupationStatus: this.questionnaireData.stepOne.occupationStatus.toUpperCase(),
+        motivation: this.questionnaireData.stepThree.changeWillingness,
+        income: this.questionnaireData.stepThree.annualIncome,
+        budgetingProducts: this.questionnaireData.stepFour.products.map(product => ({
+          id: '', 
+          name: product.name,
+          frequency: product.frequency.toUpperCase(), 
+          amount: parseFloat(product.price), 
+          userInfoId: 0,
+        })),
+        budgetingLocations: [], 
+      };
+
+      try {
+        const response = await fetch('/api/user-info/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(userInfo),
+        });
+        const data = await response.json();
+        if (response.ok) {
+          console.log('Success:', data);
+        } else {
+          console.error('Submission failed:', data);
+        }
+      } catch (error) {
+        console.error('Error submitting user info:', error);
+      }
+    }
   },
 });

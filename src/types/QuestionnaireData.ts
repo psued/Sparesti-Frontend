@@ -28,5 +28,6 @@ export interface StepFourData {
 export interface Product {
   name: string;
   frequency: string;
+  timeUnit: string;
   price: string;
 }

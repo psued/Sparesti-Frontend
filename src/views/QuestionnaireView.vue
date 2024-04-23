@@ -16,7 +16,7 @@ import StepFive from '@/components/questionnaire/StepFive.vue';
 
 const firstName = ref('');
 
-const components = [StepOne, StepTwo, StepThree, StepFour, StepFive];
+const components = [StepOne, StepTwo, StepThree, StepFour];
 const currentStep = ref(1);
 const store = useQuestionnaireStore();
 
@@ -25,7 +25,6 @@ const currentComponent = computed(() => {
 });
 
 const submitAllData = () => {
-  //example of submitting data to an API
   fetch('/api/submit', {
     method: 'POST',
     headers: {
@@ -78,3 +77,4 @@ window.onpopstate = (event) => {
   }
 };
 </script>
+@/stores/QuestionnaireStore

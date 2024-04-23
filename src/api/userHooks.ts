@@ -49,4 +49,5 @@ export const getUserInfo = async (): Promise<any[] | null> => {
     },
   });
   return userInfoRes.data;
-}
+};
+
