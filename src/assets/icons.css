@@ -1,9 +1,11 @@
 .road-start-light{
     background-image: url(src/assets/svg_icons/road-start-light.svg);
     display: inline-block;
-    width: 320px; 
-    height: 120px;
-    margin-left: 25.5px;
+    width: calc(320px * 1.5); 
+    min-width: calc(320px * 1.5);
+    height: calc(120px * 1.5);
+    min-height: calc(120px * 1.5);
+    margin-top: -1px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -12,23 +14,29 @@
 .road-left-light{
     background-image: url(src/assets/svg_icons/road-left-light.svg);
     display: inline-block;
-    width: 320px; 
-    height: 120px; 
-    margin-left: 10px;
+    width: calc(320px * 1.5); 
+    min-width: calc(320px * 1.5);
+    height: calc(120px * 1.5);
+    min-height: calc(120px * 1.5);
+    margin-left: 24px;
+    margin-top: -1px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    z-index: 101;
 }
 
 .road-right-light{
     background-image: url(src/assets/svg_icons/road-right-light.svg);
     display: inline-block;
-    width: 320px; 
-    height: 120px;
-    margin-right: 10px;
+    width: calc(320px * 1.5); 
+    height: calc(120px * 1.5);
+    margin-left: 12.5px;
+    margin-top: -1px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    z-index: 101;
 }
 
 
