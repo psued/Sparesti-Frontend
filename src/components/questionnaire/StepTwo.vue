@@ -13,43 +13,55 @@
 
 <script setup lang="ts">
 import { ref, defineEmits, onMounted } from 'vue';
+import { useQuestionnaireStore } from '@/stores/questionnaireStore';
 import FormButton from '@/components/forms/FormButton.vue';
 
 const emit = defineEmits(['update-step']);
-const checkingAccount = ref('');
-const savingsAccount = ref('');
+const store = useQuestionnaireStore();
+
+const checkingAccount = ref(store.stepTwoData.checkingAccount);
+const savingsAccount = ref(store.stepTwoData.savingsAccount);
+
+const formErrors = ref({
+	checkingAccount: '',
+	savingsAccount: ''
+});
 
 function goToNextStep() {
-	if (isFormValid()) {
-		saveStepData();
-		emit('update-step', 3);
-	} else {
-		alert('Please fill in all fields before proceeding.');
-	}
+  if (isFormValid()) {
+    store.updateStepTwoData({
+      checkingAccount: checkingAccount.value,
+      savingsAccount: savingsAccount.value
+    });
+    emit('update-step', 3);
+  } else {
+    alert('Please fill in all fields before proceeding.');
+  }
 }
 
 function isFormValid() {
-	return checkingAccount.value && savingsAccount.value;
-}
-
-function saveStepData() {
-	const stepData = {
-		checkingAccount: checkingAccount.value,
-		savingsAccount: savingsAccount.value
+	formErrors.value = {
+		checkingAccount: '',
+		savingsAccount: ''
 	};
-	localStorage.setItem('stepTwoData', JSON.stringify(stepData));
-}
 
-function loadStepData() {
-	const savedStepData = localStorage.getItem('stepTwoData');
-	if (savedStepData) {
-		const stepData = JSON.parse(savedStepData);
-		checkingAccount.value = stepData.checkingAccount;
-		savingsAccount.value = stepData.savingsAccount;
+	let isValid = true;
+	if (!checkingAccount.value) {
+		formErrors.value.checkingAccount = 'Checking account is required';
+		isValid = false;
 	}
+	if (!savingsAccount.value) {
+		formErrors.value.savingsAccount = 'Savings account is required';
+		isValid = false;
+	}
+
+	return isValid;
 }
 
-onMounted(loadStepData);
+onMounted(() => {
+	checkingAccount.value = store.stepTwoData.checkingAccount;
+	savingsAccount.value = store.stepTwoData.savingsAccount;
+});
 </script>
 
 <style scoped>

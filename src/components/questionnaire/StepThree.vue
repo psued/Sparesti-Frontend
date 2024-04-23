@@ -22,18 +22,24 @@
     />
     <span>{{ changeWillingness }}</span>
     
-    <!-- Navigation Buttons -->
     <FormButton type="submit" @click="goToNextStep">Next</FormButton>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, defineEmits, onMounted } from 'vue';
+import { useQuestionnaireStore } from '@/stores/questionnaireStore'
 import FormButton from '@/components/forms/FormButton.vue';
 
 const emit = defineEmits(['update-step']);
-const annualIncome = ref('');
-const changeWillingness = ref(3);
+const store = useQuestionnaireStore();
+
+const annualIncome = ref(store.stepThreeData.annualIncome);
+const changeWillingness = ref(store.stepThreeData.changeWillingness);
+const formErrors = ref({
+  annualIncome: '',
+  changeWillingness: ''
+});
 
 function goToNextStep() {
   if (isFormValid()) {
@@ -45,7 +51,21 @@ function goToNextStep() {
 }
 
 function isFormValid() {
-  return annualIncome.value && parseFloat(annualIncome.value) > 0;
+  formErrors.value = {
+    annualIncome: '',
+    changeWillingness: ''
+  };
+
+  let isValid = true;
+  if (!annualIncome.value) {
+    formErrors.value.annualIncome = 'Annual income is required';
+    isValid = false;
+  }
+  if (!changeWillingness.value) {
+    formErrors.value.changeWillingness = 'Change willingness is required';
+    isValid = false;
+  }
+  return isValid;
 }
 
 function saveStepData() {

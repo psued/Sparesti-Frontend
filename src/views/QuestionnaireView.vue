@@ -7,6 +7,7 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
+import { useQuestionnaireStore } from '@/stores/questionnaireStore'; 
 import StepOne from '@/components/questionnaire/StepOne.vue';
 import StepTwo from '@/components/questionnaire/StepTwo.vue';
 import StepThree from '@/components/questionnaire/StepThree.vue';
@@ -17,24 +18,41 @@ const firstName = ref('');
 
 const components = [StepOne, StepTwo, StepThree, StepFour, StepFive];
 const currentStep = ref(1);
-
-function setFirstName(name: string) {
-	firstName.value = name;
-}
+const store = useQuestionnaireStore();
 
 const currentComponent = computed(() => {
-return components[currentStep.value - 1];
+  return components[currentStep.value - 1];
 });
 
+const submitAllData = () => {
+  //example of submitting data to an API
+  fetch('/api/submit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(store.fullData),
+  })
+  .then(response => response.json())
+  .then(data => console.log('Success:', data))
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+};
+
+
 const updateStep = (step: number) => {
-currentStep.value = step;
+  if (step > components.length) {
+    submitAllData();
+  } else {
+    currentStep.value = step;
+  }
 };
 
 const goBack = () => {
   if (currentStep.value > 1) {
     const currentComponentInstance = currentComponent.value.instance;
     currentComponentInstance?.saveStepData?.();
-
     currentStep.value--;
   }
 };

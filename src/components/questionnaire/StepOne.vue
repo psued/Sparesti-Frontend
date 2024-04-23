@@ -32,14 +32,26 @@ import FormButton from '@/components/forms/FormButton.vue';
 const emit = defineEmits(['update-step']);
 const store = useQuestionnaireStore();
 
-const firstName = ref('');
-const lastName = ref('');
-const birthdate = ref('');
-const occupationStatus = ref('');
+const firstName = ref(store.stepOneData.firstName);
+const lastName = ref(store.stepOneData.lastName);
+const birthdate = ref(store.stepOneData.birthdate);
+const occupationStatus = ref(store.stepOneData.occupationStatus);
+
+const formErrors = ref({
+  firstName: '',
+  lastName: '',
+  birthdate: '',
+  occupationStatus: ''
+});
 
 function goToNextStep() {
   if (isFormValid()) {
-		saveStepData();
+    store.updateStepOneData({
+      firstName: firstName.value,
+      lastName: lastName.value,
+      birthdate: birthdate.value,
+      occupationStatus: occupationStatus.value,
+    });
     emit('update-step', 2);
   } else {
     alert('Please fill in all fields before proceeding.');
@@ -47,31 +59,38 @@ function goToNextStep() {
 }
 
 function isFormValid() {
-  return firstName.value && lastName.value && birthdate.value && occupationStatus.value;
-}
-
-function saveStepData() {
-  const stepData = {
-    firstName: firstName.value,
-    lastName: lastName.value,
-    birthdate: birthdate.value,
-    occupationStatus: occupationStatus.value
+  formErrors.value = {
+    firstName: '',
+    lastName: '',
+    birthdate: '',
+    occupationStatus: ''
   };
-  localStorage.setItem('stepOneData', JSON.stringify(stepData));
-}
 
-function loadStepData() {
-  const savedStepData = localStorage.getItem('stepOneData');
-  if (savedStepData) {
-    const stepData = JSON.parse(savedStepData);
-    firstName.value = stepData.firstName;
-    lastName.value = stepData.lastName;
-    birthdate.value = stepData.birthdate;
-    occupationStatus.value = stepData.occupationStatus;
+  let isValid = true;
+  if (!firstName.value) {
+    formErrors.value.firstName = 'First name is required';
+    isValid = false;
   }
+  if (!lastName.value) {
+    formErrors.value.lastName = 'Last name is required';
+    isValid = false;
+  }
+  if (!birthdate.value) {
+    formErrors.value.birthdate = 'Birthdate is required';
+    isValid = false;
+  }
+  if (!occupationStatus.value) {
+    formErrors.value.occupationStatus = 'Occupation status is required';
+    isValid = false;
+  }
+  return isValid;
 }
-
-onMounted(loadStepData);
+onMounted(() => {
+  firstName.value = store.stepOneData.firstName;
+  lastName.value = store.stepOneData.lastName;
+  birthdate.value = store.stepOneData.birthdate;
+  occupationStatus.value = store.stepOneData.occupationStatus;
+});
 </script>
 
 <style scoped>

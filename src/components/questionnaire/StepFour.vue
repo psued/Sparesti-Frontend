@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import { ref, defineEmits, onMounted } from 'vue';
+import { useQuestionnaireStore } from '@/stores/questionnaireStore';
 import FormButton from '@/components/forms/FormButton.vue';
 
 interface ProductItem {

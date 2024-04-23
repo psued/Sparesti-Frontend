@@ -1,9 +1,8 @@
 import { defineStore } from 'pinia';
 import { useStorage } from '@vueuse/core';
-import type { QuestionnaireData } from '@/types/QuestionnaireData';
+import type { QuestionnaireData } from '@/types/questionnaireData'; // Check this path!
 
-export const useQuestionnaireStore = defineStore({
-  id: 'questionnaireStore',
+export const useQuestionnaireStore = defineStore('questionnaireStore', {
   state: () => ({
     questionnaireData: useStorage<QuestionnaireData>('questionnaireData', {
       stepOne: {
@@ -17,14 +16,13 @@ export const useQuestionnaireStore = defineStore({
         savingsAccount: '',
       },
       stepThree: {
-        income: 0,
+        annualIncome: 0,
         changeWillingness: 0,
       },
       stepFour: {
         products: [],
       },
-      stepFive: {
-      }
+      
     }, sessionStorage),
   }),
   getters: {
@@ -33,10 +31,9 @@ export const useQuestionnaireStore = defineStore({
     stepTwoData: (state) => state.questionnaireData.stepTwo,
     stepThreeData: (state) => state.questionnaireData.stepThree,
     stepFourData: (state) => state.questionnaireData.stepFour,
-    stepFiveData: (state) => state.questionnaireData.stepFive,
   },
   actions: {
-    setStepData(step: keyof QuestionnaireData, data: any) {
+    setStepData(step: keyof QuestionnaireData, data: QuestionnaireData[keyof QuestionnaireData]) {
       this.questionnaireData[step] = data;
     },
     updateStepOneData(data: QuestionnaireData['stepOne']) {
@@ -51,9 +48,7 @@ export const useQuestionnaireStore = defineStore({
     updateStepFourData(data: QuestionnaireData['stepFour']) {
       this.questionnaireData.stepFour = data;
     },
-    updateStepFiveData(data: QuestionnaireData['stepFive']) {
-      this.questionnaireData.stepFive = data;
-    },
+    
     resetQuestionnaire() {
       this.questionnaireData = {
         stepOne: {
@@ -67,13 +62,11 @@ export const useQuestionnaireStore = defineStore({
           savingsAccount: '',
         },
         stepThree: {
-          income: 0,
+          annualIncome: 0,
           changeWillingness: 0,
         },
         stepFour: {
           products: [],
-        },
-        stepFive: {
         },
       };
     },
