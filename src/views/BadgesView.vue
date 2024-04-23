@@ -1,6 +1,6 @@
 <template>
   <div class="challenge-container">
-    <h1>Dine Medaljer</h1>
+    <h1>Medaljer</h1>
     <div class="badges">
       <div class="badges-page">
         <div class="badge-list">

@@ -4,7 +4,7 @@
         <div class="badge-image">
         <img :src="badge?.imageUrl" :alt="badge?.name">
         </div>
-        <h3>{{ badge?.name }}</h3>
+        <h3 class="badge-name">{{ badge?.name }}</h3>
         <p class="badge-description">{{ badge?.description }}</p>
         <div v-if="showRarity" class="badge-tooltip">
           <p>{{ rarityMessage }}</p>
@@ -41,11 +41,18 @@
   height: 100%;
     text-decoration: none;
     color: black;
+    text-align: -webkit-center;
 }
 
 .badge-link:hover {
     background: none;
 }
+
+  .badge-name {
+    font-size: 1.2rem;
+    text-decoration: underline;
+    margin: 0;
+  }
 
   .badge {
     margin: 10px;
@@ -54,7 +61,7 @@
     border-radius: 8px;
     background-color: #f9f9f9;
     text-align: center;
-    max-width: 150px;
+    max-width: 175px;
     transition: transform 0.3s ease;
     height: 100%;
     padding-bottom: 0px;

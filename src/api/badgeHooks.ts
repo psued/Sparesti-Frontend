@@ -1,5 +1,6 @@
 import { api } from "@/api/axiosConfig";
 import { type Badge } from "@/types/Badge";
+import type { UserBadgeResponse } from "@/types/UserBadgeResponse";
 
 export const getAllBadges = async (): Promise<Badge[] | null> => {
   try {
@@ -48,4 +49,33 @@ export const getBadgeRarity = async (badgeId: number): Promise<string | null> =>
         console.error('Error fetching badge rarity:', error);
         return null;
     }
+}
+
+export const getAllUsersWithGivenBadge = async (badgeId: number): Promise<UserBadgeResponse[] | null> => {
+  try {
+    const response = await api.get(`/badges/badge/${badgeId}/users`);
+
+    if (response.status === 200) {
+      return response.data.map((userBadge: UserBadgeResponse) => ({
+        badge: {
+          id: userBadge.badge.id,
+          name: userBadge.badge.name,
+          description: userBadge.badge.description,
+          imageUrl: userBadge.badge.imageUrl,
+        },
+        dateEarned: userBadge.dateEarned,
+        user: {
+          id: userBadge.user.id,
+          email: userBadge.user.email,
+          profilePictureUrl: userBadge.user.profilePictureUrl,
+        },
+      }));
+    } else {
+      console.error('Failed to fetch users with badge:', response.statusText);
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching users with badge:', error);
+    return null;
+  }
 }
