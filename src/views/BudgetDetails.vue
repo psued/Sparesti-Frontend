@@ -24,7 +24,11 @@
 
 <script setup lang="ts">
 import BudgetProgressBar from "./BudgetProgressBar.vue";
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
+import { useUserStore} from "@/stores/userStore";
+import axios from "axios";
+
+const userStore = useUserStore();
 
 const props = defineProps({
   remainingBudget: {
@@ -43,6 +47,38 @@ const expenses = reactive({
   Klær: { left: 400, total: 1000, emoji: '👕' },
   Fritid: { left: 2700, total: 3000, emoji: '🍻' },
   Betting: { left: 1250, total: 2000, emoji: '🎲' }
+});
+
+onMounted(async () => {
+  try {
+    const username = userStore.getUserName;
+
+    const response = await axios.get('http://localhost:8080/api/users/Ari');
+
+    console.log(response.data);
+
+    const userId = response.data.id;
+
+    console.log(userId);
+
+    const expensesResponse = await axios.get(`http://localhost:8080/api/budget/${userId}/budgets`);
+
+    console.log(expensesResponse.data);
+
+    for (const entry of expensesResponse.data) {
+      for (const row of entry.row) {
+        const {category, usedAmount, maxAmount} = row;
+        // Use category from row as the key for expenses
+        expenses[category] = {
+          left: usedAmount, // Assuming usedAmount represents the left amount
+          total: maxAmount, // Assuming maxAmount represents the total amount
+          emoji: '🧾' // Hardcoding emoji for now
+        };
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 // Components must be registered in setup if used in the template
