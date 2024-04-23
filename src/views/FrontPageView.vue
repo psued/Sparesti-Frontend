@@ -54,6 +54,9 @@ import ChallengeDetailsPopup from "@/components/ChallengeDetailsPopup.vue";
 import { onMounted, computed, ref } from "vue";
 import { getChallengesByUser } from "@/api/challengeHooks";
 import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
+import { useUserStore } from "@/stores/userStore";
+import { useRouter } from "vue-router";
+import { useLogin } from "@/api/authenticationHooks";
 
 import checkCircleIcon from "@/assets/check-circle.svg";
 import starCircleIcon from "@/assets/star-circle.svg";
@@ -73,7 +76,15 @@ const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 const checkpoints = ref<{ top: number; left: number; status: string; expiryDate: string; challenge: Challenge | null }[]>([]);
 const bottomLeftCoordinate = ref<{ x: number; y: number }>({ x: 0, y: 0 });
 
+const router = useRouter();
+const userStore = useUserStore();
+
 onMounted(async () => {
+  if (!userStore.isLoggedIn()) {
+    useLogin();
+  }
+
+
   const userId = 2; // Change this to the actual user ID
   const challengesResponse = await getChallengesByUser(userId);
   console.log(challengesResponse)

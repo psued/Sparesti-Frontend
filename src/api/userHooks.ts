@@ -1,4 +1,5 @@
-import { api } from "@/api/axiosConfig";
+import { api, oauth2 } from "@/api/axiosConfig";
+import { useUserStore } from "@/stores/userStore";
 
 export const getUserByUsername = async (username: string): Promise<any | null> => {
   try {
@@ -29,3 +30,13 @@ export const getChallenges = async (userId: number): Promise<any[] | null> => {
     return null; 
   }
 };
+
+export const getUserInfo = async (): Promise<any[] | null> => {
+  const userStore = useUserStore();
+  const userInfoRes = await oauth2.post("/userinfo", null, {
+    headers: {
+      Authorization: `Bearer ${userStore.getAccessToken}`,
+    },
+  });
+  return userInfoRes.data;
+}

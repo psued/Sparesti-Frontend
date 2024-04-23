@@ -64,7 +64,6 @@ export const getTokens = async (code: string) => {
     return;
   }
 
-  //Get username
   const userInfoRes = await oauth2.post("/userinfo", null, {
     headers: {
       Authorization: `Bearer ${userStore.getAccessToken}`,
@@ -72,6 +71,7 @@ export const getTokens = async (code: string) => {
   });
 
   if (userInfoRes.status === 200) {
+    console.log(userInfoRes.data);
     userStore.setUserName(userInfoRes.data.sub);
     //Other info can also be gotten here
   } else {

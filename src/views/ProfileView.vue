@@ -41,6 +41,7 @@ import type { User } from '@/types/User';
 import ProfilePicComponent from '@/components/profile/ProfilePicComponent.vue'; 
 import UserInfoComponent from '@/components/profile/UserInfoComponent.vue'; 
 import TotalSavingsComponent from '@/components/profile/TotalSavingsComponent.vue';
+import { getUserInfo } from '@/api/userHooks';
 
 
 const user = ref<User>({
@@ -50,6 +51,16 @@ const user = ref<User>({
 	pictureUrl: 'https://cdn.discordapp.com/attachments/702511885370654732/1152222819816579172/c0sc95nulakb1.png?ex=662ba11f&is=66192c1f&hm=937bea25d8566aaeb42ebbd0197fc652a6b55cd71e3ab59334a14ec0287e5b6b&', 
 	badges: [] ,
 	totalSavings: 5000,
+});
+
+onMounted(() => {
+	getUserInfo()
+		.then((userInfo) => {
+			console.log(userInfo);
+		})
+		.catch((error) => {
+			console.error('Failed to get user info', error);
+		});
 });
 </script>
 
