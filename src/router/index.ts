@@ -31,8 +31,8 @@ const router = createRouter({
       component: SettingsView
     },
     {
-      path: "/questionnaire",
-      name: "questionnaire",
+      path: "/setup",
+      name: "setup",
       component: QuestionnaireView,
     },
     {

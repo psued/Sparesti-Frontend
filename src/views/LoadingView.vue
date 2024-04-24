@@ -8,6 +8,7 @@
 import { onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getTokens } from "@/api/authenticationHooks";
+import { getUserInfo } from '@/api/userHooks'
 
 /**
  * When this component is mounted, it will extract the code parameter from the URL and use it to get an access token,
@@ -26,10 +27,19 @@ onMounted(() => {
   }
 
   getTokens(code)
-    .then(() => router.push("/"))
-    .catch(() => {
-      console.error("Failed to get tokens, returning to main menu");
-      //router.push("/");
+    .then(() => {
+      getUserInfo().then((res) => {
+        if (!res.preferred_username) {
+          console.error("No username found in user info");
+          router.push("/setup");
+          return;
+        }  
+        console.log(res);
+        router.push("/");
+      });
+      router.push("/")
+    }).catch((error) => {
+      console.error("Error getting tokens", error);
     });
 });
 </script>
