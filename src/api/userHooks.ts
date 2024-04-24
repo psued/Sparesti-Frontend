@@ -55,10 +55,10 @@ export const getUserInfo = async (): Promise<UserInfo | null> => {
   const username = userStore.getUserName;
   console.log("Username: " + username);
   api.get(`/users/${username}`).then((response) => {
-    console.log("User id set");
+    console.log("User id set: " + response.data.id);
     userStore.setUserId(response.data.id);
   });
-
+  
   return userInfoRes.data;
 };
 
@@ -78,3 +78,4 @@ export const submitUserInfo = async (userInfo: any) => {
     throw error;
   }
 };
+
