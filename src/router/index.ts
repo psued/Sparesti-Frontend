@@ -11,6 +11,7 @@ import SettingsView from '@/views/SettingsView.vue'
 import BadgesView from "@/views/BadgesView.vue";
 import FrontPageView from "@/views/FrontPageView.vue";
 import QuestionnaireView from "@/views/QuestionnaireView.vue";
+import BadgeDetailsView from "@/views/BadgeDetailsView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,6 +50,12 @@ const router = createRouter({
     path: '/badges',
     name: 'badges',
     component: BadgesView
+  },
+  {
+    path: '/badge/:id',
+    name: 'BadgeDetails',
+    component: BadgeDetailsView,
+    props: true
   },
     {
       path: "/authentication",
