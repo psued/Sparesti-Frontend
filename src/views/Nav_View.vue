@@ -11,13 +11,13 @@
     <RouterLink class="logo" to="/">
       <img :src="darkMode ? './logo_long_dark.png' : './logo_long.png'" alt="logo" class="logo" />
     </RouterLink>
-  </div>
-  <!-- Hamburger menu -->
-  <div :class="['hamburger', { darkMode: 'hamburger-dark' }]">
-    <div class="hamburger-box" @click="toggleSidebar()">
-      <span :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"></span>
-      <span :class="['hamburger-line', 'middle', { 'hamburger-line-dark': darkMode }]"></span>
-      <span :class="['hamburger-line', 'bottom', { 'hamburger-line-dark': darkMode }]"></span>
+    <!-- Hamburger menu -->
+    <div :class="['hamburger', { darkMode: 'hamburger-dark' }]">
+      <div class="hamburger-box" @click="toggleSidebar()">
+        <span :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"></span>
+        <span :class="['hamburger-line', 'middle', { 'hamburger-line-dark': darkMode }]"></span>
+        <span :class="['hamburger-line', 'bottom', { 'hamburger-line-dark': darkMode }]"></span>
+      </div>
     </div>
   </div>
 
@@ -120,7 +120,6 @@ const handleThemeChange = () => {
 
 .top-bar {
   display: flex;
-  position: fixed;
   flex-direction: row;
   width: 100%;
   height: 90px;
@@ -137,7 +136,6 @@ const handleThemeChange = () => {
 
 .logo {
   cursor: pointer;
-  position: fixed;
   z-index: 996;
   position: relative;
   top: 5px;
@@ -147,7 +145,6 @@ const handleThemeChange = () => {
 
 .hamburger {
   cursor: pointer;
-  position: fixed;
   margin-left: auto;
   width: fit-content;
   display: flex;
