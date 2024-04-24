@@ -4,16 +4,13 @@ displays a sidebar with various links and buttons. * It includes functionality
 for toggling the theme mode, toggling the sidebar, and handling media queries
 for mobile view. * The component accepts a prop for the dark mode theme. */
 <template>
-  <!-- Sidebar component -->
   <div
     class="sidebar"
     ref="sidebarRef"
     :class="{ 'sidebar-open': isOpen, 'sidebar-dark': darkMode }"
   >
-    <!-- Top bar items -->
     <div class="line" :class="{ 'line-dark': darkMode }" />
     <div class="top-bar-items">
-      <!-- Theme mode toggle -->
       <div
         class="theme-mode"
         :class="{ 'theme-mode-dark': darkMode }"
@@ -32,9 +29,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         />
       </div>
     </div>
-    <!-- Bar items -->
     <div class="bar-items">
-      <!-- Home link -->
       <router-link
         v-if="!isPhone"
         class="bar-item-desktop"
@@ -44,7 +39,6 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
       >
         <text>Home</text>
       </router-link>
-      <!-- Profile link -->
       <router-link
         class="bar-item-desktop"
         :class="{ 'text-dark': darkMode }"
@@ -53,7 +47,6 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
       >
         <text>Profile</text>
       </router-link>
-      <!-- Budget link -->
       <router-link
         v-if="!isPhone"
         class="bar-item-desktop"
@@ -63,7 +56,6 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
       >
         <text>Budget</text>
       </router-link>
-      <!-- Challenges link -->
       <router-link
         v-if="!isPhone"
         class="bar-item-desktop"
@@ -73,7 +65,12 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
       >
         <text>Challenges</text>
       </router-link>
-      <!-- Sign out button -->
+      <router-link v-if="!isPhone" class="bar-item-desktop" :class="[{'text-dark' : darkMode}]" @click="toggleBar" to="/badges">
+        <text>Badges</text>
+      </router-link>
+        <router-link v-if="!isPhone" class="bar-item-desktop" :class="[{'text-dark' : darkMode}]" @click="toggleBar" to="/savinggoalform">
+        <text>Saving Goal</text>
+      </router-link>
       <div
         class="bar-item-sign"
         :class="[{ 'text-dark': darkMode }]"
@@ -83,7 +80,6 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
       >
         <text>Sign out</text>
       </div>
-      <!-- Contact link -->
       <router-link
         class="bar-item-desktop"
         :class="[isPhone ? '' : 'contact', { 'text-dark': darkMode }]"

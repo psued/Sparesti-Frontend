@@ -7,15 +7,16 @@ export const uploadFile = async (file: File): Promise<string | null> => {
 
     const response = await api.post("/storage/uploadFile", formData);
 
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      throw new Error("Failed to upload file");
-    }
-  } catch (error) {
-    throw new Error(`Error uploading file`);
-  }
-};
+		if (response.status === 200) {
+			return response.data
+		} else {
+			throw new Error('Failed to upload file')
+		}
+	} catch (error) {
+		throw new Error(`Error uploading file`)
+	}
+}
+
 export const deletePicture = async (url: string): Promise<boolean> => {
   try {
     const response = await api.delete("/storage/deleteFile", {

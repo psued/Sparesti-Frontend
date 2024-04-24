@@ -21,7 +21,7 @@
 			<div class="badge-container">
 				<router-link v-for="userBadge in userBadges" 
 					:key="userBadge.badge.id" 
-				  :to="{ name: 'BadgeDetails', params: { id: userBadge.badge.id }}" 
+				  :to="{ name: 'BadgeDetails', params: { id: userBadge.badge.id}, query: { isOwned: 'true' } }"
 				class="badge-link">
 					<BadgeComponent :badge="userBadge.badge" :owned="true" />
 				</router-link>			
