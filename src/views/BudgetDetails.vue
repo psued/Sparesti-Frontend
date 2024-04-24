@@ -46,7 +46,7 @@ import BudgetProgressBar from "./BudgetProgressBar.vue";
 import { ref, reactive, onMounted } from 'vue';
 import { useUserStore} from "@/stores/userStore";
 import axios from "axios";
-import { getBudgetByUser } from "@/api/budgetHooks";
+import {addRowToUserBudget, getBudgetByUser} from "@/api/budgetHooks";
 
 const userStore = useUserStore();
 
@@ -97,6 +97,7 @@ const handleNewCategory = () => {
     total: newCategory.total,
     emoji: newCategory.emoji
   };
+  addRowToUserBudget(userStore.getUserId, "string", 0, newCategory.total, newCategory.name, newCategory.emoji)
   toggleModal(); // Close modal after adding the category
   newCategory.name = '';
   newCategory.total = 0;
