@@ -14,7 +14,7 @@
   </template>
   
   <script setup lang="ts">
-  import { type Badge } from '@/types/Badge';
+  import type { Badge } from '@/types/Badge';
   import { ref, watchEffect } from 'vue';
   import { getBadgeRarity } from '@/api/badgeHooks';
   

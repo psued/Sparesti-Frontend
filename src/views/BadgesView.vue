@@ -15,7 +15,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import BadgeComponent from '@/components/badge/Badge.vue';
+import BadgeComponent from '@/components/badge/BadgeComponent.vue';
 import { type Badge } from '@/types/Badge';
 import { getAllBadges } from '@/api/badgeHooks';
 import { useRouter } from 'vue-router';

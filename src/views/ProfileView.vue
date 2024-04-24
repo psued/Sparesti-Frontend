@@ -15,7 +15,10 @@
 			<UserInfoComponent :user="user" />
 		</section>
 		<section class="badges-section">
-			<h2>Recent Badges</h2>  
+			<h2>Alle Medaljer</h2>
+			<div class="badge-container">
+				<BadgeComponent v-for="userBadge in userBadges" :key="userBadge.badge.id" :badge="userBadge.badge" />
+			</div>
 		</section>
 		<section class="settings-section">
 			<router-link to="/settings" class="settings-button">
@@ -29,45 +32,58 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { getUserByDisplayName, getUserInfo } from '@/api/userHooks';
-import type { User } from '@/types/User';
+import { ref, onMounted, watch } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+import { getUserInfo } from '@/api/userHooks';
+import { getBadgesByUser } from '@/api/badgeHooks';
+import type { UserBadge } from '@/types/Badge';
 import ProfilePicComponent from '@/components/profile/ProfilePicComponent.vue'; 
 import UserInfoComponent from '@/components/profile/UserInfoComponent.vue'; 
 import TotalSavingsComponent from '@/components/profile/TotalSavingsComponent.vue';
+import BadgeComponent from '@/components/badge/BadgeComponent.vue';
 
-const user = ref<User | null>(null);
-const badges = ref([]);
-onMounted(async () => {
-	const fetchUserInfo = async () => {
-		try {
-			const userInfo = await getUserInfo();
-			if (!userInfo) {
-				console.error('User info not available');
-				return;
-			}
-			mapUserInfo(userInfo);
-		} catch (error) {
-			console.error('Failed to load user info:', error);
-		}
-	};
+const user = ref<any | null>(null);
+const userBadges = ref<UserBadge[]>([]);
+const userStore = useUserStore();
 
-	const mapUserInfo = (userInfo: any) => {
-		user.value = {
-			displayName: userInfo.preferred_username || 'N/A',
-			firstName: userInfo.given_name || 'N/A',
-			lastName: userInfo.family_name || 'N/A',
-			email: userInfo.email || 'no-email@example.com',
-			pictureUrl: userInfo.picture || 'default_picture.jpg',
-			badges: [],
-			totalSavings: 0, 
-			birthdate: userInfo.birthdate || 'Unknown birthdate'
-		};
-			console.log('User info:', user.value);
-	};
+const fetchAndSetUserInfo = async () => {
+  try {
+    const userInfo = await getUserInfo();
+    if (userInfo) {
+      setUser(userInfo);
+    } else {
+      console.error('User info not available');
+    }
+  } catch (error) {
+    console.error('Failed to load user info:', error);
+  }
+};
 
-	await fetchUserInfo();
-});
+const setUser = (userInfo: any) => {
+  user.value = {
+    id: userInfo.id,
+    displayName: userInfo.preferred_username || 'N/A',
+    firstName: userInfo.given_name || 'N/A',
+    lastName: userInfo.family_name || 'N/A',
+    email: userInfo.email || 'no-email@example.com',
+    pictureUrl: userInfo.picture || 'default_picture.jpg',
+    userBadges: [],
+    totalSavings: 0, 
+    birthdate: userInfo.birthdate || 'Unknown birthdate'
+  };
+};
+
+watch(() => userStore.userId, async (userId) => {
+  if (userId && userId !== -1) {
+    try {
+		userBadges.value = await getBadgesByUser(userId) as unknown as UserBadge[];
+    } catch (error) {
+      console.error('Failed to load badges for user:', error);
+    }
+  }
+}, { immediate: true });
+
+onMounted(fetchAndSetUserInfo);
 </script>
 
 <style scoped>
@@ -127,6 +143,15 @@ onMounted(async () => {
 	.user-info-section {
 		padding-right: 2rem;
 	}
+	.badge-container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+	.badge-link {
+		max-height:fit-content;
+	}
+	
 }
 
 @media (max-width: 768px) {
