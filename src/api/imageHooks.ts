@@ -16,6 +16,7 @@ export const uploadFile = async (file: File): Promise<string | null> => {
 		throw new Error(`Error uploading file`)
 	}
 }
+
 export const deletePicture = async (url: string): Promise<boolean> => {
 	try {
 		const response = await api.delete('/storage/deleteFile', {

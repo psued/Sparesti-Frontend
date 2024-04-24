@@ -37,17 +37,17 @@
 
       <div class="form-group">
         <label for="title">Tittel:</label>
-        <input type="text" id="title" v-model="savingGoal.title" />
-      </div>
-
-      <div class="form-group">
-        <label for="description">Beskrivelse:</label>
-        <textarea id="description" v-model="savingGoal.description"></textarea>
+        <input type="text" id="title" v-model="savingGoal.name" />
       </div>
 
       <div class="form-group">
         <label for="value">Mål for sparing i kr (NOK):</label>
-        <input type="number" id="value" v-model.number="savingGoal.value" />
+        <input type="number" id="value" v-model.number="savingGoal.targetAmount" />
+      </div>
+
+      <div class="form-group">
+        <label for="deadline">Deadline:</label>
+        <input type="date" id="deadline" v-model="savingGoal.deadline" :min="minDeadline" />
       </div>
 
       <button type="submit">Lagre mål</button>
@@ -58,12 +58,10 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
-
-interface SavingGoal {
-  title: string;
-  description: string;
-  value: number;
-}
+import type { SavingGoalCreation } from '@/types/SavingGoal';
+import { createSavingGoal } from '@/api/savingGoalHooks';
+import { useUserStore } from '@/stores/userStore';
+import { uploadImage } from '@/utils/imageUtils';
 
 interface Icon {
   name: string;
@@ -71,7 +69,16 @@ interface Icon {
 }
 
 const uploadType = ref('image');
-const savingGoal = reactive<SavingGoal>({ title: '', description: '', value: 0 });
+const savingGoal = reactive<SavingGoalCreation>({
+  name: '',
+  targetAmount: 0,
+  mediaUrl: '',
+  deadline: new Date().toISOString().split('T')[0]
+});
+const userStore = useUserStore();
+const userId = ref(userStore.getUserId);
+
+const minDeadline = new Date().toISOString().split('T')[0];
 const imagePreview = ref<string | null>(null);
 const selectedIconUrl = ref<string | null>(null);
 const emoji = ref('');
@@ -109,34 +116,79 @@ function handleImageUpload(event: Event) {
   }
 }
 
-function handleIconUpload(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imagePreview.value = e.target?.result as string;
-    };
-    reader.readAsDataURL(file);
+const router = useRouter();
+
+const createSavingsGoal = async (savingGoalData: SavingGoalCreation) => {
+  try {
+    const newSavingGoal = await createSavingGoal(userId.value, savingGoalData)
+    console.log('Saving goal created:', newSavingGoal)
+    router.push('/saving-goals')
+  } catch (error) {
+    console.error('Error creating saving goal:', error)
   }
 }
 
-const router = useRouter();
+const submitForm = async () => {
+  if (!savingGoal.name || !savingGoal.targetAmount || !savingGoal.deadline) {
+    window.alert('Fyll ut alle feltene!');
+    return;
+  }
 
-function submitForm() {
-  console.log('Saving Goal:', savingGoal);
-  // Here you would typically send this data to a server
-  router.push({ name: 'SavingGoalOverview' });
+  if (savingGoal.targetAmount <= 0) {
+    window.alert('Målet for sparing må være større enn 0!');
+    return;
+  }
+
+  if (savingGoal.deadline < minDeadline) {
+    window.alert('Deadline kan ikke være før dagens dato!');
+    return;
+  }
+  
+  if (uploadType.value === 'image') {
+    const fileInput = document.getElementById('image') as HTMLInputElement;
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      const file = fileInput.files[0];
+      const imageUrl = await uploadImage(file, imagePreview);
+      if (imageUrl !== null) {
+        savingGoal.mediaUrl = imageUrl;
+      } else {
+        savingGoal.mediaUrl = '';
+      }
+    } else {
+      window.alert('Error ved opplasting av bilde!')
+      savingGoal.mediaUrl = '';
+    }
+  } else if (uploadType.value === 'icon') {
+    savingGoal.mediaUrl = selectedIconUrl.value || '';
+  } else if (uploadType.value === 'emoji') {
+    savingGoal.mediaUrl = emoji.value;
+  }
+  window.alert('Sparemål opprettet!');
+  createSavingsGoal(savingGoal);
 }
 </script>
-
+//TODO fix styling
 <style scoped>
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: black;
+}
+
+label {
+  color: black;
+}
+
 .saving-goal-form {
   max-width: 600px;
   margin: auto;
-  margin-top: 2vh;
+  margin-top: 2%;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  background-color: white;
+  margin-bottom: 5%;
 }
 
 .form-group {
@@ -159,17 +211,19 @@ input[type="file"], input[type="text"], input[type="number"], textarea {
 .image-preview img {
   width: 30vh;
   height: auto;
-  margin-top: 10px;
+  margin-top: 20px;
+  border-radius: 4px;
 }
 
 .icon-preview img {
   width: 30vh; 
   height: auto;
+  margin-top: 20px;
 }
 
 button {
   padding: 10px 20px;
-  color: white;
+  color: black;
   background-color: #8fbf7f;
   border: none;
   border-radius: 4px;
