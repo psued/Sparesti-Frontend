@@ -4,6 +4,7 @@ import AuthenticationView from '@/views/AuthenticationView.vue'
 import LoginForm from '@/components/forms/LoginForm.vue'
 import SignUpForm from '@/components/forms/SignUpForm.vue'
 import CompleteAccountForm from '@/components/forms/CompleteAccountForm.vue'
+import ChallengesView from "../views/ChallengesView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +21,11 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue')
+    },
+    {
+      path: '/challenges',
+      name: 'challenges',
+      component: ChallengesView
     },
     {
       path: '/authentication',
@@ -43,6 +49,7 @@ const router = createRouter({
         }
       ]
     },
+
   ]
 })
 
