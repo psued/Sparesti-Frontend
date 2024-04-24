@@ -147,13 +147,13 @@ onMounted(async () => {
         height: 150px;
         margin-bottom: 50px;
         background-color: #e5e5e5;
-        z-index: -100;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         color: black;
         font: 24px;
+        z-index: -1;
     }
 
     .road-end {

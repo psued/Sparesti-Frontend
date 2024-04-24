@@ -1,17 +1,17 @@
 <template>
   <div class="container">
 
-    <road />
-
+    
     <div class="background-container">
       <div class="background"></div>
-        <div class="clouds">
-          <img src="/cloud_1.png" alt="Cloud" class="cloud" />
-          <img src="/cloud_2.png" alt="Cloud" class="cloud" />
-          <img src="/cloud_3.png" alt="Cloud" class="cloud" />
-          <img src="/cloud_4.png" alt="Cloud" class="cloud" />
-        </div>
     </div>
+    <div class="clouds">
+      <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
+      <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
+      <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
+      <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
+    </div>
+    <road />
     <ChallengeDetailsPopup :challenge="selectedChallengeForPopup" v-if="showPopup" @close="closePopup" :position="popupPosition" />  </div>
 </template>
 
@@ -56,31 +56,38 @@ const closePopup = () => {
   width: 100%; 
   height: 100vh;
 }
-
 .background-container {
-  background-size: cover;
-  background-repeat: repeat;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
   z-index: -1;
-  position: absolute;
-  width: -webkit-fill-available;
+  position: fixed;
+  width: 100%;
   height: 100%;
 }
 
 .background {
-  background: rgb(45,229,172);
-  background: linear-gradient(194deg, rgba(45,229,172,1) 0%, rgba(255,254,134,1) 100%);
-  width: -webkit-fill-available;
-  height: -webkit-fill-available;
+  background-image: url("src/assets/backgroundpink.png");
+  background-size: 110%; 
+  width: 100%;
+  height: 100%;
 }
 
 .cloud {
+  z-index: 900;
   position: absolute;
   width: var(--cloud-width, 130px);  
   height: auto;
   animation: floatClouds linear infinite;
-  opacity: 0.8;
+  opacity: 0.3;
   display: none;
   left: -10%;
+  height: 70px;
+  width: 200px;
+  filter: blur(5px); /* Add blur effect */
+}
+.clouds{
+  z-index: 700;
 }
 
 @keyframes floatClouds {
