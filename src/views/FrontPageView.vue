@@ -36,7 +36,7 @@ const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 
 const selectedChallengeForPopup = computed(() => selectedChallenge.value || ({} as Challenge));
 const maxMedia = window.matchMedia && window.matchMedia('(min-width: 480px)').matches;
-
+const userStore = useUserStore();
 
 const openPopup = (challenge: Challenge, top: number, left: number) => {
   selectedChallenge.value = challenge;
@@ -50,6 +50,12 @@ const closePopup = () => {
   selectedChallenge.value = null;
   showPopup.value = false;
 }
+
+onMounted(() => {
+  if (!userStore.isLoggedIn()) {
+    useLogin();
+  }
+})
 </script>
 
 <style scoped>
