@@ -1,11 +1,14 @@
 export interface Budget {
+    id: number;
+    row: BudgetRow[];
     expiryDate: string;
-    budgetRows: BudgetRow[];
 }
 
 interface BudgetRow {
-    catergory: string;
+    id: number;
+    name: string;
     usedAmount: number;
     maxAmount: number;
+    category: string;
     emoji: string;
 }

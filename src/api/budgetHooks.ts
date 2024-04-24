@@ -3,9 +3,10 @@ import { type Budget } from "@/types/Budget";
 
 export const getBudgetByUser = async (userId: number): Promise<Budget | null> => {
     try {
-        const response = await api.get(`/users/${userId}/budgets`);
+        const response = await api.get(`/budget/${userId}/budgets`);
 
         if (response.status === 200) {
+            console.log(response.data)
             return response.data;
         } else {
             console.error('Failed to fetch budget:', response.statusText);

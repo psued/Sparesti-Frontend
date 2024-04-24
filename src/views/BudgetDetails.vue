@@ -46,6 +46,7 @@ import BudgetProgressBar from "./BudgetProgressBar.vue";
 import { ref, reactive, onMounted } from 'vue';
 import { useUserStore} from "@/stores/userStore";
 import axios from "axios";
+import { getBudgetByUser } from "@/api/budgetHooks";
 
 const userStore = useUserStore();
 
@@ -104,29 +105,25 @@ const handleNewCategory = () => {
 
 onMounted(async () => {
   try {
-    const username = userStore.getUserName;
-
-    const response = await axios.get('http://localhost:8080/api/users/Ari');
-
-    console.log(response.data);
-
-    const userId = response.data.id;
+    const userId = userStore.getUserId;
 
     console.log(userId);
 
-    const expensesResponse = await axios.get(`http://localhost:8080/api/budget/${userId}/budgets`);
+    const expensesResponse = await getBudgetByUser(userId);
 
-    console.log(expensesResponse.data);
+    console.log(expensesResponse);
 
-    for (const entry of expensesResponse.data) {
-      for (const row of entry.row) {
-        const {category, usedAmount, maxAmount} = row;
-        // Use category from row as the key for expenses
-        expenses[category as ExpenseCategory] = {
-          left: usedAmount, // Assuming usedAmount represents the left amount
-          total: maxAmount, // Assuming maxAmount represents the total amount
-          emoji: '🧾' // Hardcoding emoji for now
-        };
+    if (expensesResponse) {
+      for (const entry of expensesResponse) {
+        for (const row of entry.row) {
+          const {category, usedAmount, maxAmount, emoji} = row;
+          // Use category from row as the key for expenses
+          expenses[category as ExpenseCategory] = {
+            left: usedAmount, // Assuming usedAmount represents the left amount
+            total: maxAmount, // Assuming maxAmount represents the total amount
+            emoji: emoji // Hardcoding emoji for now
+          };
+        }
       }
     }
   } catch (error) {
