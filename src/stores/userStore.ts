@@ -1,4 +1,4 @@
-import { defineStore, getActivePinia } from "pinia";
+import { defineStore } from "pinia";
 import { useStorage } from "@vueuse/core";
 
 export const useUserStore = defineStore({
@@ -8,6 +8,7 @@ export const useUserStore = defineStore({
     idToken: useStorage("idToken", "", sessionStorage),
     userName: useStorage("userName", "", sessionStorage),
     expireTime: useStorage("timeToLive", 0, sessionStorage),
+    userId: useStorage("userId", -1, sessionStorage)
   }),
   getters: {
     getAccessToken(): string {
@@ -22,6 +23,9 @@ export const useUserStore = defineStore({
     getExpireTime(): number {
       return this.expireTime;
     },
+    getUserId(): number {
+      return this.userId;
+    }
   },
   actions: {
     setAccessToken(accessToken: string) {
@@ -35,6 +39,9 @@ export const useUserStore = defineStore({
     },
     setTimeToLive(timeToLive: number) {
       this.expireTime = Date.now() + timeToLive * 1000;
+    },
+    setUserId(userId: number) {
+      this.userId = userId;
     },
     tokenIsExpired(): boolean {
       return Date.now() > this.expireTime;

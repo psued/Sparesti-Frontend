@@ -30,18 +30,24 @@ import type { Product } from '@/types/QuestionnaireData';
 import FormButton from '@/components/forms/FormButton.vue';
 import router from '@/router';
 import { submitUserInfo } from '@/api/userHooks';
+import { useUserStore } from '@/stores/userStore';
+
+const userStore = useUserStore();
 
 const emit = defineEmits(['update-step']);
 const store = useQuestionnaireStore();
 
 const finishQuestionnaire = async () => {
-  console.log('Final Data to Submit:', store.fullData);
-  
-  try {
-    await store.submitAllData();
-  } catch (error) {
-    console.error('Error finishing questionnaire:', error);
-  }
+  const userInfo = store.getAllData();
+  userInfo.userId = userStore.getUserId;
+  console.log('Submitting questionnaire data:', userInfo);
+  submitUserInfo(userInfo).then(() => {
+    console.log('Questionnaire data submitted successfully!');
+    router.push('/');
+  }).catch((error) => {
+    console.error('Failed to submit questionnaire data:', error);
+  });
+
 };
 
 const products = ref<Product[]>(store.stepFourData.products);
