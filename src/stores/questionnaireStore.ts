@@ -25,7 +25,6 @@ export const useQuestionnaireStore = defineStore('questionnaireStore', {
       stepFour: {
         products: [],
       },
-      
     }, sessionStorage),
   }),
   getters: {
@@ -71,10 +70,10 @@ export const useQuestionnaireStore = defineStore('questionnaireStore', {
         },
       };
     },
-    async submitAllData() {
+    getAllData() {
       const userInfo = {
         id: '', 
-        userId: '', 
+        userId: -1,
         displayName: `${this.questionnaireData.stepOne.nickName}`,
         firstName: this.questionnaireData.stepOne.firstName,
         lastName: this.questionnaireData.stepOne.lastName,
@@ -91,12 +90,7 @@ export const useQuestionnaireStore = defineStore('questionnaireStore', {
         })),
         budgetingLocations: [], 
       };
-      try {
-        const response = await submitUserInfo(userInfo);
-        console.log('Submission successful:', response);
-      } catch (error) {
-          console.error('Error submitting user info:', error);
-      }
+      return userInfo;
     }
   },
 });
