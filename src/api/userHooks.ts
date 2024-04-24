@@ -53,7 +53,6 @@ export const getUserInfo = async (): Promise<UserInfo | null> => {
   userStore.setUserName(userInfoRes.data.email);
   // This is temporary until we have a way to extract user id from token
   const username = userStore.getUserName;
-  console.log("Username: " + username);
   api.get(`/users/${username}`).then((response) => {
     console.log("User id set: " + response.data.id);
     userStore.setUserId(response.data.id);
@@ -79,3 +78,14 @@ export const submitUserInfo = async (userInfo: any) => {
   }
 };
 
+export const updateUserInfo = async (userInfo: any) : Promise<UserInfo | null> => {
+  const userStore = useUserStore();
+  const userId = userStore.getUserId;
+  const res = api.post(`/user-info/update/${userId}`, userInfo).then((response) => {
+    return response.data;
+  }).catch((error) => {
+    console.error('Error updating user info:', error);
+    return null;
+  });
+  return res;
+};

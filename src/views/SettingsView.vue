@@ -5,24 +5,24 @@
 				<h1>Informasjon</h1>
 			</div>
 			<div class="account">
-				<h2>Bruks konto</h2>
+				<h2>Brukskonto</h2>
 				<p>**** **** **** 1234</p>
 				<p>Balance: 17.438,05,-</p>
 			</div>
 			<div class="account">
-				<h2>Spare konto</h2>
+				<h2>Sparekonto</h2>
 				<p>**** **** **** 5678</p>
 				<p>Balance: 157.562,32,-</p>
 			</div>
 		</div>
 		<div class="settings-section">
 			<div class="header-settings">
-				<h1>Settings</h1>
+				<h1>Instillinger</h1>
 			</div>
 			<div class="settings-buttons">
-				<button class="button">Change Account</button>
-				<button class="button">Change Password</button>
-				<button class="delete-button" @click="toggleModal">Delete Account</button>
+				<button class="button">Endre kontoer</button>
+				<button class="button">Endre passord</button>
+				<button class="delete-button" @click="toggleModal">Slett konto</button>
 			</div>
 		</div>
 		<DeleteAccountModal
