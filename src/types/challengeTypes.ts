@@ -1,3 +1,18 @@
+interface MasterChallenge {
+  id: number;
+  description: string;
+  targetAmount: number;
+  savedAmount: number;
+  mediaUrl: string | null;
+  timeInterval: string;
+  difficultyLevel: string;
+  expiryDate: string;
+  completed: boolean;
+  productName?: string;
+  productCategory?: string;
+  reductionPercentage?: number;
+}
+
 interface PurchaseChallenge {
     id: number;
     description: string;
@@ -49,8 +64,7 @@ interface PurchaseChallenge {
   }
   
   export interface ChallengesResponse {
-    purchaseChallenges: PurchaseChallenge[];
-    consumptionChallenges: ConsumptionChallenge[];
-    savingChallenges: SavingChallenge[];
+    forEach(arg0: (challenge: any) => void): unknown;
+    allChallenges : MasterChallenge[];
   }
   

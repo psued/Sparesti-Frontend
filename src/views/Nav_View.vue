@@ -11,6 +11,7 @@
     <RouterLink class="logo" to="/">
       <img :src="darkMode ?  './logo_long_dark.png' : './logo_long.png'" alt="logo" class="logo" />
     </RouterLink>
+  </div>  
     <!-- Hamburger menu -->
     <div :class="['hamburger', {darkMode: 'hamburger-dark'}]">
       <div class="hamburger-box" @click="toggleSidebar()">
@@ -19,7 +20,7 @@
         <span :class="['hamburger-line', 'bottom', { 'hamburger-line-dark': darkMode }]"></span>
       </div>
     </div>
-  </div>  
+
 
   <!-- Sidebar -->
   <Transition name="move">
@@ -114,16 +115,17 @@ const handleThemeChange = () => {
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 997;
+  z-index: 989;
 }
 .top-bar{
   display: flex;
+  position: fixed;
   flex-direction: row;
   width: 100%;
   height: 90px;
   background-color: #ecffda;
   border-bottom: 1px solid #4b644a;
-  z-index: 996;
+  z-index: 988;
   overflow: hidden;
 }
 .top-bar-dark {
@@ -132,6 +134,7 @@ const handleThemeChange = () => {
 }
 .logo {
   cursor: pointer;
+  position: fixed;
   z-index: 996;
   position: relative;
   top: 5px;
@@ -140,6 +143,7 @@ const handleThemeChange = () => {
 }
 .hamburger {
   cursor: pointer;
+  position: fixed;
   margin-left: auto;
   width: fit-content;
   display: flex;
