@@ -1,7 +1,10 @@
 <template>
-   <NAV />
+  <div class="layout">
+  <NAV />
+  
 
   <RouterView />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -12,8 +15,8 @@ import NAV from './views/Nav_View.vue';
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
 function toggleTheme() {
-  toggleDark(); 
-  document.body.classList.toggle('dark', isDark.value);
+  toggleDark();
+  document.body.classList.toggle("dark", isDark.value);
 }
 document.body.classList.toggle('dark', isDark.value);
 </script>
@@ -46,6 +49,12 @@ nav a {
 
 nav a:first-of-type {
   border: 0;
+}
+.layout{
+  display: flex;
+  flex-direction: column;
+
+
 }
 
 @media (min-width: 1024px) {

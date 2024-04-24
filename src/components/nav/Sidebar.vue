@@ -27,7 +27,7 @@
                 <text>Profile</text>
             </router-link>
             <!-- Budget link -->
-            <router-link v-if="!isPhone" class="bar-item-desktop" :class="[{'text-dark' : darkMode}]" @click="toggleBar"  to="/budget">
+            <router-link v-if="!isPhone" class="bar-item-desktop" :class="[{'text-dark' : darkMode}]" @click="toggleBar"  to="/budgetpage">
                 <text>Budget</text>
             </router-link>
             <!-- Challenges link -->
@@ -35,7 +35,7 @@
                 <text>Challenges</text>
             </router-link>
             <!-- Sign out button -->
-            <div  class="bar-item-sign"  :class="[{'text-dark' : darkMode}]" @click="toggleBar" @mouseenter="toggleHoverSign" @mouseleave="toggleHoverSign" >
+            <div  class="bar-item-sign"  :class="[{'text-dark' : darkMode}]" @click="logout" @mouseenter="toggleHoverSign" @mouseleave="toggleHoverSign" >
                 <text>Sign out</text>
             </div>
             <!-- Contact link -->
@@ -48,6 +48,9 @@
 
 <script setup lang="ts">
 import { onMounted, ref, defineEmits, defineProps} from 'vue';
+import { oauth2 } from '@/api/axiosConfig';
+import { useApiStore } from '@/stores/apiStore';
+import { useUserStore } from '@/stores/userStore';
 
 // Reactive variables
 const isOpen = ref(false);
@@ -62,6 +65,8 @@ const emit = defineEmits();
 const getToken = () => {
     return localStorage.getItem('token');
 }
+const userStore = useUserStore();
+const apiStore = useApiStore();
 
 // Toggle theme mode
 const toggleTheme = () => {
@@ -89,6 +94,22 @@ const props = withDefaults(defineProps<{
 }>(), {
   darkMode: false
 });
+
+/**
+ * Function to logout the user and revoke the access token
+ */
+const logout = () => {
+  oauth2.post('/oauth2/revoke', {
+    token: userStore.getAccessToken
+  })
+  const clientId = apiStore.clientId
+  const authUrl =
+    apiStore.getBackendUrl +
+    `/connect/logout?client_id=${clientId}&id_token_hint=${userStore.getIdToken}&post_logout_redirect_uri=${apiStore.getBaseUrl}`
+  userStore.logout()
+  sessionStorage.clear()
+  window.location.href = authUrl
+}
 
 // Handle media query for mobile view
 onMounted(() => {

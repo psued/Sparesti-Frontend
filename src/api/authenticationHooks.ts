@@ -63,21 +63,6 @@ export const getTokens = async (code: string) => {
     console.error("Failed to get tokens:", tokenRes.data);
     return;
   }
-
-  //Get username
-  const userInfoRes = await oauth2.post("/userinfo", null, {
-    headers: {
-      Authorization: `Bearer ${userStore.getAccessToken}`,
-    },
-  });
-
-  if (userInfoRes.status === 200) {
-    userStore.setUserName(userInfoRes.data.sub);
-    //Other info can also be gotten here
-  } else {
-    console.error("Failed to get user info:", userInfoRes.data);
-    return;
-  }
 };
 
 /**
