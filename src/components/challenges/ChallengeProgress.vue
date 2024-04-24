@@ -1,6 +1,6 @@
 <template>
   <div class="progressDiv">
-    <ChallengeProgressBar></ChallengeProgressBar>
+    <ChallengeProgressBar :completion-percentage="completionPercentage" />
     <div class="challengeCompletionPercentageContainer">
       <p class="challengeCompletionPercentage">{{Math.floor(completionPercentage)}}%</p>
     </div>
@@ -27,8 +27,6 @@
   if(props.savedAmount && props.targetAmount){
     completionPercentage = (props.savedAmount / props.targetAmount) * 100
   }
-
-  console.log(completionPercentage)
 </script>
 
 <style scoped>

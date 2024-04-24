@@ -6,6 +6,10 @@
 </template>
 
 <script setup lang="ts">
+  const props = defineProps({
+    completionPercentage : Number
+  })
+
 
 </script>
 
@@ -55,7 +59,7 @@
     --progress: 0;
   }
   to {
-    --progress: 100;
+    --progress: v-bind(completionPercentage);
   }
 }
 </style>
