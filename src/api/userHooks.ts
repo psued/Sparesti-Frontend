@@ -1,5 +1,6 @@
 import { api, oauth2 } from "@/api/axiosConfig";
 import { useUserStore } from "@/stores/userStore";
+import type { UserInfo } from "@/types/UserInfo";
 
 export const getUserByUsername = async (username: string): Promise<any | null> => {
   try {
@@ -41,7 +42,7 @@ export const getChallenges = async (userId: number): Promise<any[] | null> => {
   }
 };
 
-export const getUserInfo = async (): Promise<any[] | null> => {
+export const getUserInfo = async (): Promise<UserInfo | null> => {
   const userStore = useUserStore();
   const userInfoRes = await oauth2.post("/userinfo", null, {
     headers: {
@@ -49,4 +50,21 @@ export const getUserInfo = async (): Promise<any[] | null> => {
     },
   });
   return userInfoRes.data;
-}
+};
+
+export const submitUserInfo = async (userInfo: any) => {
+  const userStore = useUserStore();
+  try {
+    const response = await api.post('/user-info/create', userInfo, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userStore.getAccessToken}`
+      }
+    });
+    console.log('Success:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error submitting user info:', error);
+    throw error;
+  }
+};

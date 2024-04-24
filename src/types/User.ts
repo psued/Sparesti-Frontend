@@ -3,7 +3,8 @@ export interface User {
     firstName: string;
     lastName: string;
     email: string;
-    pictureUrl: string ;
+    pictureUrl: string;
     badges: any[];
     totalSavings: number;
+    birthdate: string;
 }
