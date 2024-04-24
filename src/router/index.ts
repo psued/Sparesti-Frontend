@@ -6,8 +6,8 @@ import CompleteAccountForm from "@/components/forms/CompleteAccountForm.vue";
 import LoadingView from "@/views/LoadingView.vue";
 import BudgetPageView from "@/views/BudgetPageView.vue";
 import BudgetDetails from "@/views/BudgetDetails.vue";
-import ProfileView from '@/views/ProfileView.vue'
-import SettingsView from '@/views/SettingsView.vue'
+import ProfileView from "@/views/ProfileView.vue";
+import SettingsView from "@/views/SettingsView.vue";
 import BadgesView from "@/views/BadgesView.vue";
 import FrontPageView from "@/views/FrontPageView.vue";
 import QuestionnaireView from "@/views/QuestionnaireView.vue";
@@ -22,14 +22,14 @@ const router = createRouter({
       component: FrontPageView,
     },
     {
-      path: '/profile',
-      name: 'profile',
-      component: ProfileView
+      path: "/profile",
+      name: "profile",
+      component: ProfileView,
     },
     {
-      path: '/settings',
-      name: 'settings',
-      component: SettingsView
+      path: "/settings",
+      name: "settings",
+      component: SettingsView,
     },
     {
       path: "/setup",
@@ -46,17 +46,17 @@ const router = createRouter({
       name: "budget-details",
       component: BudgetDetails,
     },
-  {
-    path: '/badges',
-    name: 'badges',
-    component: BadgesView
-  },
-  {
-    path: '/badge/:id',
-    name: 'BadgeDetails',
-    component: BadgeDetailsView,
-    props: true
-  },
+    {
+      path: "/badges",
+      name: "badges",
+      component: BadgesView,
+    },
+    {
+      path: "/badge/:id",
+      name: "BadgeDetails",
+      component: BadgeDetailsView,
+      props: true,
+    },
     {
       path: "/authentication",
       name: "authentication",

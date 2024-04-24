@@ -9,7 +9,7 @@ export interface StepOneData {
   lastName: string;
   nickName: string;
   birthdate: string;
-  occupationStatus: 'student' | 'employed' | 'unemployed' | '';
+  occupationStatus: "student" | "employed" | "unemployed" | "";
 }
 
 export interface StepTwoData {
