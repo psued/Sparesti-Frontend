@@ -11,8 +11,12 @@
 <template>
     <div class="road-container">
         <div class="road-box">
+            <div v-if="nodes.length > 0" class="road-tile-start">
+                <div class="road-start-area road-end-area" id="node-(-1)">Node -1</div>
+                <div class="road-start road-end"></div>
+            </div>
             <div class="road-tile" v-for="(node, index) in nodes" :key="index">
-                <div class="road-node" :class="node.point" :id="'node-' + index">{{ node.name }}</div>
+                <img class="road-node":src="node.image" :class="node.point" :id="'node-' + index"></img>
                 <svg class="road-svg" :class="node.direction"></svg>
             </div>
             <div v-if="nodes.length > 0" class="road-tile-start">
@@ -20,7 +24,6 @@
                 <div class="road-start"></div>
             </div>
         </div>
-        <button @click="addNode()">Add Node</button>
     </div>
 </template>
 
@@ -29,7 +32,13 @@
  * @description The script section of the RoadTiles component.
  */
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, computed, ref } from "vue";
+import { getUserByUsername, getUserInfo } from "@/api/userHooks";
+import { getChallengesByUser } from "@/api/challengeHooks";
+import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
+import { useUserStore } from "@/stores/userStore";
+import { useRouter } from "vue-router";
+import { useLogin } from "@/api/authenticationHooks";
 
 /**
  * @interface Node
@@ -41,6 +50,7 @@ import { ref } from 'vue';
 interface Node {
   direction: string;
   point: string;
+  image: string;
   name: string;
 }
 
@@ -54,12 +64,33 @@ const nodes = ref<Node[]>([]);
  * @function addNode
  * @description Adds a new node/tile to the road.
  */
-const addNode = () => {
+const addNode = (ch : any) => {
   const direction = nodes.value.length % 2 === 0 ? 'road-right-light' : 'road-left-light';
   const point = nodes.value.length % 2 === 0 ? 'road-node-right' : 'road-node-left';
+  const image = ch.mediaUrl;
   const name = `Node ${nodes.value.length + 1}`;
-  nodes.value.unshift({ direction, point, name });
+  nodes.value.unshift({ direction, point, image, name });
 };
+
+const userStore = useUserStore();
+
+onMounted(async () => {
+    if (!userStore.isLoggedIn()) {
+        useLogin();
+    }
+
+    const userId = 1; // Change this to the actual user ID
+    const challengesResponse = await getChallengesByUser(userId);
+    console.log(challengesResponse) 
+    if(challengesResponse === null){
+        console.log("No challenges found");
+        return;
+    }
+    challengesResponse.forEach(challenge => {
+        addNode(challenge);
+    });
+
+});
 </script>
 
 
@@ -124,6 +155,11 @@ const addNode = () => {
         color: black;
         font: 24px;
     }
+
+    .road-end {
+        margin-top: 20px;
+        margin-bottom: -1px;
+    }
     .road-start-area{
         position: absolute;
         display: flex;
@@ -138,6 +174,10 @@ const addNode = () => {
         font-size: 18px;
         color: black;
     }
+    .road-end-area{
+        margin-top: 20px;
+        margin-bottom: 0;
+    }
     .road-node {
         position: absolute;
         border-radius: 2px;
@@ -148,6 +188,9 @@ const addNode = () => {
         justify-content: center;
         align-items: center;
         font-size: 18px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
     }
     .road-node-right {
         margin-top: 6px;

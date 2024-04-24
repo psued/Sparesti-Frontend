@@ -105,7 +105,7 @@ onMounted(() => {
 /* Styles for the sidebar component */
 .sidebar {
     position: fixed;
-    z-index: 999;
+    z-index: 990;
     top: 0;
     right: 0;
     background-color: #a6cd94 ;
