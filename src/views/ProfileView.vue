@@ -41,7 +41,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { useUserStore } from '@/stores/userStore';
-import { getUserInfo } from '@/api/userHooks';
+import { getUserInfo, getUserByUsername } from '@/api/userHooks';
 import { getBadgesByUser } from '@/api/badgeHooks';
 import type { UserBadge } from '@/types/Badge';
 import ProfilePicComponent from '@/components/profile/ProfilePicComponent.vue'; 
@@ -55,9 +55,17 @@ const userStore = useUserStore();
 
 const fetchAndSetUserInfo = async () => {
   try {
+    const userByUsername = getUserByUsername(userStore.getUserName);
     const userInfo = await getUserInfo();
     if (userInfo) {
       setUser(userInfo);
+      await userByUsername.then((res) => {
+        if (user.value !== null) {
+          user.value.totalSavings = res.totalSavings;
+        } else {
+          console.error("Failed to set total savings");
+        }
+      });
     } else {
       console.error('User info not available');
     }
@@ -175,10 +183,10 @@ onMounted(fetchAndSetUserInfo);
 
 
 @media (max-width: 768px) {
-	.profile-page-container {
-		grid-template-columns: 1fr;
-		justify-content: center;
-	}
+  .profile-page-container {
+    grid-template-columns: 1fr;
+    justify-content: center;
+  }
 
 	.profile-pic-container {
 		width: 150px; 
