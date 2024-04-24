@@ -23,28 +23,9 @@ const currentComponent = computed(() => {
   return components[currentStep.value - 1];
 });
 
-const submitAllData = () => {
-  fetch('/api/submit', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(store.fullData),
-  })
-  .then(response => response.json())
-  .then(data => console.log('Success:', data))
-  .catch((error) => {
-    console.error('Error:', error);
-  });
-};
-
 
 const updateStep = (step: number) => {
-  if (step > components.length) {
-    submitAllData();
-  } else {
-    currentStep.value = step;
-  }
+  currentStep.value = step;
 };
 
 const goBack = () => {
