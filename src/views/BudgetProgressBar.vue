@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed } from "vue";
 
 const props = defineProps({
   value: {
@@ -15,7 +15,7 @@ const props = defineProps({
   max: {
     type: Number,
     default: 100,
-  }
+  },
 });
 
 const progressWidth = computed(() => {

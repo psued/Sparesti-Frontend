@@ -1,25 +1,29 @@
 <template>
   <div class="badge-details">
-    <button class="medaljer-button" @click="navigateToBadgesPage">Medaljer</button>
+    <button class="medaljer-button" @click="navigateToBadgesPage">
+      Medaljer
+    </button>
     <h1 class="header">Medalje Detaljer</h1>
     <div class="badge-info">
-      <BadgeComponent :badge="badge" />
+      <BadgeComponent :badge="badge" :owned="isOwned" />
       <div v-if="usersWithBadge?.length">
         <h2 class="header2">Brukere med denne medaljen:</h2>
-        <div v-for="(userResponse, index) in usersWithBadge" :key="index" class="user-card">
+        <div
+          v-for="(userResponse, index) in usersWithBadge"
+          :key="index"
+          class="user-card"
+        >
           <img
             v-if="userResponse.user.profilePictureUrl"
             :src="userResponse.user.profilePictureUrl"
             alt="Profile Picture"
           />
-          <img
-            v-else
-            src="/default-profile-pic.png"
-            alt="Profile Picture"
-          />
+          <img v-else src="/default-profile-pic.png" alt="Profile Picture" />
           <div>
             <p class="card-text">{{ userResponse.user.email }}</p>
-            <p class="card-text">Mottatt: {{ formatDate(userResponse.dateEarned) }}</p>
+            <p class="card-text">
+              Mottatt: {{ formatDate(userResponse.dateEarned) }}
+            </p>
           </div>
         </div>
       </div>
@@ -30,7 +34,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import BadgeComponent from '@/components/badge/Badge.vue';
+import BadgeComponent from '@/components/badge/BadgeComponent.vue';
 import type { Badge } from '@/types/Badge';
 import { getBadgeById, getAllUsersWithGivenBadge } from '@/api/badgeHooks';
 import type { UserBadgeResponse } from '@/types/UserBadgeResponse';
@@ -41,6 +45,7 @@ const route = useRoute();
 const router = useRouter();
 const badgeId = Number(route.params.id);
 const usersWithBadge = ref<UserBadgeResponse[] | null>(null);
+const isOwned = route.query.isOwned === 'true';
 
 onMounted(async () => {
   badge.value = await getBadgeById(badgeId);
@@ -48,12 +53,11 @@ onMounted(async () => {
 });
 
 const navigateToBadgesPage = () => {
-  router.push('/badges');
+  router.push("/badges");
 };
 </script>
 
 <style scoped>
-
 .header {
   text-align: center;
   font-size: 2.5em;
@@ -91,6 +95,7 @@ const navigateToBadgesPage = () => {
   align-items: center;
   justify-content: center;
   text-align: center;
+  padding-bottom: 5%;
 }
 
 .user-card {
@@ -136,5 +141,9 @@ const navigateToBadgesPage = () => {
   border-left: 1px solid #ccc;
   padding-left: 10px;
   color: black;
+}
+
+.badge-info {
+  text-align: -webkit-center;
 }
 </style>

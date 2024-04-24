@@ -15,7 +15,17 @@
 			<UserInfoComponent :user="user" />
 		</section>
 		<section class="badges-section">
-			<h2>Recent Badges</h2>  
+			<div class="header">
+				<h1>Alle Medaljer</h1>
+			</div>
+			<div class="badge-container">
+				<router-link v-for="userBadge in userBadges" 
+					:key="userBadge.badge.id" 
+				  :to="{ name: 'BadgeDetails', params: { id: userBadge.badge.id }}" 
+				class="badge-link">
+					<BadgeComponent :badge="userBadge.badge" :owned="true" />
+				</router-link>			
+			</div>
 		</section>
 		<section class="settings-section">
 			<router-link to="/settings" class="settings-button">
@@ -29,53 +39,87 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { getUserByDisplayName, getUserInfo } from '@/api/userHooks';
-import type { User } from '@/types/User';
+import { ref, onMounted, watch } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+import { getUserInfo, getUserByUsername } from '@/api/userHooks';
+import { getBadgesByUser } from '@/api/badgeHooks';
+import type { UserBadge } from '@/types/Badge';
 import ProfilePicComponent from '@/components/profile/ProfilePicComponent.vue'; 
 import UserInfoComponent from '@/components/profile/UserInfoComponent.vue'; 
 import TotalSavingsComponent from '@/components/profile/TotalSavingsComponent.vue';
+import BadgeComponent from '@/components/badge/BadgeComponent.vue';
 
-const user = ref<User | null>(null);
-const badges = ref([]);
-onMounted(async () => {
-	const fetchUserInfo = async () => {
-		try {
-			const userInfo = await getUserInfo();
-			if (!userInfo) {
-				console.error('User info not available');
-				return;
-			}
-			mapUserInfo(userInfo);
-		} catch (error) {
-			console.error('Failed to load user info:', error);
+const user = ref<any | null>(null);
+const userBadges = ref<UserBadge[]>([]);
+const userStore = useUserStore();
+
+const fetchAndSetUserInfo = async () => {
+  try {
+    const userByUsername = getUserByUsername(userStore.getUserName);
+    const userInfo = await getUserInfo();
+    if (userInfo) {
+      setUser(userInfo);
+      await userByUsername.then((res) => {
+        if (user.value !== null) {
+          user.value.totalSavings = res.totalSavings;
+        } else {
+          console.error("Failed to set total savings");
+        }
+      });
+    } else {
+      console.error('User info not available');
+    }
+  } catch (error) {
+    console.error('Failed to load user info:', error);
+  }
+};
+
+const setUser = (userInfo: any) => {
+  user.value = {
+    id: userInfo.id,
+    displayName: userInfo.preferred_username || 'N/A',
+    firstName: userInfo.given_name || 'N/A',
+    lastName: userInfo.family_name || 'N/A',
+    email: userInfo.email || 'no-email@example.com',
+    pictureUrl: userInfo.picture || 'default_picture.jpg',
+    userBadges: [],
+    totalSavings: 0, 
+    birthdate: userInfo.birthdate || 'Unknown birthdate'
+  };
+};
+
+watch(() => userStore.userId, async (userId) => {
+  if (userId && userId !== -1) {
+    try {
+		userBadges.value = await getBadgesByUser(userId) as unknown as UserBadge[];
+		for (let i = 0; i < userBadges.value.length; i++) {
+			userBadges.value[i].badge.description = '';
 		}
-	};
+    } catch (error) {
+      console.error('Failed to load badges for user:', error);
+    }
+  }
+}, { immediate: true });
 
-	const mapUserInfo = (userInfo: any) => {
-		user.value = {
-			displayName: userInfo.preferred_username || 'N/A',
-			firstName: userInfo.given_name || 'N/A',
-			lastName: userInfo.family_name || 'N/A',
-			email: userInfo.email || 'no-email@example.com',
-			pictureUrl: userInfo.picture || 'default_picture.jpg',
-			badges: [],
-			totalSavings: 0, 
-			birthdate: userInfo.birthdate || 'Unknown birthdate'
-		};
-			console.log('User info:', user.value);
-	};
-
-	await fetchUserInfo();
-});
+onMounted(fetchAndSetUserInfo);
 </script>
 
 <style scoped>
+.badge-link {
+  text-decoration: none;
+  color: var(--vt-c-black-soft);
+  display: block; 
+}
+.badge-link:hover {
+  background: none;
+}
+
 /* Desktop View */
 @media (min-width: 769px) {
 	.header{
 		padding-bottom: 2rem;
 		font-size: 1.5rem;
+		padding-left: 2rem;
 	}
 	.profile-page-container {
 		display: grid;
@@ -127,17 +171,27 @@ onMounted(async () => {
 	.user-info-section {
 		padding-right: 2rem;
 	}
-}
-
-@media (max-width: 768px) {
-	.profile-page-container {
-		grid-template-columns: 1fr;
+	.badge-container {
+		display: flex;
+		flex-wrap: wrap;
 		justify-content: center;
 	}
+	.badge-link {
+		max-height:fit-content;
+	}
+}
+
+
+@media (max-width: 768px) {
+  .profile-page-container {
+    grid-template-columns: 1fr;
+    justify-content: center;
+  }
 
 	.profile-pic-container {
 		width: 150px; 
 		height: 150px; 
 	}
+
 }
 </style>
