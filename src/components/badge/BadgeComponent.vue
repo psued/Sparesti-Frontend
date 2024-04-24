@@ -1,41 +1,47 @@
 <template>
-    <router-link :to="{ name: 'BadgeDetails', params: { id: badge?.id }}" class="badge-link">
-      <div class="badge" @mouseover="showRarity = true" @mouseleave="showRarity = false">
-        <div class="badge-image">
-        <img :src="badge?.imageUrl" :alt="badge?.name">
-        </div>
-        <h3 class="badge-name">{{ badge?.name }}</h3>
-        <p class="badge-description">{{ badge?.description }}</p>
-        <div v-if="showRarity" class="badge-tooltip">
-          <p>{{ rarityMessage }}</p>
-        </div>
-      </div>
-    </router-link>
-  </template>
-  
-  <script setup lang="ts">
-  import { type Badge } from '@/types/Badge';
-  import { ref, watchEffect } from 'vue';
-  import { getBadgeRarity } from '@/api/badgeHooks';
-  
-  const props = defineProps<{
-    badge: Badge | null;
-  }>();
-  
-  const showRarity = ref(false);
-  const rarityMessage = ref('');
-  
-  watchEffect(async () => {
-    if (showRarity.value) {
+  <div class="badge" @mouseover="showRarity = true" @mouseleave="showRarity = false">
+    <div class="badge-image" :class="{ unowned: !owned }">
+      <img :src="badge?.imageUrl" :alt="badge?.name">
+    </div>
+    <h3 class="badge-name">{{ badge?.name }}</h3>
+    <p class="badge-description">{{ badge?.description }}</p>
+    <div v-if="showRarity" class="badge-tooltip">
+      <p>{{ rarityMessage }}</p>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { type Badge } from '@/types/Badge';
+import { ref, watchEffect } from 'vue';
+import { getBadgeRarity } from '@/api/badgeHooks';
+
+const props = defineProps<{
+  badge: Badge | null;
+  owned: boolean;
+}>();
+
+const showRarity = ref(false);
+const rarityMessage = ref('');
+
+watchEffect(async () => {
+  if (showRarity.value) {
     if (props.badge) {
-        const rarity = await getBadgeRarity(props.badge.id);
-      rarityMessage.value = `${rarity}% of users own this badge!`;
+      const rarity = await getBadgeRarity(props.badge.id);
+      if (rarity !== null) {
+        const floatRarity = parseFloat(rarity);
+        rarityMessage.value = `${floatRarity.toFixed(0)}% of users own this badge!`;
+      }
     }
-}
-  });
-  </script>
+  }
+});
+</script>
   
   <style scoped>
+.badge-image.unowned {
+  filter: grayscale(100%);
+}
+
 .badge-link {
   display: block;
   height: 100%;
@@ -65,6 +71,7 @@
     transition: transform 0.3s ease;
     height: 100%;
     padding-bottom: 0px;
+    max-height: fit-content;
   }
 
   .badge-description {
