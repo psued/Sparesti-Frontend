@@ -10,7 +10,13 @@
   </div>
 
   <div class="expenses">
-    <h3>Utgifter</h3>
+    <div class="header-container">
+      <h3>Utgifter</h3>
+      <button class="add-category-btn" @click="addCategory">
+        <span class="add-category-icon">➕</span> Legg til kategori
+      </button>
+    </div>
+
     <ul>
       <li v-for="(expense, category) in expenses" :key="category">
         <span class="emoji">{{ expense.emoji }}</span>
@@ -19,6 +25,19 @@
         <progress-bar :value="expense.left" :max="expense.total"></progress-bar>
       </li>
     </ul>
+  </div>
+
+  <div v-if="showModal" class="modal">
+    <div class="modal-content">
+      <span class="close" @click="toggleModal">&times;</span>
+      <h3>Legg til en ny utgift</h3>
+      <form @submit.prevent="handleNewCategory">
+        <input v-model="newCategory.emoji" placeholder="Emoji (eks. 🍔)" />
+        <input v-model="newCategory.name" placeholder="Kategori navn" />
+        <input v-model.number="newCategory.total" type="Total sum" placeholder="Total Amount" />
+        <button type="submit">Lagre</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -58,6 +77,30 @@ const expenses: Expense = reactive({
   Fritid: { left: 2700, total: 3000, emoji: '🍻' },
   Betting: { left: 1250, total: 2000, emoji: '🎲' }
 });
+
+const showModal = ref(false);
+const newCategory = reactive({ name: '', total: 0, emoji: '' });
+
+const toggleModal = () => {
+  showModal.value = !showModal.value;
+};
+
+const addCategory = () => {
+  console.log("Add new category function triggered");
+  showModal.value = true; // Open the modal
+};
+
+const handleNewCategory = () => {
+  expenses[newCategory.name as keyof typeof expenses] = {
+    left: newCategory.total,
+    total: newCategory.total,
+    emoji: newCategory.emoji
+  };
+  toggleModal(); // Close modal after adding the category
+  newCategory.name = '';
+  newCategory.total = 0;
+  newCategory.emoji = '';
+};
 
 onMounted(async () => {
   try {
@@ -136,6 +179,12 @@ const ProgressBar = BudgetProgressBar;
     padding: 3px;
   }
 
+  .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
   .expenses {
     margin: 15px;
   }
@@ -180,4 +229,41 @@ const ProgressBar = BudgetProgressBar;
     flex-shrink: 0;
     margin-right: 10px;
   }
+
+  .add-category-btn {
+    padding: 0 1rem;
+    width: max-content;
+    display: flex;
+    background-color: #a6cd94; 
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    border-width: 0.15rem;
+    cursor: pointer;
+  }
+
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 300px;
+}
+
+.close {
+  float: right;
+  font-size: 28px;
+  cursor: pointer;
+}
 </style>

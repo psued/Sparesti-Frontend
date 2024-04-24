@@ -2,16 +2,16 @@
   <div class="user-info">
     <div class="user-details">
       <div class="detail">
-        <span class="label">Name:</span>
-        <span class="value"><i class="icon-user"></i>{{ user.name }}</span>
+        <span class="label">Kallenavn:</span>
+        <span class="value"><i class="icon-user"></i>{{ user.displayName }}</span>
       </div>
       <div class="detail">
         <span class="label">Email:</span>
         <span class="value"><i class="icon-mail"></i>{{ user.email }}</span>
       </div>
       <div class="detail">
-        <span class="label">Username:</span>
-        <span class="value"><i class="icon-user"></i>{{ user.username }}</span>
+        <span class="label">Navn:</span>
+        <span class="value"><i class="icon-user"></i>{{ user.firstName }} {{ user.lastName }}</span>
       </div>
     </div>
   </div>
