@@ -58,7 +58,6 @@ export const submitUserInfo = async (userInfo: any) => {
     const response = await api.post('/user-info/create', userInfo, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${userStore.getAccessToken}`
       }
     });
     console.log('Success:', response.data);

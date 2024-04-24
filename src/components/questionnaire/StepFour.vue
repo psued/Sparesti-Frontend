@@ -1,11 +1,13 @@
 <template>
   <div class="form-container">
     <h2>Snart ferdig</h2>
-    <div v-for="(item, index) in products" :key="index" class="product-item">
-      <span>{{ item.name }}</span>
-      <span>{{ item.frequency }} per {{ item.timeUnit }}</span>
-      <span>{{ item.price }}kr</span>
-      <button @click="removeProduct(index)">X</button>
+    <div class="product-container">
+      <div v-for="(item, index) in products" :key="index" class="product-item">
+        <span>{{ item.name }}</span>
+        <span>{{ item.frequency }} per {{ item.timeUnit }}</span>
+        <span>{{ item.price }}kr</span>
+        <button @click="removeProduct(index)">X</button>
+      </div>
     </div>
     <div class="new-product">
       <input v-model="newProduct.name" placeholder="Product name" />
@@ -77,5 +79,16 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.form-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.product-item {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
+}
 </style>
 @/stores/QuestionnaireStore
