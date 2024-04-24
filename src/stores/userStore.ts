@@ -8,7 +8,7 @@ export const useUserStore = defineStore({
     idToken: useStorage("idToken", "", sessionStorage),
     userName: useStorage("userName", "", sessionStorage),
     expireTime: useStorage("timeToLive", 0, sessionStorage),
-    userId: useStorage("userId", -1, sessionStorage)
+    userId: useStorage("userId", -1, sessionStorage),
   }),
   getters: {
     getAccessToken(): string {
@@ -25,7 +25,7 @@ export const useUserStore = defineStore({
     },
     getUserId(): number {
       return this.userId;
-    }
+    },
   },
   actions: {
     setAccessToken(accessToken: string) {

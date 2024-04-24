@@ -25,49 +25,58 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits, onMounted, watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { useQuestionnaireStore } from '@/stores/questionnaireStore';
-import type { Product } from '@/types/QuestionnaireData';
-import FormButton from '@/components/forms/FormButton.vue';
-import router from '@/router';
-import { submitUserInfo } from '@/api/userHooks';
-import { useUserStore } from '@/stores/userStore';
+import { ref, defineEmits, onMounted, watch } from "vue";
+import { useRouter } from "vue-router";
+import { useQuestionnaireStore } from "@/stores/questionnaireStore";
+import type { Product } from "@/types/QuestionnaireData";
+import FormButton from "@/components/forms/FormButton.vue";
+import router from "@/router";
+import { submitUserInfo } from "@/api/userHooks";
+import { useUserStore } from "@/stores/userStore";
 
 const userStore = useUserStore();
 
-const emit = defineEmits(['update-step']);
+const emit = defineEmits(["update-step"]);
 const store = useQuestionnaireStore();
 
 const finishQuestionnaire = async () => {
   const userInfo = store.getAllData();
   userInfo.userId = userStore.getUserId;
-  console.log('Submitting questionnaire data:', userInfo);
-  submitUserInfo(userInfo).then(() => {
-    console.log('Questionnaire data submitted successfully!');
-    router.push('/');
-  }).catch((error) => {
-    console.error('Failed to submit questionnaire data:', error);
-  });
-
+  console.log("Submitting questionnaire data:", userInfo);
+  submitUserInfo(userInfo)
+    .then(() => {
+      console.log("Questionnaire data submitted successfully!");
+      router.push("/");
+    })
+    .catch((error) => {
+      console.error("Failed to submit questionnaire data:", error);
+    });
 };
 
 const products = ref<Product[]>(store.stepFourData.products);
-const newProduct = ref({ name: '', frequency: '', timeUnit: 'day', price: '' });
+const newProduct = ref({ name: "", frequency: "", timeUnit: "day", price: "" });
 
-watch(products, (newProducts) => {
-  store.updateStepFourData({ products: newProducts });
-}, { deep: true });
+watch(
+  products,
+  (newProducts) => {
+    store.updateStepFourData({ products: newProducts });
+  },
+  { deep: true },
+);
 
 function addProduct() {
-  if (newProduct.value.name && newProduct.value.frequency && newProduct.value.price) {
+  if (
+    newProduct.value.name &&
+    newProduct.value.frequency &&
+    newProduct.value.price
+  ) {
     products.value.push({
       name: newProduct.value.name,
       frequency: newProduct.value.frequency,
       timeUnit: newProduct.value.timeUnit,
-      price: newProduct.value.price
+      price: newProduct.value.price,
     });
-    newProduct.value = { name: '', frequency: '', timeUnit: 'day', price: '' };
+    newProduct.value = { name: "", frequency: "", timeUnit: "day", price: "" };
   }
 }
 
@@ -76,7 +85,7 @@ function removeProduct(index: number) {
 }
 
 function goToNextStep() {
-  emit('update-step', 5);
+  emit("update-step", 5);
 }
 
 onMounted(() => {
@@ -86,9 +95,9 @@ onMounted(() => {
 
 <style scoped>
 .form-container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .product-item {
   display: flex;
