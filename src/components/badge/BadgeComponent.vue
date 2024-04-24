@@ -24,6 +24,7 @@ const props = defineProps<{
 const showRarity = ref(false);
 const rarityMessage = ref('');
 
+
 watchEffect(async () => {
   if (showRarity.value) {
     if (props.badge) {
@@ -45,20 +46,20 @@ watchEffect(async () => {
 .badge-link {
   display: block;
   height: 100%;
-    text-decoration: none;
-    color: black;
-    text-align: -webkit-center;
+  text-decoration: none;
+  color: black;
+  text-align: -webkit-center;
 }
 
 .badge-link:hover {
-    background: none;
+  background: none;
 }
 
-  .badge-name {
-    font-size: 1.2rem;
-    text-decoration: underline;
-    margin: 0;
-  }
+.badge-name {
+  font-size: 1.2rem;
+  text-decoration: underline;
+  margin: 0;
+}
 
   .badge {
     margin: 10px;
@@ -74,40 +75,39 @@ watchEffect(async () => {
     max-height: fit-content;
   }
 
-  .badge-description {
+.badge-description {
   overflow-wrap: break-word;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-  
-  .badge:hover {
-    background-color: #f0f0f0;
-    box-shadow: 0 0 5px #ccc;
-    transform: scale(1.05);
-    cursor: pointer;
-  }
-  
-  .badge-image {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto;
-    margin-bottom: 5px;
-  }
-  
-  .badge img {
-    width: 100%;
-    height: 100%;
-  }
-  
-  .badge-tooltip {
-    position: absolute;
-    top: -30px; 
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-  }
-  </style>
-  
+
+.badge:hover {
+  background-color: #f0f0f0;
+  box-shadow: 0 0 5px #ccc;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.badge-image {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  margin-bottom: 5px;
+}
+
+.badge img {
+  width: 100%;
+  height: 100%;
+}
+
+.badge-tooltip {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+</style>
