@@ -76,8 +76,11 @@ const addNode = () => {
     }
     .road-container{
         position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         height: 100vh;
-        width: 100vw;
+        width: auto;
         display: flex;
         flex-direction: column;
         justify-content: center;
