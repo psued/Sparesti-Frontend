@@ -12,11 +12,10 @@ import StepOne from '@/components/questionnaire/StepOne.vue';
 import StepTwo from '@/components/questionnaire/StepTwo.vue';
 import StepThree from '@/components/questionnaire/StepThree.vue';
 import StepFour from '@/components/questionnaire/StepFour.vue';
-import StepFive from '@/components/questionnaire/StepFive.vue';
 
 const firstName = ref('');
 
-const components = [StepOne, StepTwo, StepThree, StepFour, StepFive];
+const components = [StepOne, StepTwo, StepThree, StepFour];
 const currentStep = ref(1);
 const store = useQuestionnaireStore();
 
@@ -24,29 +23,9 @@ const currentComponent = computed(() => {
   return components[currentStep.value - 1];
 });
 
-const submitAllData = () => {
-  //example of submitting data to an API
-  fetch('/api/submit', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(store.fullData),
-  })
-  .then(response => response.json())
-  .then(data => console.log('Success:', data))
-  .catch((error) => {
-    console.error('Error:', error);
-  });
-};
-
 
 const updateStep = (step: number) => {
-  if (step > components.length) {
-    submitAllData();
-  } else {
-    currentStep.value = step;
-  }
+  currentStep.value = step;
 };
 
 const goBack = () => {
@@ -78,3 +57,4 @@ window.onpopstate = (event) => {
   }
 };
 </script>
+@/stores/QuestionnaireStore

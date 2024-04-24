@@ -15,8 +15,7 @@
 			<UserInfoComponent :user="user" />
 		</section>
 		<section class="badges-section">
-			<h2>Recent Badges</h2>
-			  
+			<h2>Recent Badges</h2>  
 		</section>
 		<section class="settings-section">
 			<router-link to="/settings" class="settings-button">
@@ -24,33 +23,50 @@
 			<img src="" alt="Settings" />
 			</router-link>
 		</section>
+		<div>
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { getUserByDisplayName } from '@/api/userHooks';
+import { getUserByDisplayName, getUserInfo } from '@/api/userHooks';
 import type { User } from '@/types/User';
 import ProfilePicComponent from '@/components/profile/ProfilePicComponent.vue'; 
 import UserInfoComponent from '@/components/profile/UserInfoComponent.vue'; 
 import TotalSavingsComponent from '@/components/profile/TotalSavingsComponent.vue';
-import { getUserInfo } from '@/api/userHooks';
 
 const user = ref<User | null>(null);
-
+const badges = ref([]);
 onMounted(async () => {
-	user.value = await getUserByDisplayName('porkypanda');
-	console.log(user.value);
-});
+	const fetchUserInfo = async () => {
+		try {
+			const userInfo = await getUserInfo();
+			if (!userInfo) {
+				console.error('User info not available');
+				return;
+			}
+			mapUserInfo(userInfo);
+		} catch (error) {
+			console.error('Failed to load user info:', error);
+		}
+	};
 
-onMounted(() => {
-	getUserInfo()
-		.then((userInfo) => {
-			console.log(userInfo);
-		})
-		.catch((error) => {
-			console.error('Failed to get user info', error);
-		});
+	const mapUserInfo = (userInfo: any) => {
+		user.value = {
+			displayName: userInfo.preferred_username || 'N/A',
+			firstName: userInfo.given_name || 'N/A',
+			lastName: userInfo.family_name || 'N/A',
+			email: userInfo.email || 'no-email@example.com',
+			pictureUrl: userInfo.picture || 'default_picture.jpg',
+			badges: [],
+			totalSavings: 0, 
+			birthdate: userInfo.birthdate || 'Unknown birthdate'
+		};
+			console.log('User info:', user.value);
+	};
+
+	await fetchUserInfo();
 });
 </script>
 
@@ -87,7 +103,7 @@ onMounted(() => {
 		width: 12vw;
 		border-radius: 50%;
 		overflow: hidden; 
-		border: 2px solid #729960; 
+		border: 2px solid; 
 	}
 	.profile-page-container {
 		display: grid;

@@ -7,6 +7,7 @@ export interface QuestionnaireData {
 export interface StepOneData {
   firstName: string;
   lastName: string;
+  nickName: string;
   birthdate: string;
   occupationStatus: 'student' | 'employed' | 'unemployed' | '';
 }
@@ -28,5 +29,6 @@ export interface StepFourData {
 export interface Product {
   name: string;
   frequency: string;
+  timeUnit: string;
   price: string;
 }

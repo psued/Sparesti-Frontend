@@ -21,10 +21,12 @@
       </div>
 
       <div class="form-group" v-if="uploadType === 'icon'">
-        <label for="icon">Last opp et ikon:</label>
-        <input type="file" id="icon" @change="handleIconUpload" accept="image/*" />
-        <div v-if="iconPreview" class="image-preview">
-          <img :src="iconPreview" alt="Forhåndsvisning av ikon" />
+        <label for="icon">Velg et ikon:</label>
+        <select id="icon" v-model="selectedIconUrl">
+          <option v-for="icon in icons" :value="icon.url">{{ icon.name }}</option>
+        </select>
+        <div v-if="selectedIconUrl" class="icon-preview">
+          <img :src="selectedIconUrl" alt="Valgt ikon" />
         </div>
       </div>
 
@@ -62,11 +64,37 @@ interface SavingGoal {
   value: number;
 }
 
+interface Icon {
+  name: string;
+  url: string;
+}
+
 const uploadType = ref('image');
 const savingGoal = reactive<SavingGoal>({ title: '', description: '', value: 0 });
 const imagePreview = ref<string | null>(null);
-const iconPreview = ref<string | null>(null);
+const selectedIconUrl = ref<string | null>(null);
 const emoji = ref('');
+
+const icons = reactive<Icon[]>([
+  { name: 'Sushi', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/sushi.png' },
+  { name: 'Hamburger', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/hamburger.png' },
+  { name: 'Øl', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/ol.png' },
+  { name: 'Pizza', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/pizza.png' },
+  { name: 'Ferie', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/ferie.png' },
+  { name: 'Kaffe', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/kaffe.png' },
+  { name: 'Cafe', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/cafe.png' },
+  { name: 'Champagne', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/champagne.png' },
+  { name: 'Dagligvare', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/dagligvare.png' },
+  { name: 'Alpene', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/alpene.png' },
+  { name: 'Vannskuter', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/vannscooter.png' },
+  { name: 'Frankrike', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/frankrike.png' },
+  { name: 'USA', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/usa.png' },
+  { name: 'Morokko', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/morokko.png' },
+  { name: 'Xbox', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/xbox.png' },
+  { name: 'PS5', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/ps5.png'},
+  { name: 'Popkorn', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/popkorn.png'},
+  { name: 'Kino', url: 'https://quiz-project-fullstack.s3.eu-north-1.amazonaws.com/kino.png'},
+]);
 
 function handleImageUpload(event: Event) {
   const input = event.target as HTMLInputElement;
@@ -86,7 +114,7 @@ function handleIconUpload(event: Event) {
   if (file) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      iconPreview.value = e.target?.result as string;
+      imagePreview.value = e.target?.result as string;
     };
     reader.readAsDataURL(file);
   }
@@ -128,6 +156,11 @@ input[type="file"], input[type="text"], input[type="number"], textarea {
   width: 30vh;
   height: auto;
   margin-top: 10px;
+}
+
+.icon-preview img {
+  width: 30vh; 
+  height: auto;
 }
 
 button {

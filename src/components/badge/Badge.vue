@@ -1,23 +1,25 @@
 <template>
-    <div class="badge" @mouseover="showRarity = true" @mouseleave="showRarity = false">
-      <div class="badge-image">
-        <img :src="badge.imageUrl" :alt="badge.name">
+    <router-link :to="{ name: 'BadgeDetails', params: { id: badge?.id }}" class="badge-link">
+      <div class="badge" @mouseover="showRarity = true" @mouseleave="showRarity = false">
+        <div class="badge-image">
+        <img :src="badge?.imageUrl" :alt="badge?.name">
+        </div>
+        <h3 class="badge-name">{{ badge?.name }}</h3>
+        <p class="badge-description">{{ badge?.description }}</p>
+        <div v-if="showRarity" class="badge-tooltip">
+          <p>{{ rarityMessage }}</p>
+        </div>
       </div>
-      <h3>{{ badge.name }}</h3>
-      <p>{{ badge.description }}</p>
-      <div v-if="showRarity" class="badge-tooltip">
-        <p>{{ rarityMessage }}</p>
-      </div>
-    </div>
+    </router-link>
   </template>
   
   <script setup lang="ts">
   import { type Badge } from '@/types/Badge';
-  import { ref, computed, watchEffect } from 'vue';
+  import { ref, watchEffect } from 'vue';
   import { getBadgeRarity } from '@/api/badgeHooks';
   
   const props = defineProps<{
-    badge: Badge;
+    badge: Badge | null;
   }>();
   
   const showRarity = ref(false);
@@ -25,13 +27,33 @@
   
   watchEffect(async () => {
     if (showRarity.value) {
-      const rarity = await getBadgeRarity(props.badge.id);
+    if (props.badge) {
+        const rarity = await getBadgeRarity(props.badge.id);
       rarityMessage.value = `${rarity}% of users own this badge!`;
     }
+}
   });
   </script>
   
   <style scoped>
+.badge-link {
+  display: block;
+  height: 100%;
+    text-decoration: none;
+    color: black;
+    text-align: -webkit-center;
+}
+
+.badge-link:hover {
+    background: none;
+}
+
+  .badge-name {
+    font-size: 1.2rem;
+    text-decoration: underline;
+    margin: 0;
+  }
+
   .badge {
     margin: 10px;
     padding: 10px;
@@ -39,9 +61,17 @@
     border-radius: 8px;
     background-color: #f9f9f9;
     text-align: center;
-    max-width: 150px;
+    max-width: 175px;
     transition: transform 0.3s ease;
+    height: 100%;
+    padding-bottom: 0px;
   }
+
+  .badge-description {
+  overflow-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
   
   .badge:hover {
     background-color: #f0f0f0;
