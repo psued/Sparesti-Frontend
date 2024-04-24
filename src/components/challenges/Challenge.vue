@@ -37,8 +37,6 @@
     }
   })
 
-  console.log(props.challengeObject)
-
   let daysLeft = 0
   if(props.challengeObject){
     if(props.challengeObject.expiryDate){

@@ -9,104 +9,16 @@
 
 <script setup lang="ts">
 import Challenge from '../components/challenges/Challenge.vue'
+import {getChallengesByUser} from "@/api/challengeHooks";
+import {useUserStore} from "@/stores/userStore";
 
+
+  const userStore = useUserStore()
+  console.log(getChallengesByUser(userStore.getUserId))
+
+
+  //Add API-call to retrieve list of users challenges here
   const challengeObjects = [
-    {
-      title: "Example Title",
-      id: 123,
-      description: "Example Description",
-      targetAmount: 250,
-      savedAmount: 140,
-      mediaUrl: "🤑",
-      timeInterval: "Daily",
-      difficultyLevel: "Hard",
-      expiryDate: new Date(1715353792000),
-      completed: false
-    },
-    {
-      title: "Example Title",
-      id: 123,
-      description: "Example Description",
-      targetAmount: 250,
-      savedAmount: 140,
-      mediaUrl: "🤑",
-      timeInterval: "Monthly",
-      difficultyLevel: "Hard",
-      expiryDate: new Date(1715353792000),
-      completed: false
-    },
-    {
-      title: "Example Title",
-      id: 123,
-      description: "Example Description",
-      targetAmount: 250,
-      savedAmount: 140,
-      mediaUrl: "🤑",
-      timeInterval: "Daily",
-      difficultyLevel: "Hard",
-      expiryDate: new Date(1715353792000),
-      completed: false
-    },
-    {
-      title: "Example Title",
-      id: 123,
-      description: "Example Description",
-      targetAmount: 250,
-      savedAmount: 140,
-      mediaUrl: "🤑",
-      timeInterval: "Daily",
-      difficultyLevel: "Hard",
-      expiryDate: new Date(1715353792000),
-      completed: false
-    },
-    {
-      title: "Example Title",
-      id: 123,
-      description: "Example Description",
-      targetAmount: 250,
-      savedAmount: 140,
-      mediaUrl: "🤑",
-      timeInterval: "Daily",
-      difficultyLevel: "Hard",
-      expiryDate: new Date(1715353792000),
-      completed: false
-    },
-    {
-      title: "Example Title",
-      id: 123,
-      description: "Example Description",
-      targetAmount: 250,
-      savedAmount: 140,
-      mediaUrl: "🤑",
-      timeInterval: "Daily",
-      difficultyLevel: "Hard",
-      expiryDate: new Date(1715353792000),
-      completed: false
-    },
-    {
-      title: "Example Title",
-      id: 123,
-      description: "Example Description",
-      targetAmount: 250,
-      savedAmount: 140,
-      mediaUrl: "🤑",
-      timeInterval: "Daily",
-      difficultyLevel: "Hard",
-      expiryDate: new Date(1715353792000),
-      completed: false
-    },
-    {
-      title: "Example Title",
-      id: 123,
-      description: "Example Description",
-      targetAmount: 250,
-      savedAmount: 140,
-      mediaUrl: "🤑",
-      timeInterval: "Daily",
-      difficultyLevel: "Hard",
-      expiryDate: new Date(1715353792000),
-      completed: false
-    },
     {
       title: "Example Title",
       id: 123,

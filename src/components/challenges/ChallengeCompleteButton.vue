@@ -47,4 +47,6 @@ const completeButtonUp = () => {
   cursor: pointer;
   border-color: #A6CD94;
 }
+
+
 </style>
