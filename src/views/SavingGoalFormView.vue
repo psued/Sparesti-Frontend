@@ -57,6 +57,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 
 interface SavingGoal {
   title: string;
@@ -120,9 +121,12 @@ function handleIconUpload(event: Event) {
   }
 }
 
+const router = useRouter();
+
 function submitForm() {
   console.log('Saving Goal:', savingGoal);
   // Here you would typically send this data to a server
+  router.push({ name: 'SavingGoalOverview' });
 }
 </script>
 

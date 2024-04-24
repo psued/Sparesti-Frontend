@@ -13,6 +13,7 @@ import FrontPageView from "@/views/FrontPageView.vue";
 import QuestionnaireView from "@/views/QuestionnaireView.vue";
 import BadgeDetailsView from "@/views/BadgeDetailsView.vue";
 import SavingGoalFormView from "@/views/SavingGoalFormView.vue";
+import SavingGoalView from "@/views/SavingGoalView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +52,12 @@ const router = createRouter({
       path: "/savinggoalform",
       name: "savinggoalform",
       component: SavingGoalFormView,
+    },
+    {
+      path: "/saving-goal-overview",
+      name: "savinggoaloverview",
+      component: SavingGoalView,
+      props: true
     },
   {
     path: '/badges',

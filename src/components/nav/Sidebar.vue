@@ -34,6 +34,14 @@
             <router-link v-if="!isPhone" class="bar-item-desktop" :class="[{'text-dark' : darkMode}]" @click="toggleBar" to="/challenges">
                 <text>Challenges</text>
             </router-link>
+             <!-- Badges link -->
+             <router-link v-if="!isPhone" class="bar-item-desktop" :class="[{'text-dark' : darkMode}]" @click="toggleBar" to="/badges">
+                <text>Badges</text>
+            </router-link>
+             <!-- Saving Goal link -->
+             <router-link v-if="!isPhone" class="bar-item-desktop" :class="[{'text-dark' : darkMode}]" @click="toggleBar" to="/savinggoalform">
+                <text>Saving Goal</text>
+            </router-link>
             <!-- Sign out button -->
             <div  class="bar-item-sign"  :class="[{'text-dark' : darkMode}]" @click="logout" @mouseenter="toggleHoverSign" @mouseleave="toggleHoverSign" >
                 <text>Sign out</text>
