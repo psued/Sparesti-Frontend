@@ -24,6 +24,7 @@ const props = defineProps<{
 const showRarity = ref(false);
 const rarityMessage = ref('');
 
+
 watchEffect(async () => {
   if (showRarity.value) {
     if (props.badge) {

@@ -15,9 +15,16 @@
 			<UserInfoComponent :user="user" />
 		</section>
 		<section class="badges-section">
-			<h2>Alle Medaljer</h2>
+			<div class="header">
+				<h1>Alle Medaljer</h1>
+			</div>
 			<div class="badge-container">
-				<BadgeComponent v-for="userBadge in userBadges" :key="userBadge.badge.id" :badge="userBadge.badge" />
+				<router-link v-for="userBadge in userBadges" 
+					:key="userBadge.badge.id" 
+				  :to="{ name: 'BadgeDetails', params: { id: userBadge.badge.id }}" 
+				class="badge-link">
+					<BadgeComponent :badge="userBadge.badge" :owned="true" />
+				</router-link>			
 			</div>
 		</section>
 		<section class="settings-section">
@@ -77,6 +84,9 @@ watch(() => userStore.userId, async (userId) => {
   if (userId && userId !== -1) {
     try {
 		userBadges.value = await getBadgesByUser(userId) as unknown as UserBadge[];
+		for (let i = 0; i < userBadges.value.length; i++) {
+			userBadges.value[i].badge.description = '';
+		}
     } catch (error) {
       console.error('Failed to load badges for user:', error);
     }
@@ -87,11 +97,21 @@ onMounted(fetchAndSetUserInfo);
 </script>
 
 <style scoped>
+.badge-link {
+  text-decoration: none;
+  color: var(--vt-c-black-soft);
+  display: block; 
+}
+.badge-link:hover {
+  background: none;
+}
+
 /* Desktop View */
 @media (min-width: 769px) {
 	.header{
 		padding-bottom: 2rem;
 		font-size: 1.5rem;
+		padding-left: 2rem;
 	}
 	.profile-page-container {
 		display: grid;
@@ -151,8 +171,8 @@ onMounted(fetchAndSetUserInfo);
 	.badge-link {
 		max-height:fit-content;
 	}
-	
 }
+
 
 @media (max-width: 768px) {
 	.profile-page-container {
@@ -164,5 +184,6 @@ onMounted(fetchAndSetUserInfo);
 		width: 150px; 
 		height: 150px; 
 	}
+
 }
 </style>
