@@ -3,7 +3,7 @@
     <button class="medaljer-button" @click="navigateToBadgesPage">Medaljer</button>
     <h1 class="header">Medalje Detaljer</h1>
     <div class="badge-info">
-      <BadgeComponent :badge="badge" />
+      <BadgeComponent :badge="badge" :owned="isOwned" />
       <div v-if="usersWithBadge?.length">
         <h2 class="header2">Brukere med denne medaljen:</h2>
         <div v-for="(userResponse, index) in usersWithBadge" :key="index" class="user-card">
@@ -41,6 +41,7 @@ const route = useRoute();
 const router = useRouter();
 const badgeId = Number(route.params.id);
 const usersWithBadge = ref<UserBadgeResponse[] | null>(null);
+const isOwned = route.query.isOwned === 'true';
 
 onMounted(async () => {
   badge.value = await getBadgeById(badgeId);
@@ -91,6 +92,7 @@ const navigateToBadgesPage = () => {
   align-items: center;
   justify-content: center;
   text-align: center;
+  padding-bottom: 5%;
 }
 
 .user-card {
@@ -136,5 +138,9 @@ const navigateToBadgesPage = () => {
   border-left: 1px solid #ccc;
   padding-left: 10px;
   color: black;
+}
+
+.badge-info {
+  text-align: -webkit-center;
 }
 </style>
