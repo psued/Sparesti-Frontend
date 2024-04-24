@@ -11,14 +11,14 @@
       <input v-model="newProduct.name" placeholder="Product name" />
       <input v-model="newProduct.frequency" placeholder="Frequency" />
       <select v-model="newProduct.timeUnit">
-        <option value="day">Day</option>
-        <option value="week">Week</option>
-        <option value="month">Month</option>
+        <option value="day">Dag</option>
+        <option value="week">Uke</option>
+        <option value="month">Måned</option>
       </select>
       <input v-model="newProduct.price" placeholder="Unit price" />
       <button @click="addProduct">Add</button>
     </div>
-    <FormButton @click="finishQuestionnaire">Next</FormButton>
+    <FormButton @click="finishQuestionnaire">Ferdig</FormButton>
   </div>
 </template>
 
@@ -29,13 +29,19 @@ import { useQuestionnaireStore } from '@/stores/questionnaireStore';
 import type { Product } from '@/types/QuestionnaireData';
 import FormButton from '@/components/forms/FormButton.vue';
 import router from '@/router';
+import { submitUserInfo } from '@/api/userHooks';
 
 const emit = defineEmits(['update-step']);
 const store = useQuestionnaireStore();
 
 const finishQuestionnaire = async () => {
-  await store.submitAllData();
-  router.push('/');
+  console.log('Final Data to Submit:', store.fullData);
+  
+  try {
+    await store.submitAllData();
+  } catch (error) {
+    console.error('Error finishing questionnaire:', error);
+  }
 };
 
 const products = ref<Product[]>(store.stepFourData.products);
@@ -71,12 +77,5 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Your existing styles... */
-
-.product-item span {
-  margin-right: 10px;
-}
-
-/* Add styles for your product list and form... */
 </style>
 @/stores/QuestionnaireStore

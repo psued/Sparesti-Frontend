@@ -12,7 +12,6 @@ import StepOne from '@/components/questionnaire/StepOne.vue';
 import StepTwo from '@/components/questionnaire/StepTwo.vue';
 import StepThree from '@/components/questionnaire/StepThree.vue';
 import StepFour from '@/components/questionnaire/StepFour.vue';
-import StepFive from '@/components/questionnaire/StepFive.vue';
 
 const firstName = ref('');
 

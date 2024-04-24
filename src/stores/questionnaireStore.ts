@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
 import { useStorage } from '@vueuse/core';
-import type { QuestionnaireData } from '@/types/QuestionnaireData'; // Check this path!
+import type { QuestionnaireData } from '@/types/QuestionnaireData';
+import { submitUserInfo } from '@/api/userHooks';
+
 
 export const useQuestionnaireStore = defineStore('questionnaireStore', {
   state: () => ({
@@ -8,6 +10,7 @@ export const useQuestionnaireStore = defineStore('questionnaireStore', {
       stepOne: {
         firstName: '',
         lastName: '',
+        nickName: '',
         birthdate: '',
         occupationStatus: '',
       },
@@ -51,6 +54,7 @@ export const useQuestionnaireStore = defineStore('questionnaireStore', {
         stepOne: {
           firstName: '',
           lastName: '',
+          nickName: '',
           birthdate: '',
           occupationStatus: '',
         },
@@ -71,7 +75,7 @@ export const useQuestionnaireStore = defineStore('questionnaireStore', {
       const userInfo = {
         id: '', 
         userId: '', 
-        displayName: `${this.questionnaireData.stepOne.firstName} ${this.questionnaireData.stepOne.lastName}`,
+        displayName: `${this.questionnaireData.stepOne.nickName}`,
         firstName: this.questionnaireData.stepOne.firstName,
         lastName: this.questionnaireData.stepOne.lastName,
         dateOfBirth: this.questionnaireData.stepOne.birthdate,
@@ -83,27 +87,15 @@ export const useQuestionnaireStore = defineStore('questionnaireStore', {
           name: product.name,
           frequency: product.frequency.toUpperCase(), 
           amount: parseFloat(product.price), 
-          userInfoId: 0,
+          userInfoId: '',
         })),
         budgetingLocations: [], 
       };
-
       try {
-        const response = await fetch('/api/user-info/create', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(userInfo),
-        });
-        const data = await response.json();
-        if (response.ok) {
-          console.log('Success:', data);
-        } else {
-          console.error('Submission failed:', data);
-        }
+        const response = await submitUserInfo(userInfo);
+        console.log('Submission successful:', response);
       } catch (error) {
-        console.error('Error submitting user info:', error);
+          console.error('Error submitting user info:', error);
       }
     }
   },

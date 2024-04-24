@@ -11,7 +11,7 @@
       </div>
       <div class="detail">
         <span class="label">Navn:</span>
-        <span class="value"><i class="icon-user"></i>{{ user.firstName }}</span>
+        <span class="value"><i class="icon-user"></i>{{ user.firstName }} {{ user.lastName }}</span>
       </div>
     </div>
   </div>

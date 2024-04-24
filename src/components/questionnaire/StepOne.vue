@@ -9,6 +9,9 @@
 			<label for="lastName">Hva er ditt etternavn?</label>
     	<input id="lastName" v-model="lastName" placeholder="Last Name" required />
 
+      <label for="nickname">Hva kaller vennene dine deg?</label>
+      <input id="nickname" v-model="nickName" placeholder="Nickname" required />
+
 			<label for="birthdate">Hvor gammel er du?</label>
     	<input type="date" id="birthdate" v-model="birthdate" placeholder="dd.mm.yyyy" required />
 
@@ -34,12 +37,14 @@ const store = useQuestionnaireStore();
 
 const firstName = ref(store.stepOneData.firstName);
 const lastName = ref(store.stepOneData.lastName);
+const nickName = ref(store.stepOneData.nickName);
 const birthdate = ref(store.stepOneData.birthdate);
 const occupationStatus = ref(store.stepOneData.occupationStatus);
 
 const formErrors = ref({
   firstName: '',
   lastName: '',
+  nickName: '',
   birthdate: '',
   occupationStatus: ''
 });
@@ -49,6 +54,7 @@ function goToNextStep() {
     store.updateStepOneData({
       firstName: firstName.value,
       lastName: lastName.value,
+      nickName: nickName.value,
       birthdate: birthdate.value,
       occupationStatus: occupationStatus.value,
     });
@@ -62,6 +68,7 @@ function isFormValid() {
   formErrors.value = {
     firstName: '',
     lastName: '',
+    nickName: '',
     birthdate: '',
     occupationStatus: ''
   };

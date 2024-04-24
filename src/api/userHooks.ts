@@ -51,3 +51,19 @@ export const getUserInfo = async (): Promise<any[] | null> => {
   return userInfoRes.data;
 };
 
+export const submitUserInfo = async (userInfo: any) => {
+  const userStore = useUserStore();
+  try {
+    const response = await api.post('/user-info/create', userInfo, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userStore.getAccessToken}`
+      }
+    });
+    console.log('Success:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error submitting user info:', error);
+    throw error;
+  }
+};
