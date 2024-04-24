@@ -20,11 +20,10 @@
 
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import type { User } from '@/types/User';
 import "@/assets/icons.css";
 
 const props = defineProps<{
-	user: User;
+	user: any;
 }>();
 </script>
 
