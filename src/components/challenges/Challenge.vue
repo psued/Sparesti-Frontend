@@ -2,13 +2,13 @@
   <div class="challengeBox">
     <div class="challengeHeader">
       <div class="timeSpanDiv">
-        <p class="timeSpan">{{timeInterval}}</p>
+        <p class="timeSpan">{{props.challengeObject.timeInterval}}</p>
       </div>
       <p class="daysRemaining">{{Math.floor(daysLeft)}} Days Left</p>
     </div>
     <h2 class="challengeTitle">Title</h2>
-    <ChallengeProgress :target-amount="props.targetAmount" :saved-amount="props.savedAmount" :media-url="props.mediaUrl" />
-    <p class="challengeText">{{description}}</p>
+    <ChallengeProgress :target-amount="props.challengeObject.targetAmount" :saved-amount="props.challengeObject.savedAmount" :media-url="props.challengeObject.mediaUrl" />
+    <p class="challengeText">{{props.challengeObject.description}}</p>
     <ChallengeCompleteButton/>
   </div>
 </template>
@@ -18,23 +18,35 @@
   import ChallengeProgress from '../challenges/ChallengeProgress.vue';
 
   const props = defineProps({
-    id: Number,
-    description: String,
-    targetAmount: Number,
-    savedAmount: Number,
-    mediaUrl: String,
-    timeInterval: String,
-    difficultyLevel: String,
-    expiryDate: Date,
-    completed: Boolean
+    challengeObject: {
+      type: Object,
+      default: () => ({
+        challengeObject: {
+          title: "Default Title",
+          id: 1,
+          description: "Default Description",
+          targetAmount: 1,
+          savedAmount: 1,
+          mediaUrl: "Default",
+          timeInterval: "Default",
+          difficultyLevel: "Default",
+          expiryDate: new Date(),
+          completed: false
+        }
+      })
+    }
   })
 
-  let daysLeft = 0
+  console.log(props.challengeObject)
 
-  if(props.expiryDate){
-    let currentDate = new Date()
-    daysLeft = (props.expiryDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24)
+  let daysLeft = 0
+  if(props.challengeObject){
+    if(props.challengeObject.expiryDate){
+      let currentDate = new Date()
+      daysLeft = (props.challengeObject.expiryDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24)
+    }
   }
+
 
 </script>
 
