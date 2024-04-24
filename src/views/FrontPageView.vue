@@ -5,7 +5,7 @@
     <div class="background-container">
       <div class="background"></div>
     </div>
-    <div class="clouds">
+    <div class="clouds" v-if="maxMedia">
       <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
       <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
       <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
@@ -33,6 +33,8 @@ const showPopup = ref(false);
 const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 
 const selectedChallengeForPopup = computed(() => selectedChallenge.value || ({} as Challenge));
+const maxMedia = window.matchMedia && window.matchMedia('(min-width: 480px)').matches;
+
 
 const openPopup = (challenge: Challenge, top: number, left: number) => {
   selectedChallenge.value = challenge;
@@ -68,7 +70,9 @@ const closePopup = () => {
 
 .background {
   background-image: url("src/assets/backgroundpink.png");
-  background-size: 110%; 
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
   width: 100%;
   height: 100%;
 }

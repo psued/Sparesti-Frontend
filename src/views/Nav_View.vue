@@ -81,13 +81,19 @@ const toggleSidebar = () => {
   const closeClass = darkMode.value ? '-close-dark' : '-close'
   
   if (isSidebarOpen.value) {
-    top?.classList.toggle(`top${openClass}`)
-    middle?.classList.toggle(`middle${openClass}`)
-    bottom?.classList.toggle(`bottom${openClass}`)
+    top?.classList.add(`top${openClass}`)
+    top?.classList.remove(`top${closeClass}`)
+    middle?.classList.add(`middle${openClass}`)
+    middle?.classList.remove(`middle${closeClass}`)
+    bottom?.classList.add(`bottom${openClass}`)
+    bottom?.classList.remove(`bottom${closeClass}`)
   } else {
-    top?.classList.toggle(`top${closeClass}`)
-    middle?.classList.toggle(`middle${closeClass}`)
-    bottom?.classList.toggle(`bottom${closeClass}`)
+    top?.classList.remove(`top${openClass}`)
+    top?.classList.add(`top${closeClass}`)
+    middle?.classList.remove(`middle${openClass}`)
+    middle?.classList.add(`middle${closeClass}`)
+    bottom?.classList.remove(`bottom${openClass}`)
+    bottom?.classList.add(`bottom${closeClass}`)
   }
 }
 
