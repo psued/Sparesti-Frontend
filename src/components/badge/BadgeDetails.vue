@@ -1,25 +1,29 @@
 <template>
   <div class="badge-details">
-    <button class="medaljer-button" @click="navigateToBadgesPage">Medaljer</button>
+    <button class="medaljer-button" @click="navigateToBadgesPage">
+      Medaljer
+    </button>
     <h1 class="header">Medalje Detaljer</h1>
     <div class="badge-info">
       <BadgeComponent :badge="badge" :owned="isOwned" />
       <div v-if="usersWithBadge?.length">
         <h2 class="header2">Brukere med denne medaljen:</h2>
-        <div v-for="(userResponse, index) in usersWithBadge" :key="index" class="user-card">
+        <div
+          v-for="(userResponse, index) in usersWithBadge"
+          :key="index"
+          class="user-card"
+        >
           <img
             v-if="userResponse.user.profilePictureUrl"
             :src="userResponse.user.profilePictureUrl"
             alt="Profile Picture"
           />
-          <img
-            v-else
-            src="/default-profile-pic.png"
-            alt="Profile Picture"
-          />
+          <img v-else src="/default-profile-pic.png" alt="Profile Picture" />
           <div>
             <p class="card-text">{{ userResponse.user.email }}</p>
-            <p class="card-text">Mottatt: {{ formatDate(userResponse.dateEarned) }}</p>
+            <p class="card-text">
+              Mottatt: {{ formatDate(userResponse.dateEarned) }}
+            </p>
           </div>
         </div>
       </div>
@@ -49,12 +53,11 @@ onMounted(async () => {
 });
 
 const navigateToBadgesPage = () => {
-  router.push('/badges');
+  router.push("/badges");
 };
 </script>
 
 <style scoped>
-
 .header {
   text-align: center;
   font-size: 2.5em;

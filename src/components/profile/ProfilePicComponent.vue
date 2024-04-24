@@ -1,14 +1,14 @@
 <template>
-	<div class="profile-pic">
-    <img :src="userProfilePic" alt="User's Profile" class="profile-pic"/>
-	</div>
+  <div class="profile-pic">
+    <img :src="userProfilePic" alt="User's Profile" class="profile-pic" />
+  </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps } from "vue";
 
 const props = defineProps<{
-  userProfilePic:string,
+  userProfilePic: string;
 }>();
 </script>
 

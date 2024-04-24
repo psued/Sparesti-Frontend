@@ -1,25 +1,25 @@
 /**
- * @file Nav_View.vue
- * @description This file contains the implementation of the navigation view component.
- * The component includes a top bar with a logo, a hamburger menu, and a sidebar.
- * It also includes a phone bar for mobile devices.
- * The component handles dark mode and theme changes.
- */
+* @file Nav_View.vue
+* @description This file contains the implementation of the navigation view component.
+* The component includes a top bar with a logo, a hamburger menu, and a sidebar.
+* It also includes a phone bar for mobile devices.
+* The component handles dark mode and theme changes.
+*/
 <template>
   <!-- Top bar -->
   <div class="top-bar" :class="darkMode ? 'top-bar-dark' : ''">
     <RouterLink class="logo" to="/">
-      <img :src="darkMode ?  './logo_long_dark.png' : './logo_long.png'" alt="logo" class="logo" />
+      <img :src="darkMode ? './logo_long_dark.png' : './logo_long.png'" alt="logo" class="logo" />
     </RouterLink>
-  </div>  
-    <!-- Hamburger menu -->
-    <div :class="['hamburger', {darkMode: 'hamburger-dark'}]">
-      <div class="hamburger-box" @click="toggleSidebar()">
-        <span :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"></span>
-        <span :class="['hamburger-line', 'middle', { 'hamburger-line-dark': darkMode }]"></span>
-        <span :class="['hamburger-line', 'bottom', { 'hamburger-line-dark': darkMode }]"></span>
-      </div>
+  </div>
+  <!-- Hamburger menu -->
+  <div :class="['hamburger', { darkMode: 'hamburger-dark' }]">
+    <div class="hamburger-box" @click="toggleSidebar()">
+      <span :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"></span>
+      <span :class="['hamburger-line', 'middle', { 'hamburger-line-dark': darkMode }]"></span>
+      <span :class="['hamburger-line', 'bottom', { 'hamburger-line-dark': darkMode }]"></span>
     </div>
+  </div>
 
 
   <!-- Sidebar -->
@@ -28,14 +28,14 @@
   </Transition>
 
   <!-- Phone bar -->
-  <div class="phone-bar" v-if="isPhone" :class="{'phone-bar-dark' : darkMode}" >
-    <RouterLink class="phone-bar-item" :class="{'phone-bar-item-dark': darkMode}" to="/">
+  <div class="phone-bar" v-if="isPhone" :class="{ 'phone-bar-dark': darkMode }">
+    <RouterLink class="phone-bar-item" :class="{ 'phone-bar-item-dark': darkMode }" to="/">
       <i :class="darkMode ? 'icon-home-dark' : 'icon-home'"></i>
     </RouterLink>
-    <RouterLink class="phone-bar-item" :class="{'phone-bar-item-dark': darkMode}" to="/challenges">
+    <RouterLink class="phone-bar-item" :class="{ 'phone-bar-item-dark': darkMode }" to="/challenges">
       <i :class="darkMode ? 'icon-challenges-dark' : 'icon-challenges'"></i>
     </RouterLink>
-    <RouterLink class="phone-bar-item" :class="{'phone-bar-item-dark': darkMode}" to="/budget">
+    <RouterLink class="phone-bar-item" :class="{ 'phone-bar-item-dark': darkMode }" to="/budget">
       <i :class="darkMode ? 'icon-budget-dark' : 'icon-budget'"></i>
     </RouterLink>
   </div>
@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref} from 'vue'
+import { onMounted, ref } from 'vue'
 import { Transition } from 'vue'
 import "@/assets/icons.css";
 import sidebar from '../components/nav/Sidebar.vue'
@@ -63,7 +63,7 @@ const isPhone = ref(window.matchMedia && window.matchMedia('(max-width: 480px)')
 // Handle window resize event for mobile devices
 onMounted(() => {
   window.matchMedia && window.matchMedia('(max-width: 480px)').addEventListener('change', (e) => {
-    if(isSidebarOpen.value) {
+    if (isSidebarOpen.value) {
       toggleSidebar();
     }
     isPhone.value = e.matches
@@ -76,10 +76,10 @@ const toggleSidebar = () => {
   const top = document.querySelector('.top')
   const middle = document.querySelector('.middle')
   const bottom = document.querySelector('.bottom')
-  
+
   const openClass = darkMode.value ? '-open-dark' : '-open'
   const closeClass = darkMode.value ? '-close-dark' : '-close'
-  
+
   if (isSidebarOpen.value) {
     top?.classList.add(`top${openClass}`)
     top?.classList.remove(`top${closeClass}`)
@@ -100,7 +100,7 @@ const toggleSidebar = () => {
 // Handle theme change event
 const handleThemeChange = () => {
   darkMode.value = !darkMode.value
-  if(isSidebarOpen.value) {
+  if (isSidebarOpen.value) {
     toggleSidebar();
   }
 };
@@ -117,7 +117,8 @@ const handleThemeChange = () => {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 989;
 }
-.top-bar{
+
+.top-bar {
   display: flex;
   position: fixed;
   flex-direction: row;
@@ -128,10 +129,12 @@ const handleThemeChange = () => {
   z-index: 988;
   overflow: hidden;
 }
+
 .top-bar-dark {
   background-color: #23244b;
   border-bottom: 1px solid #757bfd;
 }
+
 .logo {
   cursor: pointer;
   position: fixed;
@@ -141,6 +144,7 @@ const handleThemeChange = () => {
   height: 100px;
   left: -30px;
 }
+
 .hamburger {
   cursor: pointer;
   position: fixed;
@@ -158,12 +162,15 @@ const handleThemeChange = () => {
   width: 80px;
   background-color: transparent;
 }
+
 .hamburger-dark {
   background-color: #f0f0f0;
 }
-.hamburger-dark:hover{
+
+.hamburger-dark:hover {
   background-color: #757bfd;
 }
+
 .hamburger-box {
   height: 60%;
   width: 65%;
@@ -172,6 +179,7 @@ const handleThemeChange = () => {
   align-items: center;
   justify-content: center;
 }
+
 .hamburger-line {
   position: absolute;
   border-radius: 20px;
@@ -179,233 +187,302 @@ const handleThemeChange = () => {
   width: 100%;
   background-color: #8fbf7f;
 }
+
 .hamburger-line-dark {
   background-color: #757bfd;
 }
+
 .lightOpen {
   background-color: #000000;
 }
+
 .darkOpen {
   background-color: #f0f0f0;
 }
+
 .top {
   top: 0;
   z-index: 1000;
 }
+
 .top-open {
   animation: top-open 0.35s forwards;
 }
-.top-open-dark{
+
+.top-open-dark {
   animation: top-open-dark 0.35s forwards;
 }
+
 .top-close {
   animation: top-close 0.35s forwards;
 }
-.top-close-dark{
+
+.top-close-dark {
   animation: top-close-dark 0.35s forwards;
 }
+
 @keyframes top-open-dark {
   0% {
     transform: translateY(0) rotate(0);
   }
+
   50% {
     transform: translateY(18px) rotate(0);
   }
+
   100% {
     transform: translateY(18px) rotate(45deg);
   }
 }
-@keyframes top-open{
+
+@keyframes top-open {
   0% {
     transform: translateY(0) rotate(0);
   }
+
   50% {
     transform: translateY(18px) rotate(0);
-   
+
   }
+
   100% {
     transform: translateY(18px) rotate(45deg);
     background-color: black;
   }
 }
+
 @keyframes top-close {
   0% {
     transform: translateY(18px) rotate(45deg);
     background-color: black;
   }
+
   50% {
     transform: translateY(18px) rotate(0);
     background-color: black;
   }
+
   100% {
     transform: translateY(0) rotate(0);
   }
 }
+
 @keyframes top-close-dark {
   0% {
     transform: translateY(18px) rotate(45deg);
   }
+
   50% {
     transform: translateY(18px) rotate(0);
   }
+
   100% {
     transform: translateY(0) rotate(0);
   }
 }
-.middle{
+
+.middle {
   z-index: 998;
 }
+
 .middle-open {
   animation: middle-open 0.35s forwards;
 }
-.middle-open-dark{
+
+.middle-open-dark {
   animation: middle-open-dark 0.35s forwards;
 }
-.middle-close{
+
+.middle-close {
   animation: middle-close 0.35s forwards;
 }
+
 .middle-close-dark {
   animation: middle-close-dark 0.35s forwards;
 }
+
 @keyframes middle-open {
   0% {
     opacity: 1;
   }
+
   50% {
     opacity: 1;
     background-color: black;
   }
+
   70% {
     opacity: 0;
   }
+
   100% {
     opacity: 0;
   }
 }
+
 @keyframes middle-open-dark {
   0% {
     opacity: 1;
   }
+
   50% {
     opacity: 1;
   }
+
   70% {
     opacity: 0;
   }
+
   100% {
     opacity: 0;
   }
 }
+
 @keyframes middle-close {
   0% {
     opacity: 0;
   }
+
   40% {
     opacity: 0;
   }
+
   50% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
 }
+
 @keyframes middle-close-dark {
   0% {
     opacity: 0;
   }
+
   40% {
     opacity: 0;
   }
+
   50% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
 }
+
 .bottom {
   z-index: 1000;
   bottom: 0;
 }
+
 .bottom-open {
   animation: bottom-open 0.35s forwards;
 }
+
 .bottom-open-dark {
   animation: bottom-open-dark 0.35s forwards;
 }
-.bottom-close{
+
+.bottom-close {
   animation: bottom-close 0.35s forwards;
 }
+
 .bottom-close-dark {
   animation: bottom-close-dark 0.35s forwards;
 }
+
 @keyframes bottom-open-dark {
   0% {
     transform: translateY(0) rotate(0);
   }
+
   50% {
-    transform: translateY(-18px) rotate(0);;
+    transform: translateY(-18px) rotate(0);
+    ;
   }
+
   100% {
     transform: translateY(-18px) rotate(-45deg);
   }
 }
+
 @keyframes bottom-open {
   0% {
     transform: translateY(0) rotate(0);
   }
+
   50% {
-    transform: translateY(-18px) rotate(0);;
+    transform: translateY(-18px) rotate(0);
+    ;
   }
+
   100% {
     transform: translateY(-18px) rotate(-45deg);
     background-color: black;
   }
 }
+
 @keyframes bottom-close {
   0% {
     transform: translateY(-18px) rotate(-45deg);
     background-color: black;
   }
+
   50% {
     transform: translateY(-18px) rotate(0);
     background-color: black;
   }
+
   100% {
     transform: translateY(0) rotate(0);
   }
 }
+
 @keyframes bottom-close-dark {
   0% {
     transform: translateY(-18px) rotate(-45deg);
   }
+
   50% {
     transform: translateY(-18px) rotate(0);
   }
+
   100% {
     transform: translateY(0) rotate(0);
   }
 }
 
-.move-enter-active, .move-leave-active {
+.move-enter-active,
+.move-leave-active {
   transition: transform .35s;
 }
-.move-enter-from, .move-leave-to {
+
+.move-enter-from,
+.move-leave-to {
   transform: translateX(100%);
 }
-.move-enter-to, .move-leave-from {
+
+.move-enter-to,
+.move-leave-from {
   transform: translateX(0);
 }
-.fade-enter-active, .fade-leave-active {
+
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity .35s ease-in-out;
 }
 
-.fade-enter-from, .fade-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 
-.fade-enter-to, .fade-leave-from {
+.fade-enter-to,
+.fade-leave-from {
   opacity: 1;
 }
 
@@ -424,12 +501,13 @@ const handleThemeChange = () => {
   border-top: 2px solid #4b644a;
   z-index: 996;
 }
+
 .phone-bar-dark {
   background-color: #23244b;
   border-top: 2px solid #757bfd;
 }
 
-.phone-bar-item{
+.phone-bar-item {
   height: 100%;
   width: 100%;
   display: flex;
@@ -437,12 +515,11 @@ const handleThemeChange = () => {
   align-items: center;
 }
 
-.phone-bar-item:hover{
+.phone-bar-item:hover {
   background-color: #a6cd94;
 }
-.phone-bar-item-dark:hover{
+
+.phone-bar-item-dark:hover {
   background-color: #757bfd;
 }
-
-
 </style>

@@ -4,10 +4,12 @@
     <div class="badges">
       <div class="badges-page">
         <div class="badge-list">
-            <router-link v-for="badge in badges" :key="badge.id" :to="{ name: 'BadgeDetails', params: { id: badge.id }, query: { isOwned: isBadgeOwned(badge).toString() }}" class="black-link">
+          <router-link v-for="badge in badges" :key="badge.id"
+            :to="{ name: 'BadgeDetails', params: { id: badge.id }, query: { isOwned: isBadgeOwned(badge).toString() } }"
+            class="black-link">
             <BadgeComponent :badge="badge" :owned="isBadgeOwned(badge)" />
           </router-link>
-       </div>
+        </div>
       </div>
     </div>
   </div>

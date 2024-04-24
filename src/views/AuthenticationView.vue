@@ -34,16 +34,16 @@ const isDark = useDark();
 }
 .authentication-container {
   display: grid;
-  grid-template-columns: 2fr 1fr; 
+  grid-template-columns: 2fr 1fr;
   min-height: 100vh;
   place-items: center;
 }
 
 .piggy-bank-image img {
-  max-width: 60%; 
-  height: auto; 
+  max-width: 60%;
+  height: auto;
   position: absolute;
-  top: -2vw; 
+  top: -2vw;
   left: -15vw;
   z-index: -1;
 }
@@ -59,7 +59,7 @@ const isDark = useDark();
 .dynamic-content {
   width: 100%;
   align-items: center;
-  text-align:center;
+  text-align: center;
 }
 
 .static-content {

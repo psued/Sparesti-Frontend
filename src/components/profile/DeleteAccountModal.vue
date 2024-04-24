@@ -4,11 +4,21 @@
       <div class="modal-overlay" @click="closeModal"></div>
       <div class="modal-content">
         <h2>Confirm Account Deletion</h2>
-        <p>If you delete your account, you will permanently lose your profile, settings, and data associated with it.</p>
-        <input type="password" class="input-password" placeholder="Enter your password" v-model="password">
+        <p>
+          If you delete your account, you will permanently lose your profile,
+          settings, and data associated with it.
+        </p>
+        <input
+          type="password"
+          class="input-password"
+          placeholder="Enter your password"
+          v-model="password"
+        />
         <div class="button-group">
           <button class="cancel-btn" @click="closeModal">Cancel</button>
-          <button class="confirm-delete-btn" @click="confirmDelete">Confirm</button>
+          <button class="confirm-delete-btn" @click="confirmDelete">
+            Confirm
+          </button>
         </div>
       </div>
     </div>
@@ -16,22 +26,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
+import { ref, defineEmits } from "vue";
 
 const isModalVisible = ref(true);
-const password = ref('');
-const emits = defineEmits(['closeModal', 'confirmDelete']);
+const password = ref("");
+const emits = defineEmits(["closeModal", "confirmDelete"]);
 
 const closeModal = () => {
-  emits('closeModal');
+  emits("closeModal");
 };
 
 const confirmDelete = () => {
   if (password.value) {
-    emits('confirmDelete', password.value);
+    emits("confirmDelete", password.value);
     closeModal();
   } else {
-    alert('Please enter your password.');
+    alert("Please enter your password.");
   }
 };
 </script>
@@ -74,7 +84,8 @@ const confirmDelete = () => {
   margin-top: 20px;
 }
 
-.cancel-btn, .confirm-delete-btn {
+.cancel-btn,
+.confirm-delete-btn {
   padding: 10px 20px;
   border: none;
   color: white;
