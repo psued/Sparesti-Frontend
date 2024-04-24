@@ -2,19 +2,33 @@
   <div class="progressDiv">
     <ChallengeProgressBar></ChallengeProgressBar>
     <div class="challengeCompletionPercentageContainer">
-      <p class="challengeCompletionPercentage">46%</p>
+      <p class="challengeCompletionPercentage">{{Math.floor(completionPercentage)}}%</p>
     </div>
     <div class="challengeEmojiContainer">
-      <p class="challengeEmoji">💸</p>
+      <p class="challengeEmoji">{{mediaUrl}}</p>
     </div>
     <div class="challengeMoneyContainer">
-      <p class="challengeMoney">2367kr / 5150kr used</p>
+      <p class="challengeMoney">{{savedAmount}}kr / {{targetAmount}}kr</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import ChallengeProgressBar from '../challenges/ChallengeProgressBar.vue';
+
+  const props = defineProps({
+    targetAmount: Number,
+    savedAmount: Number,
+    mediaUrl: String
+  })
+
+  let completionPercentage = 0
+
+  if(props.savedAmount && props.targetAmount){
+    completionPercentage = (props.savedAmount / props.targetAmount) * 100
+  }
+
+  console.log(completionPercentage)
 </script>
 
 <style scoped>
@@ -71,6 +85,6 @@
 }
 
 .challengeEmojiContainer > p {
-  font-size: 5rem;
+  font-size: 4rem;
 }
 </style>

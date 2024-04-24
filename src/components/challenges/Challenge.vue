@@ -2,22 +2,40 @@
   <div class="challengeBox">
     <div class="challengeHeader">
       <div class="timeSpanDiv">
-        <p class="timeSpan">Daily</p>
+        <p class="timeSpan">{{timeInterval}}</p>
       </div>
-      <p class="daysRemaining">17 Days Left</p>
+      <p class="daysRemaining">{{Math.floor(daysLeft)}} Days Left</p>
     </div>
-    <h2 class="challengeTitle">Grocery Saving</h2>
-
-    <ChallengeProgress></ChallengeProgress>
-
-    <p class="challengeText">Use 10% less money on groceries than you did last month</p>
-    <ChallengeCompleteButton></ChallengeCompleteButton>
+    <h2 class="challengeTitle">Title</h2>
+    <ChallengeProgress :target-amount="props.targetAmount" :saved-amount="props.savedAmount" :media-url="props.mediaUrl" />
+    <p class="challengeText">{{description}}</p>
+    <ChallengeCompleteButton/>
   </div>
 </template>
 
 <script setup lang="ts">
   import ChallengeCompleteButton from '../challenges/ChallengeCompleteButton.vue';
   import ChallengeProgress from '../challenges/ChallengeProgress.vue';
+
+  const props = defineProps({
+    id: Number,
+    description: String,
+    targetAmount: Number,
+    savedAmount: Number,
+    mediaUrl: String,
+    timeInterval: String,
+    difficultyLevel: String,
+    expiryDate: Date,
+    completed: Boolean
+  })
+
+  let daysLeft = 0
+
+  if(props.expiryDate){
+    let currentDate = new Date()
+    daysLeft = (props.expiryDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24)
+  }
+
 </script>
 
 <style scoped>
