@@ -1,9 +1,8 @@
 <template>
   <div class="layout">
-  <NAV />
-  
+    <NAV />
 
-  <RouterView />
+    <RouterView />
   </div>
 </template>
 
@@ -11,6 +10,7 @@
 import { useDark, useToggle } from '@vueuse/core'
 import { RouterLink, RouterView } from 'vue-router'
 import NAV from './views/Nav_View.vue';
+import road from './components/road/RoadTiles.vue';
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
@@ -18,7 +18,7 @@ function toggleTheme() {
   toggleDark();
   document.body.classList.toggle("dark", isDark.value);
 }
-document.body.classList.toggle('dark', isDark.value);
+document.body.classList.toggle("dark", isDark.value);
 </script>
 
 <style scoped>
@@ -50,11 +50,9 @@ nav a {
 nav a:first-of-type {
   border: 0;
 }
-.layout{
+.layout {
   display: flex;
   flex-direction: column;
-
-
 }
 
 @media (min-width: 1024px) {

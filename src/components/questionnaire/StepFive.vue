@@ -7,7 +7,8 @@
       <div>{{ account.name }}: {{ account.balance }}</div>
       <ul>
         <li v-for="transaction in account.transactions" :key="transaction.id">
-          {{ transaction.date }}: {{ transaction.description }} - {{ transaction.amount }}
+          {{ transaction.date }}: {{ transaction.description }} -
+          {{ transaction.amount }}
         </li>
       </ul>
     </div>
@@ -15,13 +16,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
 
-const userId = '';
+const userId = "";
 const bankAccounts = ref<any[]>([]);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
-
 </script>
 
 <style scoped>

@@ -10,9 +10,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed } from "vue";
 import BudgetProgressBar from "./BudgetProgressBar.vue";
-import { defineProps } from 'vue';
+import { defineProps } from "vue";
 
 const props = defineProps({
   budget: {
@@ -39,9 +39,9 @@ const ProgressBar = BudgetProgressBar;
 <style scoped>
 .budget-overview {
   background-color: #a6cd94;
-  border: solid 1px #c9d6b8; 
+  border: solid 1px #c9d6b8;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin: 15px;
   height: 17vh;
   display: block;
