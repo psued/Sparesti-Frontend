@@ -73,7 +73,7 @@ const setUser = (userInfo: any) => {
     firstName: userInfo.given_name || 'N/A',
     lastName: userInfo.family_name || 'N/A',
     email: userInfo.email || 'no-email@example.com',
-    pictureUrl: userInfo.picture || 'default_picture.jpg',
+    pictureUrl: userInfo.picture || '/default-profile-pic.png',
     userBadges: [],
     totalSavings: 0, 
     birthdate: userInfo.birthdate || 'Unknown birthdate'

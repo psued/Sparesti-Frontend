@@ -34,7 +34,7 @@
 <script setup lang="ts">
 import { onMounted, computed, ref } from "vue";
 import { getUserByUsername, getUserInfo } from "@/api/userHooks";
-import { getChallengesByUser } from "@/api/challengeHooks";
+import { getSortedChallengesByUser } from "@/api/challengeHooks";
 import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
 import { useUserStore } from "@/stores/userStore";
 import { useRouter } from "vue-router";
@@ -100,7 +100,7 @@ onMounted(async () => {
     }
 
     const userId = 1; // Change this to the actual user ID
-    const challengesResponse = await getChallengesByUser(userId);
+    const challengesResponse = await getSortedChallengesByUser(userId);
     console.log(challengesResponse) 
     if(challengesResponse === null){
         console.log("No challenges found");

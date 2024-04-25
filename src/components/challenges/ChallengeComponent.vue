@@ -2,49 +2,30 @@
   <div class="challengeBox">
     <div class="challengeHeader">
       <div class="timeSpanDiv">
-        <p class="timeSpan">{{props.challengeObject.timeInterval}}</p>
+        <p class="timeSpan">{{challengeObject.timeInterval}}</p>
       </div>
-      <p class="daysRemaining">{{Math.floor(daysLeft)}} Days Left</p>
+      <p class="daysRemaining">{{Math.floor(1)}} Days Left</p>
     </div>
     <h2 class="challengeTitle">Title</h2>
-    <ChallengeProgress :target-amount="props.challengeObject.targetAmount" :saved-amount="props.challengeObject.savedAmount" :media-url="props.challengeObject.mediaUrl" />
-    <p class="challengeText">{{props.challengeObject.description}}</p>
+    <ChallengeProgress :target-amount="challengeObject.targetAmount" :saved-amount="challengeObject.savedAmount" :media-url="challengeObject.mediaUrl || ''" />
+    <p class="challengeText">{{challengeObject.description}}</p>
     <ChallengeCompleteButton/>
   </div>
 </template>
 
 <script setup lang="ts">
-  import ChallengeCompleteButton from '../challenges/ChallengeCompleteButton.vue';
-  import ChallengeProgress from '../challenges/ChallengeProgress.vue';
+import ChallengeCompleteButton from '../challenges/ChallengeCompleteButton.vue';
+import ChallengeProgress from '../challenges/ChallengeProgress.vue';
+import type { MasterChallenge } from '@/types/challengeTypes';
+import { ref } from 'vue';
+const daysLeft = ref(0);
 
-  const props = defineProps({
-    challengeObject: {
-      type: Object,
-      default: () => ({
-        challengeObject: {
-          title: "Default Title",
-          id: 1,
-          description: "Default Description",
-          targetAmount: 1,
-          savedAmount: 1,
-          mediaUrl: "Default",
-          timeInterval: "Default",
-          difficultyLevel: "Default",
-          expiryDate: new Date(),
-          completed: false
-        }
-      })
-    }
-  })
-
-  let daysLeft = 0
-  if(props.challengeObject){
-    if(props.challengeObject.expiryDate){
-      let currentDate = new Date()
-      daysLeft = (props.challengeObject.expiryDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24)
-    }
+defineProps({
+  challengeObject: {
+    type: Object as () => MasterChallenge,
+    required: true
   }
-
+});
 
 </script>
 

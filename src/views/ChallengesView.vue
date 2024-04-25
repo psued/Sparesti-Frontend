@@ -2,28 +2,29 @@
   <div id="challengesViewDiv">
     <h1 id="challengesTitle">Challenges</h1>
     <div id="challengesDiv">
-      <ChallengeComponent class="challenge"  v-for="challengeObject in challengeObjects" :challenge-object="challengeObject" />
+      <ChallengeComponent class="challenge" v-for="challengeObject in challengeObjects" :key="challengeObject.id" :challenge-object="challengeObject" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import ChallengeComponent from '../components/challenges/ChallengeComponent.vue'
-import {getChallengesByUser} from "@/api/challengeHooks";
-import {useUserStore} from "@/stores/userStore";
-import {computed, reactive, ref} from "vue";
+import { getUserChallenges } from "@/api/challengeHooks";
+import { useUserStore } from "@/stores/userStore";
+import { onMounted, ref } from "vue";
+import type { MasterChallenge } from '@/types/challengeTypes';
+const challengeObjects = ref<MasterChallenge[]>([]);
 
-const challengeObjects = computed(async () => {
+async function fetchChallengeObjects() {
   const userStore = useUserStore()
-  const userID = userStore.getUserId
-  const challenges = await getChallengesByUser(userID)
-  console.log(challenges)
-  return challenges
-})
+  const userId = userStore.getUserId
+  challengeObjects.value = await getUserChallenges(userId) || [];
+  console.log(challengeObjects.value);
+}
 
-console.log(challengeObjects.value)
-
-
+onMounted(async () => {
+  await fetchChallengeObjects();
+});
 </script>
 
 <!--reactive([
