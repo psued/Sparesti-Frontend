@@ -60,6 +60,7 @@ onMounted(() => {
 
 <style scoped>
 .container {
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -72,7 +73,6 @@ onMounted(() => {
   background-repeat: no-repeat;
   background-position: center;
   z-index: -1;
-  position: fixed;
   width: 100%;
   height: 100%;
 }
