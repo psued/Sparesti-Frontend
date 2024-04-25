@@ -125,9 +125,20 @@ const router = useRouter();
 
 function submitForm() {
   console.log('Saving Goal:', savingGoal);
-  // Here you would typically send this data to a server
-  router.push({ name: 'SavingGoalOverview' });
+  router.push({ 
+    name: 'SavingGoalOverview', 
+    params: { 
+      goal: {
+        ...savingGoal, 
+        uploadType: uploadType.value, 
+        image: imagePreview.value,
+        icon: selectedIconUrl.value,
+        emoji: emoji.value
+      } 
+    }
+  });
 }
+
 </script>
 
 <style scoped>

@@ -1,22 +1,28 @@
 <template>
   <div class="saving-goal-overview">
     <h1>Sparemål Oversikt</h1>
-    <div v-if="savingGoal">
-      <h2>{{ savingGoal.title }}</h2>
-      <p>{{ savingGoal.description }}</p>
-      <p><strong>Total Sparemål: </strong>{{ savingGoal.value }} NOK</p>
-      <div v-if="savingGoal.image || savingGoal.icon || savingGoal.emoji">
-        <img v-if="savingGoal.image" :src="savingGoal.image" alt="Sparemål Bilde">
-        <img v-if="savingGoal.icon" :src="savingGoal.icon" alt="Sparemål Ikon">
-        <span v-if="savingGoal.emoji">{{ savingGoal.emoji }}</span>
+    <div>
+      <h2>{{ goal.title }}</h2>
+      <p>{{ goal.description }}</p>
+      <p><strong>Mål i kr (NOK):</strong> {{ goal.value }}</p>
+      <div v-if="goal.uploadType === 'image' && goal.image">
+        <img :src="goal.image" alt="Uploaded Image">
+      </div>
+      <div v-if="goal.uploadType === 'icon'">
+        <img :src="goal.icon" alt="Selected Icon">
+      </div>
+      <div v-if="goal.uploadType === 'emoji'">
+        <p>{{ goal.emoji }}</p>
       </div>
     </div>
-    <router-link to="/">Tilbake til opprettelse</router-link>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, defineProps } from 'vue';
+import { useRoute } from 'vue-router';
 
-const savingGoal = ref(null);
+const props = defineProps({
+  goal: Object
+});
 </script>
