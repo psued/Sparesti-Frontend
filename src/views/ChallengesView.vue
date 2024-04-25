@@ -27,26 +27,13 @@ onMounted(async () => {
 });
 </script>
 
-<!--reactive([
-{
-title: "Example Title",
-id: 123,
-description: "Example Description",
-targetAmount: 250,
-savedAmount: 140,
-mediaUrl: "🤑",
-timeInterval: "Daily",
-difficultyLevel: "Hard",
-expiryDate: new Date(1715353792000),
-completed: false
-}])-->
-
 <style scoped>
 
 #challengesViewDiv{
   text-align: center;
   align-items: center;
-    justify-content: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 #challengesTitle {
@@ -56,11 +43,13 @@ completed: false
 }
 
 #challengesDiv {
-  float: left;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-.challenge {
-  display: inline-block;
-  margin: 10px;
+.challenge{
+  width: 250px;
+  flex-shrink: 0;
 }
 </style>

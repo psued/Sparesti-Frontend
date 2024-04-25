@@ -4,12 +4,14 @@
       <div class="timeSpanDiv">
         <p class="timeSpan">{{challengeObject.timeInterval}}</p>
       </div>
-      <p class="daysRemaining">{{Math.floor(1)}} Days Left</p>
+      <p class="daysRemaining">{{Math.floor(daysLeft)}} Days Left</p>
     </div>
     <h2 class="challengeTitle">Title</h2>
     <ChallengeProgress :target-amount="challengeObject.targetAmount" :saved-amount="challengeObject.savedAmount" :media-url="challengeObject.mediaUrl || ''" />
     <p class="challengeText">{{challengeObject.description}}</p>
-    <ChallengeCompleteButton/>
+    <div class="completeButtonContainer">
+      <ChallengeCompleteButton class="completeButton"/>
+    </div>
   </div>
 </template>
 
@@ -18,40 +20,49 @@ import ChallengeCompleteButton from '../challenges/ChallengeCompleteButton.vue';
 import ChallengeProgress from '../challenges/ChallengeProgress.vue';
 import type { MasterChallenge } from '@/types/challengeTypes';
 import { ref } from 'vue';
-const daysLeft = ref(0);
 
-defineProps({
+const props = defineProps({
   challengeObject: {
     type: Object as () => MasterChallenge,
     required: true
   }
 });
 
+const daysLeft = ref(0);
+if(props.challengeObject){
+  if(props.challengeObject.expiryDate){
+    let currentDate = new Date()
+    let expiryDate = new Date(props.challengeObject.expiryDate)
+    console.log(expiryDate)
+    daysLeft.value = (expiryDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24)
+  }
+}
 </script>
 
 <style scoped>
 
 .challengeBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 1rem;
   background-color: #A6CD94;
   border: 0.5vw solid #9BC289;
   border-radius: 20px;
-  width: 16rem;
-  height: 25rem;
+  padding: 1rem 0;
 }
 
 .challengeHeader {
-  margin: 0.5vw 0.5vw;
+  margin: 0 0.5vw;
   display: flex;
   justify-content: space-between;
 }
 
 .timeSpanDiv {
-  width: max-content;
   background-color: #F5C116;
   border-radius: 40px;
-  padding: 0 1.6rem;
-  display: inline-block;
-  margin-right: auto;
+  padding: 0 1rem;
+  margin-right: 1rem;
   vertical-align: center;
 }
 
@@ -62,10 +73,8 @@ defineProps({
 }
 
 .daysRemaining {
-  display: inline-block;
   color: #F0F0F0;
   font-weight: 400;
-  margin-left: auto;
   font-size: 1rem;
 }
 
@@ -77,7 +86,12 @@ defineProps({
 
 .challengeText {
   color: #EEEEEE;
-  margin: 0.2rem 0.3rem;
+  margin: 0.6rem 0.3rem;
+  white-space: normal;
+}
+
+.completeButton{
+
 }
 
 </style>
