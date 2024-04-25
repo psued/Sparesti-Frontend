@@ -2,39 +2,43 @@
   <div id="challengesViewDiv">
     <h1 id="challengesTitle">Challenges</h1>
     <div id="challengesDiv">
-      <Challenge class="challenge" v-for="challengeObject in challengeObjects" :challenge-object="challengeObject" />
+      <ChallengeComponent class="challenge"  v-for="challengeObject in challengeObjects" :challenge-object="challengeObject" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Challenge from '../components/challenges/Challenge.vue'
+import ChallengeComponent from '../components/challenges/ChallengeComponent.vue'
 import {getChallengesByUser} from "@/api/challengeHooks";
 import {useUserStore} from "@/stores/userStore";
+import {computed, reactive, ref} from "vue";
 
-
+const challengeObjects = computed(async () => {
   const userStore = useUserStore()
-  console.log(getChallengesByUser(userStore.getUserId))
+  const userID = userStore.getUserId
+  const challenges = await getChallengesByUser(userID)
+  console.log(challenges)
+  return challenges
+})
 
-
-  //Add API-call to retrieve list of users challenges here
-  const challengeObjects = [
-    {
-      title: "Example Title",
-      id: 123,
-      description: "Example Description",
-      targetAmount: 250,
-      savedAmount: 140,
-      mediaUrl: "🤑",
-      timeInterval: "Daily",
-      difficultyLevel: "Hard",
-      expiryDate: new Date(1715353792000),
-      completed: false
-    }
-  ]
+console.log(challengeObjects.value)
 
 
 </script>
+
+<!--reactive([
+{
+title: "Example Title",
+id: 123,
+description: "Example Description",
+targetAmount: 250,
+savedAmount: 140,
+mediaUrl: "🤑",
+timeInterval: "Daily",
+difficultyLevel: "Hard",
+expiryDate: new Date(1715353792000),
+completed: false
+}])-->
 
 <style scoped>
 
