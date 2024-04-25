@@ -7,12 +7,13 @@ import ChallengesView from "../views/ChallengesView.vue";
 import LoadingView from "@/views/LoadingView.vue";
 import BudgetPageView from "@/views/BudgetPageView.vue";
 import BudgetDetails from "@/views/BudgetDetails.vue";
-import ProfileView from '@/views/ProfileView.vue'
-import SettingsView from '@/views/SettingsView.vue'
+import ProfileView from "@/views/ProfileView.vue";
+import SettingsView from "@/views/SettingsView.vue";
 import BadgesView from "@/views/BadgesView.vue";
 import FrontPageView from "@/views/FrontPageView.vue";
 import QuestionnaireView from "@/views/QuestionnaireView.vue";
 import BadgeDetailsView from "@/views/BadgeDetailsView.vue";
+import SavingGoalFormView from "@/views/SavingGoalFormView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,14 +24,14 @@ const router = createRouter({
       component: FrontPageView,
     },
     {
-      path: '/profile',
-      name: 'profile',
-      component: ProfileView
+      path: "/profile",
+      name: "profile",
+      component: ProfileView,
     },
     {
-      path: '/settings',
-      name: 'settings',
-      component: SettingsView
+      path: "/settings",
+      name: "settings",
+      component: SettingsView,
     },
     {
       path: "/setup",
@@ -46,6 +47,11 @@ const router = createRouter({
       path: "/details",
       name: "budget-details",
       component: BudgetDetails,
+    },
+    {
+      path: "/savinggoalform",
+      name: "savinggoalform",
+      component: SavingGoalFormView,
     },
   {
     path: '/badges',

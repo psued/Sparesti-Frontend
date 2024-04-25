@@ -1,7 +1,7 @@
 <template>
-<BadgeDetails />
+  <BadgeDetails />
 </template>
 
 <script setup lang="ts">
-import BadgeDetails from '@/components/badge/BadgeDetails.vue';
+import BadgeDetails from "@/components/badge/BadgeDetails.vue";
 </script>

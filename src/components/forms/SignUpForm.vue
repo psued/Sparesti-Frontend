@@ -1,20 +1,22 @@
 <template>
-	<div class="signup-container">
-		<h1>Meld deg på</h1>
-		<p>Lag din egen bruker</p>
-		<form @submit.prevent="signUp">
-			<div>
-				<FormInput type="email" placeholder="Skriv inn email" v-model="email" />
-			</div>
-			<div>
-				<FormInput type="password" placeholder="Passord" v-model="password" />
-			</div>
-			<FormButton type="submit" @click="goToCompleteAccount">Sign up</FormButton>
-		</form>
-		<div class="login-link">
-			<p>Har allerede bruker? <button @click="goToLogin">Logg inn</button></p>
-		</div>
-	</div>
+  <div class="signup-container">
+    <h1>Meld deg på</h1>
+    <p>Lag din egen bruker</p>
+    <form @submit.prevent="signUp">
+      <div>
+        <FormInput type="email" placeholder="Skriv inn email" v-model="email" />
+      </div>
+      <div>
+        <FormInput type="password" placeholder="Passord" v-model="password" />
+      </div>
+      <FormButton type="submit" @click="goToCompleteAccount"
+        >Sign up</FormButton
+      >
+    </form>
+    <div class="login-link">
+      <p>Har allerede bruker? <button @click="goToLogin">Logg inn</button></p>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -53,9 +55,9 @@ const goToCompleteAccount = () => {
 }
 
 .login-link button {
-	background-color: transparent;
-	border: none;
-	cursor: pointer;
-	font: bold;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font: bold;
 }
 </style>

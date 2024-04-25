@@ -1,7 +1,7 @@
 <template>
   <div class="container">
 
-    
+
     <div class="background-container">
       <div class="background"></div>
     </div>
@@ -12,7 +12,9 @@
       <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
     </div>
     <road />
-    <ChallengeDetailsPopup :challenge="selectedChallengeForPopup" v-if="showPopup" @close="closePopup" :position="popupPosition" />  </div>
+    <ChallengeDetailsPopup :challenge="selectedChallengeForPopup" v-if="showPopup" @close="closePopup"
+      :position="popupPosition" />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -34,7 +36,7 @@ const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 
 const selectedChallengeForPopup = computed(() => selectedChallenge.value || ({} as Challenge));
 const maxMedia = window.matchMedia && window.matchMedia('(min-width: 480px)').matches;
-
+const userStore = useUserStore();
 
 const openPopup = (challenge: Challenge, top: number, left: number) => {
   selectedChallenge.value = challenge;
@@ -48,22 +50,29 @@ const closePopup = () => {
   selectedChallenge.value = null;
   showPopup.value = false;
 }
+
+onMounted(() => {
+  if (!userStore.isLoggedIn()) {
+    useLogin();
+  }
+})
 </script>
 
 <style scoped>
 .container {
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%; 
+  width: 100%;
   height: 100vh;
 }
+
 .background-container {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   z-index: -1;
-  position: fixed;
   width: 100%;
   height: 100%;
 }
@@ -80,7 +89,7 @@ const closePopup = () => {
 .cloud {
   z-index: 900;
   position: absolute;
-  width: var(--cloud-width, 130px);  
+  width: var(--cloud-width, 130px);
   height: auto;
   animation: floatClouds linear infinite;
   opacity: 0.3;
@@ -88,9 +97,11 @@ const closePopup = () => {
   left: -10%;
   height: 70px;
   width: 200px;
-  filter: blur(5px); /* Add blur effect */
+  filter: blur(5px);
+  /* Add blur effect */
 }
-.clouds{
+
+.clouds {
   z-index: 700;
 }
 
@@ -98,6 +109,7 @@ const closePopup = () => {
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100vw);
   }
@@ -109,12 +121,14 @@ const closePopup = () => {
   top: 15%;
   display: block;
 }
+
 .cloud:nth-child(2) {
   animation-duration: 60s;
   animation-delay: 5s;
   top: 30%;
   display: block;
 }
+
 .cloud:nth-child(3) {
   animation-duration: 30s;
   animation-delay: 10s;
@@ -199,10 +213,13 @@ const closePopup = () => {
 
 .avatar {
   position: absolute;
-  width: 50px; /* Adjust width as needed */
+  width: 50px;
+  /* Adjust width as needed */
   height: auto;
-  z-index: 4; /* Ensure pig is above the checkpoints */
-  transition: all 2s ease; /* Add smooth transition effect */
+  z-index: 4;
+  /* Ensure pig is above the checkpoints */
+  transition: all 2s ease;
+  /* Add smooth transition effect */
 }
 
 .checkpoint-icon {
@@ -218,5 +235,4 @@ const closePopup = () => {
   background-color: rgb(255, 192, 55);
   border-radius: 50%;
 }
-
 </style>

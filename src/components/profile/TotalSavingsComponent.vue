@@ -6,19 +6,19 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, computed } from 'vue';
+import { defineProps, computed } from "vue";
 
 const props = defineProps({
   totalSavings: {
     type: Number,
     default: 0,
-  }
+  },
 });
 
 const formattedTotalSavings = computed(() => {
-  return new Intl.NumberFormat('no-NO', {
-    style: 'currency',
-    currency: 'NOK'
+  return new Intl.NumberFormat("no-NO", {
+    style: "currency",
+    currency: "NOK",
   }).format(props.totalSavings);
 });
 </script>
@@ -34,5 +34,4 @@ const formattedTotalSavings = computed(() => {
 .total-savings-label {
   font-weight: bold;
 }
-
 </style>
