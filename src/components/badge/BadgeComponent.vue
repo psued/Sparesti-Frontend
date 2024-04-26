@@ -1,7 +1,11 @@
 <template>
-  <div class="badge" @mouseover="showRarity = true" @mouseleave="showRarity = false">
+  <div
+    class="badge"
+    @mouseover="showRarity = true"
+    @mouseleave="showRarity = false"
+  >
     <div class="badge-image" :class="{ unowned: !owned }">
-      <img :src="badge?.imageUrl" :alt="badge?.name">
+      <img :src="badge?.imageUrl" :alt="badge?.name" />
     </div>
     <h3 class="badge-name">{{ badge?.name }}</h3>
     <p class="badge-description">{{ badge?.description }}</p>
@@ -12,9 +16,9 @@
 </template>
 
 <script setup lang="ts">
-import { type Badge } from '@/types/Badge';
-import { ref, watchEffect } from 'vue';
-import { getBadgeRarity } from '@/api/badgeHooks';
+import { type Badge } from "@/types/Badge";
+import { ref, watchEffect } from "vue";
+import { getBadgeRarity } from "@/api/badgeHooks";
 
 const props = defineProps<{
   badge: Badge | null;
@@ -22,8 +26,7 @@ const props = defineProps<{
 }>();
 
 const showRarity = ref(false);
-const rarityMessage = ref('');
-
+const rarityMessage = ref("");
 
 watchEffect(async () => {
   if (showRarity.value) {
@@ -37,8 +40,8 @@ watchEffect(async () => {
   }
 });
 </script>
-  
-  <style scoped>
+
+<style scoped>
 .badge-image.unowned {
   filter: grayscale(100%);
 }
@@ -61,19 +64,19 @@ watchEffect(async () => {
   margin: 0;
 }
 
-  .badge {
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    text-align: center;
-    max-width: 175px;
-    transition: transform 0.3s ease;
-    height: 100%;
-    padding-bottom: 0px;
-    max-height: fit-content;
-  }
+.badge {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  text-align: center;
+  max-width: 175px;
+  transition: transform 0.3s ease;
+  height: 100%;
+  padding-bottom: 0px;
+  max-height: fit-content;
+}
 
 .badge-description {
   overflow-wrap: break-word;

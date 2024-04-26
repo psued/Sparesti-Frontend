@@ -38,7 +38,11 @@
       <form @submit.prevent="handleNewCategory">
         <input v-model="newCategory.emoji" placeholder="Emoji (eks. 🍔)" />
         <input v-model="newCategory.name" placeholder="Kategori navn" />
-        <input v-model.number="newCategory.total" type="Total sum" placeholder="Total Amount" />
+        <input
+          v-model.number="newCategory.total"
+          type="Total sum"
+          placeholder="Total Amount"
+        />
         <button type="submit">Lagre</button>
       </form>
     </div>
@@ -47,10 +51,10 @@
 
 <script setup lang="ts">
 import BudgetProgressBar from "./BudgetProgressBar.vue";
-import { ref, reactive, onMounted } from 'vue';
-import { useUserStore} from "@/stores/userStore";
+import { ref, reactive, onMounted } from "vue";
+import { useUserStore } from "@/stores/userStore";
 import axios from "axios";
-import {addRowToUserBudget, getBudgetByUser} from "@/api/budgetHooks";
+import { addRowToUserBudget, getBudgetByUser } from "@/api/budgetHooks";
 
 const userStore = useUserStore();
 
@@ -65,7 +69,7 @@ const props = defineProps({
   },
 });
 
-type ExpenseCategory = 'Kvitteringer' | 'Mat' | 'Klær' | 'Fritid' | 'Betting';
+type ExpenseCategory = "Kvitteringer" | "Mat" | "Klær" | "Fritid" | "Betting";
 
 type Expense = {
   [key in ExpenseCategory]: {
@@ -76,15 +80,15 @@ type Expense = {
 };
 
 const expenses: Expense = reactive({
-  Kvitteringer: { left: 2000, total: 4000, emoji: '🧾' },
-  Mat: { left: 1500, total: 2500, emoji: '🍞' },
-  Klær: { left: 400, total: 1000, emoji: '👕' },
-  Fritid: { left: 2700, total: 3000, emoji: '🍻' },
-  Betting: { left: 1250, total: 2000, emoji: '🎲' }
+  Kvitteringer: { left: 2000, total: 4000, emoji: "🧾" },
+  Mat: { left: 1500, total: 2500, emoji: "🍞" },
+  Klær: { left: 400, total: 1000, emoji: "👕" },
+  Fritid: { left: 2700, total: 3000, emoji: "🍻" },
+  Betting: { left: 1250, total: 2000, emoji: "🎲" },
 });
 
 const showModal = ref(false);
-const newCategory = reactive({ name: '', total: 0, emoji: '' });
+const newCategory = reactive({ name: "", total: 0, emoji: "" });
 
 const toggleModal = () => {
   showModal.value = !showModal.value;
@@ -99,13 +103,20 @@ const handleNewCategory = () => {
   expenses[newCategory.name as keyof typeof expenses] = {
     left: newCategory.total,
     total: newCategory.total,
-    emoji: newCategory.emoji
+    emoji: newCategory.emoji,
   };
-  addRowToUserBudget(userStore.getUserId, "string", 0, newCategory.total, newCategory.name, newCategory.emoji)
+  addRowToUserBudget(
+    userStore.getUserId,
+    "string",
+    0,
+    newCategory.total,
+    newCategory.name,
+    newCategory.emoji,
+  );
   toggleModal(); // Close modal after adding the category
-  newCategory.name = '';
+  newCategory.name = "";
   newCategory.total = 0;
-  newCategory.emoji = '';
+  newCategory.emoji = "";
 };
 
 onMounted(async () => {
@@ -121,12 +132,12 @@ onMounted(async () => {
     if (expensesResponse) {
       for (const entry of expensesResponse) {
         for (const row of entry.row) {
-          const {category, usedAmount, maxAmount, emoji} = row;
+          const { category, usedAmount, maxAmount, emoji } = row;
           // Use category from row as the key for expenses
           expenses[category as ExpenseCategory] = {
             left: usedAmount, // Assuming usedAmount represents the left amount
             total: maxAmount, // Assuming maxAmount represents the total amount
-            emoji: emoji // Hardcoding emoji for now
+            emoji: emoji, // Hardcoding emoji for now
           };
         }
       }
@@ -181,15 +192,15 @@ const ProgressBar = BudgetProgressBar;
   padding: 3px;
 }
 
-  .header-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-  .expenses {
-    margin: 15px;
-  }
+.expenses {
+  margin: 15px;
+}
 
 .expenses h3 {
   position: relative;
@@ -225,23 +236,23 @@ const ProgressBar = BudgetProgressBar;
   font-weight: bold;
 }
 
-  .amount {
-    white-space: nowrap;
-    flex-shrink: 0;
-    margin-right: 10px;
-  }
+.amount {
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-right: 10px;
+}
 
-  .add-category-btn {
-    padding: 0 1rem;
-    width: max-content;
-    display: flex;
-    background-color: #a6cd94; 
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    border-width: 0.15rem;
-    cursor: pointer;
-  }
+.add-category-btn {
+  padding: 0 1rem;
+  width: max-content;
+  display: flex;
+  background-color: #a6cd94;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  border-width: 0.15rem;
+  cursor: pointer;
+}
 
 .modal {
   position: fixed;
