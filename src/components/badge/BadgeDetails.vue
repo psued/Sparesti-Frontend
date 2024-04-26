@@ -32,20 +32,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import BadgeComponent from '@/components/badge/BadgeComponent.vue';
-import type { Badge } from '@/types/Badge';
-import { getBadgeById, getAllUsersWithGivenBadge } from '@/api/badgeHooks';
-import type { UserBadgeResponse } from '@/types/UserBadgeResponse';
-import { formatDate } from '@/utils/dateUtils';
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import BadgeComponent from "@/components/badge/BadgeComponent.vue";
+import type { Badge } from "@/types/Badge";
+import { getBadgeById, getAllUsersWithGivenBadge } from "@/api/badgeHooks";
+import type { UserBadgeResponse } from "@/types/UserBadgeResponse";
+import { formatDate } from "@/utils/dateUtils";
 
 const badge = ref<Badge | null>(null);
 const route = useRoute();
 const router = useRouter();
 const badgeId = Number(route.params.id);
 const usersWithBadge = ref<UserBadgeResponse[] | null>(null);
-const isOwned = route.query.isOwned === 'true';
+const isOwned = route.query.isOwned === "true";
 
 onMounted(async () => {
   badge.value = await getBadgeById(badgeId);

@@ -1,28 +1,69 @@
 <template>
-  <div class="saving-goal-overview">
-    <h1>Sparemål Oversikt</h1>
-    <div>
-      <h2>{{ goal.title }}</h2>
-      <p>{{ goal.description }}</p>
-      <p><strong>Mål i kr (NOK):</strong> {{ goal.value }}</p>
-      <div v-if="goal.uploadType === 'image' && goal.image">
-        <img :src="goal.image" alt="Uploaded Image">
-      </div>
-      <div v-if="goal.uploadType === 'icon'">
-        <img :src="goal.icon" alt="Selected Icon">
-      </div>
-      <div v-if="goal.uploadType === 'emoji'">
-        <p>{{ goal.emoji }}</p>
-      </div>
+  <router-link to="/savinggoalform" class="back-arrow">← Tilbake til opprettelse</router-link>
+  <h1 class="title">Sparemål Detaljer</h1>
+
+  <div class="saving-goals-container">
+    <div v-for="goal in savingGoals" :key="goal.id" class="saving-goal-item">
+      <SavingGoalCard :savingGoal="goal" @deleteGoal="handleDelete(goal.id)" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps } from 'vue';
-import { useRoute } from 'vue-router';
+  import { ref, onMounted } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { getSavingGoals, deleteSavingGoal } from '@/api/savingGoalHooks';
+  import { useUserStore } from '@/stores/userStore';
+  import SavingGoalCard from '@/components/saving_goal/SavingGoalCard.vue';
 
-const props = defineProps({
-  goal: Object
-});
+  const savingGoals = ref<{ id: string }[]>([]);
+
+  const route = useRoute();
+  const userStore = useUserStore();
+
+  onMounted(async () => {
+    const userId = userStore.getUserId;
+    if (userId) {
+      savingGoals.value = await getSavingGoals(userId);
+      console.log(savingGoals.value);
+    }
+  });
+
+  const handleDelete = async (goalId: string) => {
+    try {
+      await deleteSavingGoal(Number(goalId)); // Call your API method to delete the goal
+    } catch (error) {
+      console.error('Feil ved å slette sparemål:', error);
+    }
+  };
 </script>
+
+  <style scoped>
+  .back-arrow {
+    font-size: 24px;
+    color: #333;
+    text-decoration: none;
+    padding-bottom: 10px;
+    display: block;
+    max-width: fit-content;
+  }
+
+  .title {
+    text-align: center;
+    font-size: 25px;
+  }
+
+  .saving-goals-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Creates a 3x3 grid layout */
+  grid-gap: 20px; /* This is the space between each card */
+  justify-content: center;
+  align-items: center;
+  }
+
+  .saving-goal-item {
+    width: 100%; 
+    display: flex; 
+    justify-content: center;
+  }
+</style>

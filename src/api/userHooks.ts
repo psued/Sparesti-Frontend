@@ -63,7 +63,7 @@ export const getUserInfo = async (): Promise<UserInfo | null> => {
     console.log("User id set: " + response.data.id);
     userStore.setUserId(response.data.id);
   });
-  
+
   return userInfoRes.data;
 };
 
