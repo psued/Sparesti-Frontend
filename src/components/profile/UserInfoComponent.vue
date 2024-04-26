@@ -28,12 +28,12 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, ref, computed } from 'vue';
+import { defineProps, ref, computed } from "vue";
 import "@/assets/icons.css";
 import { updateUserInfo } from "@/api/userHooks";
 
 const props = defineProps<{
-	user: any;
+  user: any;
 }>();
 
 const editMode = ref(false);

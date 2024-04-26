@@ -65,10 +65,22 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
       >
         <text>Challenges</text>
       </router-link>
-      <router-link v-if="!isPhone" class="bar-item-desktop" :class="[{'text-dark' : darkMode}]" @click="toggleBar" to="/badges">
+      <router-link
+        v-if="!isPhone"
+        class="bar-item-desktop"
+        :class="[{ 'text-dark': darkMode }]"
+        @click="toggleBar"
+        to="/badges"
+      >
         <text>Badges</text>
       </router-link>
-        <router-link v-if="!isPhone" class="bar-item-desktop" :class="[{'text-dark' : darkMode}]" @click="toggleBar" to="/savinggoalform">
+      <router-link
+        v-if="!isPhone"
+        class="bar-item-desktop"
+        :class="[{ 'text-dark': darkMode }]"
+        @click="toggleBar"
+        to="/savinggoalform"
+      >
         <text>Saving Goal</text>
       </router-link>
       <div
@@ -174,14 +186,14 @@ onMounted(() => {
 <style scoped>
 /* Styles for the sidebar component */
 .sidebar {
-    position: fixed;
-    z-index: 990;
-    top: 0;
-    right: 0;
-    background-color: #a6cd94 ;
-    height: 100vh;
-    width: 80vw;
-    border-left: 3px solid rgba(0,0,0, 0.5);
+  position: fixed;
+  z-index: 990;
+  top: 0;
+  right: 0;
+  background-color: #a6cd94;
+  height: 100vh;
+  width: 80vw;
+  border-left: 3px solid rgba(0, 0, 0, 0.5);
 }
 .sidebar-dark {
   border-left: 2px solid #757bfd;
