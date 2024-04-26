@@ -1,5 +1,6 @@
 export interface MasterChallenge {
   id: number;
+  title: string;
   description: string;
   targetAmount: number;
   savedAmount: number;

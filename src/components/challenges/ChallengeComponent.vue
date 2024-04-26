@@ -6,7 +6,7 @@
       </div>
       <p class="daysRemaining">{{Math.floor(daysLeft)}} Days Left</p>
     </div>
-    <h2 class="challengeTitle">Title</h2>
+    <h2 class="challengeTitle">{{challengeObject.title}}</h2>
     <ChallengeProgress :target-amount="challengeObject.targetAmount" :saved-amount="challengeObject.savedAmount" :media-url="challengeObject.mediaUrl || ''" />
     <p class="challengeText">{{challengeObject.description}}</p>
     <div class="completeButtonContainer">
