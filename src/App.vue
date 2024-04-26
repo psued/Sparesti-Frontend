@@ -1,8 +1,12 @@
 <template>
   <div class="layout">
-    <NAV />
+    <div id="nav">
+      <NAV />
+    </div>
 
-    <RouterView />
+    <div id="content">
+      <RouterView/>
+    </div>
   </div>
 </template>
 
@@ -25,5 +29,16 @@ document.body.classList.toggle("dark", isDark.value);
 .layout {
   display: flex;
   flex-direction: column;
+}
+
+#nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+#content{
+  margin-top: 90px;
 }
 </style>
