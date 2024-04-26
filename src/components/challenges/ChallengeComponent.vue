@@ -16,8 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import ChallengeCompleteButton from '../challenges/ChallengeCompleteButton.vue';
-import ChallengeProgress from '../challenges/ChallengeProgress.vue';
+import ChallengeCompleteButton from './ChallengeButtonComponent.vue';
+import ChallengeProgress from './ChallengeProgressComponent.vue';
 import type { MasterChallenge } from '@/types/challengeTypes';
 import { ref } from 'vue';
 
