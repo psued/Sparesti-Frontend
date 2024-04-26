@@ -15,24 +15,35 @@ import { defineEmits } from 'vue'
 const emit = defineEmits(['close'])
 
 const handleClose = () => {
+  console.log('close')
   emit('close')
 }
 </script>
 
 <style scoped>
 .modal {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  top: 90px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
   width: 400px;
   padding: 20px;
-  margin: 200px auto;
   background: white;
   border-radius: 10px;
+  height: 70vh;
 }
+
 .backdrop {
-  top: 0;
+  display: table;
   position: fixed;
   background: rgba(0,0,0,0.2);
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 90px); /* Subtract the height of the navbar */
+  bottom: 0;
 }
 .modal h1 {
   color: #03cfb4;

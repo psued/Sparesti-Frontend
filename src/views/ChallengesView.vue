@@ -1,14 +1,12 @@
 <template>
   <div id="challengesViewDiv">
     <h1 id="challengesTitle">Challenges</h1>
-<!--
-    <NewChallengeComponent v-if="showNewChallenge" @close="toggleModal"/>
--->
     <div id="challengesDiv">
       <ChallengeComponent class="challenge" v-for="challengeObject in challengeObjects.values()" :key="challengeObject.id" :challenge-object="challengeObject" />
     </div>
   </div>
-  <NewChallengeButtonComponent class="newChallengeButton"/>
+  <NewChallengeComponent v-if="showNewChallenge" @close="toggleModal"/>
+  <NewChallengeButtonComponent v-if="!showNewChallenge" @click="toggleModal" class="newChallengeButton"/>
 </template>
 
 <script setup lang="ts">
@@ -31,11 +29,10 @@ onMounted(async () => {
   await fetchChallengeObjects();
 });
 
-let showNewChallenge = ref(true)
+let showNewChallenge = ref(false)
 
 function toggleModal() {
-  showNewChallenge.value = !showNewChallenge
-  console.log("hei")
+  showNewChallenge.value = !showNewChallenge.value
 }
 
 </script>
@@ -73,6 +70,7 @@ NewChallengeComponent{
 }
 .newChallengeButton{
   position: fixed;
+  cursor: pointer;
   height: 100px;
   width: 100px;
   bottom: 2rem;
