@@ -12,33 +12,17 @@ devices. * The component handles dark mode and theme changes. */
         class="logo"
       />
     </RouterLink>
-    <!-- Hamburger menu -->
-    <div :class="['hamburger', { darkMode: 'hamburger-dark' }]">
-      <div class="hamburger-box" @click="toggleSidebar()">
-        <span
-          :class="[
-            'hamburger-line',
-            'top',
-            { 'hamburger-line-dark': darkMode },
-          ]"
-        ></span>
-        <span
-          :class="[
-            'hamburger-line',
-            'middle',
-            { 'hamburger-line-dark': darkMode },
-          ]"
-        ></span>
-        <span
-          :class="[
-            'hamburger-line',
-            'bottom',
-            { 'hamburger-line-dark': darkMode },
-          ]"
-        ></span>
-      </div>
+  </div>
+  <!-- Hamburger menu -->
+  <div :class="['hamburger', { darkMode: 'hamburger-dark' }]">
+    <div class="hamburger-box" @click="toggleSidebar()">
+      <span :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"></span>
+      <span :class="['hamburger-line', 'middle', { 'hamburger-line-dark': darkMode }]"></span>
+      <span :class="['hamburger-line', 'bottom', { 'hamburger-line-dark': darkMode }]"></span>
     </div>
   </div>
+
+
 
   <!-- Sidebar -->
   <Transition name="move">
@@ -184,6 +168,7 @@ const handleThemeChange = () => {
 
 .hamburger {
   cursor: pointer;
+  position: fixed;
   margin-left: auto;
   width: fit-content;
   display: flex;

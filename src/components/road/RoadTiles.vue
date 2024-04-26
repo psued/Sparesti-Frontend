@@ -16,8 +16,9 @@
         <div class="road-start road-end"></div>
       </div>
       <div class="road-tile" v-for="(node, index) in nodes" :key="index">
-        <img @click="openPopup(node.challenge)" class="road-node" :src="node.image" :class="node.point"
-          :id="'node-' + index"></img>
+        <img @click="openPopup(node.challenge)" class="road-node" :src="node.completed ? comleteImg : node.image" :class="[node.point , { 'completed-node': node.completed }]"
+          :id="'node-' + index">
+        </img>
         <svg class="road-svg" :class="node.direction"></svg>
       </div>
       <div v-if="nodes.length > 0" class="road-tile-start">
@@ -43,6 +44,7 @@ import { useLogin } from "@/api/authenticationHooks";
 
 const selectedChallenge = ref<Challenge | null>(null);
 const showPopup = ref(false);
+const comleteImg = "https://ahaslides.com/wp-content/uploads/2021/12/Year-End-Review-1-1024x576.png";
 const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 
 
@@ -58,6 +60,7 @@ interface Node {
   point: string;
   image: string;
   name: string;
+  completed: boolean;
   challenge: Challenge;
 }
 
@@ -78,7 +81,8 @@ const addNode = (ch: any) => {
   const image = ch.mediaUrl;
   const name = `Node ${nodes.value.length + 1}`;
   const challenge = ch;
-  nodes.value.unshift({ direction, point, image, name, challenge });
+  const completed = ch.completed;
+  nodes.value.unshift({ direction, point, image, name, completed, challenge });
 };
 
 const userStore = useUserStore();
@@ -125,6 +129,10 @@ button {
   height: 50px;
   width: 100px;
   bottom: 100px;
+}
+
+img {
+  overflow: hidden;
 }
 
 .road-container {
@@ -208,31 +216,37 @@ button {
 
 .road-node {
   position: absolute;
-  border-radius: 2px;
-  background-color: rgba(0, 0, 0, 0.2);
+  border: 3px solid rgba(0,0,0,1);
+  border-radius: 4px;
+  background-color: #f3f3f3;
   color: black;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   font-size: 18px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+  background-size: cover;
+  overflow: hidden;
+  object-fit: contain;
 }
 
 .road-node-right {
-  margin-top: 6px;
-  height: 130px;
-  width: 86px;
-  right: 69px;
+  margin-top: 2px;
+  height: 137px;
+  width: 94px;
+  right: 65px;
 }
 
 .road-node-left {
-  margin-top: 4px;
-  height: 124px;
-  width: 84px;
-  left: 67px;
+  margin-top: 1.5px;
+  height: 129px;
+  width: 91px;
+  left: 64px;
+}
+
+.completed-node {
+  border: 2px solid green;
+  background-color: rgba(0, 255, 0, 0.5);
 }
 
 .road-svg {
