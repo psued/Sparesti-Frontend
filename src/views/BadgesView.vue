@@ -4,9 +4,16 @@
     <div class="badges">
       <div class="badges-page">
         <div class="badge-list">
-          <router-link v-for="badge in badges" :key="badge.id"
-            :to="{ name: 'BadgeDetails', params: { id: badge.id }, query: { isOwned: isBadgeOwned(badge).toString() } }"
-            class="black-link">
+          <router-link
+            v-for="badge in badges"
+            :key="badge.id"
+            :to="{
+              name: 'BadgeDetails',
+              params: { id: badge.id },
+              query: { isOwned: isBadgeOwned(badge).toString() },
+            }"
+            class="black-link"
+          >
             <BadgeComponent :badge="badge" :owned="isBadgeOwned(badge)" />
           </router-link>
         </div>
@@ -16,13 +23,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
-import BadgeComponent from '@/components/badge/BadgeComponent.vue';
-import { type Badge, type UserBadge } from '@/types/Badge'; // Importing the Badge interface
-import { getAllBadges, getBadgesByUser } from '@/api/badgeHooks';
-import { getUserByUsername } from '@/api/userHooks';
-import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores/userStore';
+import { onMounted, ref, computed } from "vue";
+import BadgeComponent from "@/components/badge/BadgeComponent.vue";
+import { type Badge, type UserBadge } from "@/types/Badge"; // Importing the Badge interface
+import { getAllBadges, getBadgesByUser } from "@/api/badgeHooks";
+import { getUserByUsername } from "@/api/userHooks";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/stores/userStore";
 
 const badges = ref<Badge[]>([]);
 const userBadges = ref<UserBadge[]>([]);
@@ -31,16 +38,17 @@ const userStore = useUserStore();
 const userId = userStore.getUserId;
 
 onMounted(async () => {
-  badges.value = await getAllBadges() as Badge[];
-  console.log(userId)
-  userBadges.value = await getBadgesByUser(userId) as unknown as UserBadge[];
+  badges.value = (await getAllBadges()) as Badge[];
+  console.log(userId);
+  userBadges.value = (await getBadgesByUser(userId)) as unknown as UserBadge[];
 });
 
 const isBadgeOwned = (badge: Badge) => {
-  return userBadges.value.some((userBadge: UserBadge) => userBadge.badge.id === badge.id);
+  return userBadges.value.some(
+    (userBadge: UserBadge) => userBadge.badge.id === badge.id,
+  );
 };
 </script>
-
 
 <style scoped>
 .badge-image.unowned {

@@ -13,12 +13,11 @@ export const getBankAccounts = async (
 };
 
 export const getBankAccountDetails = async (
-  userId: number,
-  accountId: number,
+  accountNr: number,
 ): Promise<any | null> => {
   try {
     const response = await api.get(
-      `/users/${userId}/bank-accounts/${accountId}`,
+      `/bank/account/details/${accountNr}`,
     );
     return response.data;
   } catch (error) {
@@ -26,3 +25,17 @@ export const getBankAccountDetails = async (
     return null;
   }
 };
+
+export const updateAccounts = async (checkingAccountNr: number | null, savingsAccountNr: number | null): Promise<any | null> => {
+  const body = {
+    checkingAccountNr,
+    savingsAccountNr,
+  };
+  try {
+    const res = await api.post('/users/update', body)
+    return res;
+  } catch (error: any) {
+    console.error("Error updating accounts:", error);
+    return error.response;
+  }
+}

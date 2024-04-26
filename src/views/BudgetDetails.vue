@@ -6,9 +6,8 @@
   <div class="budget-details">
     <div class="budget-left">
       <h2>Resterende budsjett</h2>
-      <p>{{ leftAmount }} kr av {{ totalAmount }} kr</p>
-      <progress-bar :value="leftAmount" :max="totalAmount"></progress-bar>
-
+      <p>{{ remainingBudget }} kr av {{ totalBudget }} kr</p>
+      <progress-bar :value="remainingBudget" :max="totalBudget"></progress-bar>
     </div>
   </div>
 
@@ -54,6 +53,7 @@ import { useUserStore} from "@/stores/userStore";
 import axios from "axios";
 import {addRowToUserBudget, getBudgetById, getBudgetByUser} from "@/api/budgetHooks";
 
+const userStore = useUserStore();
 
 const props = defineProps({
   remainingBudget: {
@@ -65,9 +65,6 @@ const props = defineProps({
     default: 10000,
   },
 });
-
-let totalAmount = 0;
-let leftAmount = 0;
 
 type ExpenseCategory = 'Kvitteringer' | 'Mat' | 'Klær' | 'Fritid' | 'Betting';
 
@@ -112,7 +109,6 @@ const handleNewCategory = () => {
   newCategory.emoji = '';
 };
 
-
 onMounted(async () => {
   try {
     let userStore = useUserStore();
@@ -123,7 +119,7 @@ onMounted(async () => {
 
     console.log(userId);
 
-    const expensesResponse = await getBudgetById(userId, route.params.id);
+    const expensesResponse = await getBudgetByUser(userId);
 
     console.log(expensesResponse);
 
@@ -140,7 +136,7 @@ onMounted(async () => {
           leftAmount += usedAmount;
         }
       }
-  } catch (error) {
+    } catch (error) {
     console.error(error);
   }
 });

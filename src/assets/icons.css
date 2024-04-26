@@ -11,19 +11,19 @@
   background-position: center;
 }
 
-.road-left-light{
-    background-image: url(src/assets/svg_icons/road-left-light.svg);
-    display: inline-block;
-    width: calc(320px * 1.5); 
-    min-width: calc(320px * 1.5);
-    height: calc(120px * 1.5);
-    min-height: calc(120px * 1.5);
-    margin-left: 24.5px;
-    margin-top: -1px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    z-index: 101;
+.road-left-light {
+  background-image: url(src/assets/svg_icons/road-left-light.svg);
+  display: inline-block;
+  width: calc(320px * 1.5);
+  min-width: calc(320px * 1.5);
+  height: calc(120px * 1.5);
+  min-height: calc(120px * 1.5);
+  margin-left: 24.5px;
+  margin-top: -1px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 101;
 }
 
 .road-right-light {
