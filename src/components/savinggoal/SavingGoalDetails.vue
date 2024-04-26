@@ -15,8 +15,9 @@
   import { getSavingGoals, deleteSavingGoal } from '@/api/savingGoalHooks';
   import { useUserStore } from '@/stores/userStore';
   import SavingGoalCard from '@/components/savinggoal/SavingGoalCard.vue';
+  import type { SavingGoal } from '@/types/SavingGoal';
 
-  const savingGoals = ref<{ id: string }[]>([]);
+  const savingGoals = ref<SavingGoal[]>([]);
 
   const route = useRoute();
   const userStore = useUserStore();

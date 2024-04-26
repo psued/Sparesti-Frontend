@@ -1,17 +1,16 @@
 import { api } from "@/api/axiosConfig";
-import type { SavingGoalCreation } from "@/types/SavingGoal";
+import { type SavingGoalCreation, type SavingGoal } from "@/types/SavingGoal";
 
 export const createSavingGoal = async (
-  userId: number,
   data: SavingGoalCreation,
-): Promise<SavingGoalCreation> => {
+): Promise<SavingGoal> => {
   try {
     const response = await api.post(
-      `/savings-goals/${userId}/savings-goals/add`,
+      `/savings-goals`,
       data,
     );
 
-    if (response.status === 200) {
+    if (response.status === 201) {
       return response.data;
     } else {
       throw new Error("Failed to create saving goal");
@@ -20,6 +19,25 @@ export const createSavingGoal = async (
     throw new Error(`Error creating saving goal: ${error}`);
   }
 };
+
+export const addSavingGoalToUser = async (
+  userId: number,
+  savingGoalId: number,
+): Promise<void> => {
+  try {
+    const response = await api.post(
+      `/savings-goals/add-user?userId=${userId}&savingsGoalId=${savingGoalId}`,
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Failed to add saving goal to user");
+    }
+  } catch (error) {
+    throw new Error(`Error adding saving goal to user: ${error}`);
+  }
+}
 
 export const getSavingGoals = async (userId: number) => {
   try {
@@ -61,22 +79,5 @@ export const deleteSavingGoal = async (savingGoalId: number) => {
     }
   } catch (error) {
     throw new Error(`Error deleting saving goal: ${error}`);
-  }
-};
-
-export const editSavingGoal = async ( savingGoalId: number, data: SavingGoalCreation) => {
-  try {
-    const response = await api.put(
-      `/savings-goals/${savingGoalId}`,
-      data,
-    );
-
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      throw new Error("Failed to edit saving goal");
-    }
-  } catch (error) {
-    throw new Error(`Error editing saving goal: ${error}`);
   }
 };

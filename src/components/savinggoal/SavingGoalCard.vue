@@ -21,15 +21,7 @@
   
 <script setup lang="ts">
 import { defineProps, defineEmits, ref } from 'vue';
-
-interface SavingGoal {
-  id: string;
-  name: string;
-  targetAmount: number;
-  deadline: string;
-  mediaUrl?: string;
-  completed: boolean;
-}
+import type { SavingGoal } from '@/types/SavingGoal';
 
 const props = defineProps({
   savingGoal: {

@@ -56,7 +56,9 @@
           <input
             type="number"
             id="value"
-            v-model.number="savingGoal.targetAmount"
+            min="1"
+            max="1000000"
+            v-model.number="savingGoal.targetAmount" 
           />
         </div>
   
@@ -79,9 +81,10 @@
   import { ref, reactive } from "vue";
   import { useRouter } from "vue-router";
   import type { SavingGoalCreation } from "@/types/SavingGoal";
-  import { createSavingGoal } from "@/api/savingGoalHooks";
+  import { createSavingGoal, addSavingGoalToUser } from "@/api/savingGoalHooks";
   import { useUserStore } from "@/stores/userStore";
   import { uploadImage } from "@/utils/imageUtils";
+  import type { SavingGoal } from "@/types/SavingGoal";
   
   interface Icon {
     name: string;
@@ -96,7 +99,8 @@
     deadline: new Date().toISOString().split("T")[0],
   });
   const userStore = useUserStore();
-  const userId = ref(userStore.getUserId);
+  const userId = userStore.getUserId;
+  const createdSavingGoal = ref<SavingGoal | null>(null);
   
   const minDeadline = new Date().toISOString().split("T")[0];
   const imagePreview = ref<string | null>(null);
@@ -194,9 +198,14 @@
   
   const createSavingsGoal = async (savingGoalData: SavingGoalCreation) => {
     try {
-      const newSavingGoal = await createSavingGoal(userId.value, savingGoalData);
+      const newSavingGoal = await createSavingGoal(savingGoalData);
+      console.log(newSavingGoal);
+      createdSavingGoal.value = newSavingGoal;
+      const savingGoalId = createdSavingGoal.value.id;
+      console.log(savingGoalId)
+      await addSavingGoalToUser(userId, Number(savingGoalId));
       console.log("Saving goal created:", newSavingGoal);
-      router.push(`/savinggoal-details/${(newSavingGoal as any).id}`);
+      router.push(`/savinggoal-details/${userId}`);
     } catch (error) {
       console.error("Error creating saving goal:", error);
     }
@@ -205,16 +214,6 @@
   const submitForm = async () => {
     if (!savingGoal.name || !savingGoal.targetAmount || !savingGoal.deadline) {
       window.alert("Fyll ut alle feltene!");
-      return;
-    }
-  
-    if (savingGoal.targetAmount <= 0) {
-      window.alert("Målet for sparing må være større enn 0!");
-      return;
-    }
-  
-    if (savingGoal.targetAmount >= 1000000) {
-      window.alert("Målet for sparing kan ikke være høyere enn 1 million kr!");
       return;
     }
   
@@ -236,6 +235,7 @@
       } else {
         window.alert("Error ved opplasting av bilde!");
         savingGoal.mediaUrl = "";
+        return;
       }
     } else if (uploadType.value === "icon") {
       savingGoal.mediaUrl = selectedIconUrl.value || "";
