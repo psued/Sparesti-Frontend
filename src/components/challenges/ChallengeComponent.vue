@@ -89,9 +89,4 @@ if(props.challengeObject){
   margin: 0.6rem 0.3rem;
   white-space: normal;
 }
-
-.completeButton{
-
-}
-
 </style>
