@@ -25,7 +25,6 @@ async function fetchChallengeObjects() {
   const userStore = useUserStore()
   const userId = userStore.getUserId
   challengeObjects.value = await getUserChallenges(userId) || [];
-  console.log(challengeObjects.value);
 }
 
 onMounted(async () => {

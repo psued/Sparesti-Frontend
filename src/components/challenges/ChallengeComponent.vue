@@ -33,7 +33,6 @@ if(props.challengeObject){
   if(props.challengeObject.expiryDate){
     let currentDate = new Date()
     let expiryDate = new Date(props.challengeObject.expiryDate)
-    console.log(expiryDate)
     daysLeft.value = (expiryDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24)
   }
 }
