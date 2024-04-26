@@ -81,3 +81,17 @@ export const deleteSavingGoal = async (savingGoalId: number) => {
     throw new Error(`Error deleting saving goal: ${error}`);
   }
 };
+
+export const updateSavingGoal = async ( savingGoalId: number, data: SavingGoalCreation) => {
+  try {
+    const response = await api.put(`/savings-goals/${savingGoalId}`, data);
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Failed to update saving goal");
+    }
+  } catch (error) {
+    throw new Error(`Error updating saving goal: ${error}`);
+  }
+};
