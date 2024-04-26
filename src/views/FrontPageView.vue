@@ -22,11 +22,8 @@
 <script setup lang="ts">
 import ChallengeDetailsPopup from "@/components/ChallengeDetailsPopup.vue";
 import { onMounted, computed, ref } from "vue";
-import { getChallengesByUser } from "@/api/challengeHooks";
-import {
-  type ChallengesResponse,
-  type Challenge,
-} from "@/types/challengeTypes";
+import { getSortedChallengesByUser } from "@/api/challengeHooks";
+import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
 import { useUserStore } from "@/stores/userStore";
 import { useRouter } from "vue-router";
 import { useLogin } from "@/api/authenticationHooks";
@@ -68,6 +65,7 @@ onMounted(() => {
 
 <style scoped>
 .container {
+  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -80,7 +78,6 @@ onMounted(() => {
   background-repeat: no-repeat;
   background-position: center;
   z-index: -1;
-  position: fixed;
   width: 100%;
   height: 100%;
 }

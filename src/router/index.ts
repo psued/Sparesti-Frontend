@@ -1,8 +1,9 @@
-import { createRouter, createWebHistory } from "vue-router";
-import AuthenticationView from "@/views/AuthenticationView.vue";
-import LoginForm from "@/components/forms/LoginForm.vue";
-import SignUpForm from "@/components/forms/SignUpForm.vue";
-import CompleteAccountForm from "@/components/forms/CompleteAccountForm.vue";
+import { createRouter, createWebHistory } from 'vue-router'
+import AuthenticationView from '@/views/AuthenticationView.vue'
+import LoginForm from '@/components/forms/LoginForm.vue'
+import SignUpForm from '@/components/forms/SignUpForm.vue'
+import CompleteAccountForm from '@/components/forms/CompleteAccountForm.vue'
+import ChallengesView from "../views/ChallengesView.vue";
 import LoadingView from "@/views/LoadingView.vue";
 import BudgetPageView from "@/views/BudgetPageView.vue";
 import BudgetDetails from "@/views/BudgetDetails.vue";
@@ -71,8 +72,13 @@ const router = createRouter({
       props: true,
     },
     {
-      path: "/authentication",
-      name: "authentication",
+      path: '/challenges',
+      name: 'challenges',
+      component: ChallengesView
+    },
+    {
+      path: '/authentication',
+      name: 'authentication',
       component: AuthenticationView,
       children: [
         {
