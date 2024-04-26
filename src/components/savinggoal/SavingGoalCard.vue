@@ -1,0 +1,117 @@
+<template>
+  <div class="saving-goal-card">
+    <div v-if="isEditing">
+      <input v-model="editableGoal.name" placeholder="Navn på sparemål" />
+      <input v-model="editableGoal.targetAmount" type="number" placeholder="Sparemål i kr" />
+      <input v-model="editableGoal.deadline" type="date" placeholder="Frist" />
+      <input v-model="editableGoal.mediaUrl" type="url" placeholder="Media URL" />
+      <button @click="saveChanges">Save Changes</button>
+    </div>
+    <div v-else>
+      <h2>{{ savingGoal.name }}</h2>
+      <p><strong>Sparemål:</strong> {{ savingGoal.targetAmount }} kr</p>
+      <p><strong>Frist:</strong> {{ savingGoal.deadline }}</p>
+      <img v-if="savingGoal.mediaUrl" :src="savingGoal.mediaUrl" alt="Media" class="img">
+      <p v-if="savingGoal.completed" class="completed">Completed</p>
+      <div class="delete-icon" @click="confirmDelete">✖</div>
+      <div class="edit-icon" @click="startEditing">✎</div>
+    </div>
+  </div>
+</template>
+  
+<script setup lang="ts">
+import { defineProps, defineEmits, ref } from 'vue';
+
+interface SavingGoal {
+  id: string;
+  name: string;
+  targetAmount: number;
+  deadline: string;
+  mediaUrl?: string;
+  completed: boolean;
+}
+
+const props = defineProps({
+  savingGoal: {
+    type: Object as () => SavingGoal,
+    default: () => ({ name: '', targetAmount: 0, deadline: '', mediaUrl: '', completed: false })
+  }
+});
+
+const emits = defineEmits(['deleteGoal', 'updateGoal']);
+
+const isEditing = ref(false);
+const editableGoal = ref({ ...props.savingGoal }); // Create a reactive copy of props.savingGoal
+
+const startEditing = () => {
+  isEditing.value = true;
+};
+
+const saveChanges = () => {
+  emits('updateGoal', editableGoal.value);
+  isEditing.value = false;
+};
+
+const confirmDelete = () => {
+  if (window.confirm('Er du sikker på at du vil slette dette sparemålet?')) {
+    emits('deleteGoal', props.savingGoal.id);
+    // Removed window.location.reload(), it's not recommended in SPAs.
+  }
+};
+</script>
+  
+<style scoped>
+.saving-goal-card {
+  position: relative;
+  max-width: 600px;
+  margin: auto;
+  margin-top: 2%;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: white;
+  margin-bottom: 5%;
+}
+
+.name {
+  font-weight: revert;
+  text-decoration: underline;
+}
+
+.img {
+  max-width: 30vh;
+  margin-top: 10px;
+}
+
+.completed {
+  color: lightgreen;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.delete-icon, .edit-icon {
+  position: absolute;
+  top: 10px;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.delete-icon {
+  right: 10px;
+  color: red;
+}
+
+.edit-icon {
+  right: 50px; 
+  color: green;
+}
+
+h2 {
+  padding-right: 70px; 
+}
+
+</style>
+
+  

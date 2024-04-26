@@ -1,10 +1,10 @@
 <template>
-  <router-link to="/savinggoalform" class="back-arrow">← Tilbake til opprettelse</router-link>
+  <router-link to="/savinggoal" class="back-arrow">← Tilbake til opprettelse</router-link>
   <h1 class="title">Sparemål Detaljer</h1>
 
   <div class="saving-goals-container">
     <div v-for="goal in savingGoals" :key="goal.id" class="saving-goal-item">
-      <SavingGoalCard :savingGoal="goal" @deleteGoal="handleDelete(goal.id)" />
+      <SavingGoalCard :savingGoal="goal" @deleteGoal="handleDelete(goal.id)" @editGoal="handleEdit(goal.id)" />
     </div>
   </div>
 </template>
@@ -14,7 +14,7 @@
   import { useRoute } from 'vue-router';
   import { getSavingGoals, deleteSavingGoal } from '@/api/savingGoalHooks';
   import { useUserStore } from '@/stores/userStore';
-  import SavingGoalCard from '@/components/saving_goal/SavingGoalCard.vue';
+  import SavingGoalCard from '@/components/savinggoal/SavingGoalCard.vue';
 
   const savingGoals = ref<{ id: string }[]>([]);
 
@@ -36,6 +36,11 @@
       console.error('Feil ved å slette sparemål:', error);
     }
   };
+
+  const handleEdit = (goalId: string) => {
+    console.log('Edit goal with id:', goalId);
+  };
+
 </script>
 
   <style scoped>
