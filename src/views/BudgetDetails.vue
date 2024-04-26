@@ -6,8 +6,9 @@
   <div class="budget-details">
     <div class="budget-left">
       <h2>Resterende budsjett</h2>
-      <p>{{ remainingBudget }} kr av {{ totalBudget }} kr</p>
-      <progress-bar :value="remainingBudget" :max="totalBudget"></progress-bar>
+      <p>{{ leftAmount }} kr av {{ totalAmount }} kr</p>
+      <progress-bar :value="leftAmount" :max="totalAmount"></progress-bar>
+
     </div>
   </div>
 
@@ -48,11 +49,11 @@
 <script setup lang="ts">
 import BudgetProgressBar from "./BudgetProgressBar.vue";
 import { ref, reactive, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import { useUserStore} from "@/stores/userStore";
 import axios from "axios";
-import {addRowToUserBudget, getBudgetByUser} from "@/api/budgetHooks";
+import {addRowToUserBudget, getBudgetById, getBudgetByUser} from "@/api/budgetHooks";
 
-const userStore = useUserStore();
 
 const props = defineProps({
   remainingBudget: {
@@ -64,6 +65,9 @@ const props = defineProps({
     default: 10000,
   },
 });
+
+let totalAmount = 0;
+let leftAmount = 0;
 
 type ExpenseCategory = 'Kvitteringer' | 'Mat' | 'Klær' | 'Fritid' | 'Betting';
 
@@ -108,29 +112,34 @@ const handleNewCategory = () => {
   newCategory.emoji = '';
 };
 
+
 onMounted(async () => {
   try {
+    let userStore = useUserStore();
     const userId = userStore.getUserId;
+
+
+    const route = useRoute();
 
     console.log(userId);
 
-    const expensesResponse = await getBudgetByUser(userId);
+    const expensesResponse = await getBudgetById(userId, route.params.id);
 
     console.log(expensesResponse);
 
-    if (expensesResponse) {
-      for (const entry of expensesResponse) {
-        for (const row of entry.row) {
-          const {category, usedAmount, maxAmount, emoji} = row;
+    if (expensesResponse && expensesResponse.row) {
+      for (const entry of expensesResponse.row) {
+          const {category, usedAmount, maxAmount, emoji} = entry;
           // Use category from row as the key for expenses
           expenses[category as ExpenseCategory] = {
             left: usedAmount, // Assuming usedAmount represents the left amount
             total: maxAmount, // Assuming maxAmount represents the total amount
             emoji: emoji // Hardcoding emoji for now
           };
+          totalAmount += maxAmount;
+          leftAmount += usedAmount;
         }
       }
-    }
   } catch (error) {
     console.error(error);
   }

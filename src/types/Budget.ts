@@ -3,6 +3,7 @@ export interface Budget {
     id: number;
     row: BudgetRow[];
     expiryDate: string;
+    creationDate: string;
 }
 
 interface BudgetRow {

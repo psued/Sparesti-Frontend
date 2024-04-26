@@ -43,9 +43,15 @@ const router = createRouter({
       component: BudgetPageView,
     },
     {
-      path: "/details",
-      name: "budget-details",
-      component: BudgetDetails,
+      path: '/details/:id',
+      name: 'BudgetDetails',
+      component: BudgetDetails
+    },
+    {
+      path: '/badge/:id',
+      name: 'BadgeDetails',
+      component: BadgeDetailsView,
+      props: true
     },
     {
       path: "/savinggoalform",
