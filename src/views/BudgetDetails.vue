@@ -106,7 +106,6 @@ const handleNewCategory = () => {
     emoji: newCategory.emoji,
   };
   addRowToUserBudget(
-    userStore.getUserId,
     "string",
     0,
     newCategory.total,
@@ -125,7 +124,7 @@ onMounted(async () => {
 
     console.log(userId);
 
-    const expensesResponse = await getBudgetByUser(userId);
+    const expensesResponse = await getBudgetByUser();
 
     console.log(expensesResponse);
 

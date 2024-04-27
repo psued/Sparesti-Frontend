@@ -84,11 +84,9 @@ export const getAllUsersWithGivenBadge = async (
   }
 };
 
-export const getBadgesByUser = async (
-  userId: number,
-): Promise<Badge[] | null> => {
+export const getBadgesByUser = async (): Promise<Badge[] | null> => {
   try {
-    const response = await api.get(`/badges/user/${userId}`);
+    const response = await api.get(`/badges/user`);
 
     if (response.status === 200) {
       return response.data;
