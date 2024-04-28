@@ -39,6 +39,7 @@ document.body.classList.toggle("dark", isDark.value);
 }
 
 #content{
-  margin-top: 90px;
+  position: relative;
+  top: 90px;
 }
 </style>
