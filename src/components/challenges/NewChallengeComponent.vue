@@ -1,6 +1,6 @@
 <template>
   <div class="backdrop" @click.self="handleClose">
-    <div class="modal">
+    <div class="popup">
       <slot>default content (if no slot passed in)</slot>
       <div class="actions">
         <slot name="links"></slot>
@@ -15,13 +15,12 @@ import { defineEmits } from 'vue'
 const emit = defineEmits(['close'])
 
 const handleClose = () => {
-  console.log('close')
   emit('close')
 }
 </script>
 
 <style scoped>
-.modal {
+.popup {
   display: table-cell;
   text-align: center;
   vertical-align: middle;
@@ -45,20 +44,20 @@ const handleClose = () => {
   height: calc(100vh - 90px); /* Subtract the height of the navbar */
   bottom: 0;
 }
-.modal h1 {
+.popup h1 {
   color: #03cfb4;
   border: none;
   padding: 0;
 }
-.modal p {
+.popup p {
   font-style: normal;
 }
-.modal .actions {
+.popup .actions {
   text-align: center;
   margin: 30px 0 10px 0;
   color: #333;
 }
-.modal .actions a {
+.popup .actions a {
   color: #333;
   padding: 8px;
   border: 1px solid #eee;

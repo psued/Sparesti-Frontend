@@ -106,3 +106,10 @@ button {
 button:hover {
   background-color: var(--color-button-hover);
 }
+
+.no-scroll {
+  position: fixed;
+  top: var(--st, 0);
+  inline-size: 100%;
+  overflow-y:scroll;
+}
