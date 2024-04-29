@@ -5,15 +5,14 @@
   </div>
 
   <div class="saving-goals-container">
-    <div v-for="goal in savingGoals" :key="goal.id" class="saving-goal-item">
-      <SavingGoalCard :savingGoal="goal" @deleteGoal="handleDelete(goal.id)" @editGoal="handleEdit(goal.id)" class="saving-goal-card"/>
+    <div v-for="goal in savingGoals" :key="goal.id.toString()" class="saving-goal-item">
+      <SavingGoalCard :savingGoal="goal" @deleteGoal="handleDelete(Number(goal.id))" @editGoal="handleEdit(Number(goal.id))" class="saving-goal-card"/>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { ref, onMounted } from 'vue';
-  import { useRoute } from 'vue-router';
   import { getSavingGoals } from '@/api/savingGoalHooks';
   import { useUserStore } from '@/stores/userStore';
   import SavingGoalCard from '@/components/savinggoal/SavingGoalCard.vue';
@@ -21,13 +20,12 @@
 
   const savingGoals = ref<SavingGoal[]>([]);
 
-  const route = useRoute();
   const userStore = useUserStore();
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: Number) => {
   };
 
-  const handleEdit = async (id: string) => {
+  const handleEdit = async (id: Number) => {
   };
 
   onMounted(async () => {

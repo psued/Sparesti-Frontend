@@ -12,5 +12,5 @@ export interface SavingGoal {
   savedAmount: number;
   deadline: string;
   mediaUrl?: string;
-  completed: boolean;
+  completed?: boolean;
 }
