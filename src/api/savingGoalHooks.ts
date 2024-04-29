@@ -1,14 +1,9 @@
 import { api } from "@/api/axiosConfig";
 import { type SavingGoalCreation, type SavingGoal } from "@/types/SavingGoal";
 
-export const createSavingGoal = async (
-  data: SavingGoalCreation,
-): Promise<SavingGoal> => {
+export const createSavingGoal = async (data: SavingGoalCreation): Promise<SavingGoal> => {
   try {
-    const response = await api.post(
-      `/savings-goals`,
-      data,
-    );
+    const response = await api.post(`/savings-goals`, data)
 
     if (response.status === 201) {
       return response.data;
@@ -21,12 +16,12 @@ export const createSavingGoal = async (
 };
 
 export const addSavingGoalToUser = async (
-  userId: number,
-  savingGoalId: number,
+  userEmail: string,
+  savingGoalId: number
 ): Promise<void> => {
   try {
     const response = await api.post(
-      `/savings-goals/add-user?userId=${userId}&savingsGoalId=${savingGoalId}`,
+      `/savings-goals/add-user/${savingGoalId}?userEmail=${encodeURIComponent(userEmail)}`
     );
 
     if (response.status === 200) {
@@ -39,9 +34,10 @@ export const addSavingGoalToUser = async (
   }
 }
 
-export const getSavingGoals = async (userId: number) => {
+
+export const getSavingGoals = async () => {
   try {
-    const response = await api.get(`/savings-goals/${userId}/savings-goals`);
+    const response = await api.get(`/savings-goals/savings-goals`);
 
     if (response.status === 200) {
       return response.data;
@@ -67,9 +63,11 @@ export const getSavingGoalById = async (savingGoalId: number) => {
   }
 };
 
-export const deleteSavingGoalFromUser = async (userId: number, savingGoalId: number) => {
+export const deleteSavingGoalFromUser = async (
+  userEmail : string,
+  savingGoalId: number) => {
   try {
-    const response = await api.delete(`/savings-goals/${savingGoalId}/user/${userId}/delete`);
+    const response = await api.delete(`/savings-goals/${savingGoalId}/user/delete?userEmail=${encodeURIComponent(userEmail)}`);
 
     if (response.status === 204) {
       return response.data;
@@ -108,3 +106,17 @@ export const updateSavingGoal = async ( savingGoalId: number, data: SavingGoalCr
     throw new Error(`Error updating saving goal: ${error}`);
   }
 };
+
+export const getUsersBySavingGoal = async (savingGoalId: number) => {
+  try {
+    const response = await api.get(`/savings-goals/${savingGoalId}/users`);
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Failed to get users by saving goal");
+    }
+  } catch (error) {
+    throw new Error(`Error getting users by saving goal: ${error}`);
+  }
+}

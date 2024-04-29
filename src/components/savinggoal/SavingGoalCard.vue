@@ -4,8 +4,7 @@
       'green-border': savingGoal.completed,
       'yellow-border': !savingGoal.completed && savingGoal.savedAmount < savingGoal.targetAmount,
       'red-border': new Date(savingGoal.deadline + 'T00:00:00').getTime() <= new Date(todaysDate + 'T00:00:00').getTime() && savingGoal.savedAmount < savingGoal.targetAmount
-    }"
-    @click="handleRedirect">
+    }">
       <div v-if="isEditing">
         <input v-model="editableGoal.name" placeholder="Navn på sparemål" />
         <input v-model="editableGoal.targetAmount" type="number" placeholder="Sparemål i kr" />
@@ -20,12 +19,14 @@
         <div class="image" v-if="savingGoal.mediaUrl?.length && savingGoal.mediaUrl.length > 4">
           <img :src="savingGoal.mediaUrl" alt="Media" class="img">
         </div>
-        <div v-else>
+        <div class="emoji-div" v-else>
           <span class="emoji">{{ savingGoal.mediaUrl }}</span>
         </div>
         <p v-if="savingGoal.completed && (savingGoal.savedAmount >= savingGoal.targetAmount)" class="completed">Completed</p>
-        <div class="delete-icon" @click="confirmDelete">✖</div>
-        <div class="edit-icon" @click="startEditing">✎</div>
+        <div v-if="editable">
+          <div class="delete-icon" @click="confirmDelete">✖</div>
+          <div class="edit-icon" @click="startEditing">✎</div>
+        </div>
       </div>
     </div>
 </template>
@@ -41,19 +42,25 @@ const props = defineProps({
   savingGoal: {
     type: Object as () => SavingGoal,
     default: () => ({ name: '', targetAmount: 0, savedAmount: '0', deadline: '', mediaUrl: '', completed: false })
+  },
+  editable: {
+    type: Boolean,
+    default: false
   }
 });
 
 const emits = defineEmits(['deleteGoal', 'updateGoal']);
 
 const isEditing = ref(false);
-const editableGoal = ref({ ...props.savingGoal }); 
-const userStore = useUserStore();
-const userId = userStore.getUserId;
+const editableGoal = ref<SavingGoal>(props.savingGoal);
 const todaysDate = new Date().toISOString().split('T')[0];
+const userStore = useUserStore();
+const userEmail = userStore.getUserName;
+const userId = userStore.getUserId;
 const router = useRouter();
 
 const startEditing = () => {
+  editableGoal.value = { ...props.savingGoal };
   isEditing.value = true;
 };
 
@@ -72,7 +79,7 @@ const confirmDelete = async () => {
   try {
     const confirmDelete = confirm('Are you sure you want to delete this saving goal?');
     if (!confirmDelete) return;
-    await deleteSavingGoalFromUser(userId, Number(props.savingGoal.id));
+    await deleteSavingGoalFromUser(userEmail, Number(props.savingGoal.id));
     try {
       await deleteSavingGoal(Number(props.savingGoal.id));
     } catch (error) {
@@ -82,12 +89,7 @@ const confirmDelete = async () => {
   } catch (error) {
     console.error('Error deleting saving goal:', error);
   }
-  window.location.reload();
-};
-
-const handleRedirect = () => {
-  if (isEditing.value) return;
-  router.push(`/saving-goal/details/${props.savingGoal.id}`);
+  router.push(`/saving-goals/user/${userId}`);
 };
 </script>
   
@@ -122,17 +124,26 @@ const handleRedirect = () => {
 .image img {
   max-width: 30vh;
   width: 30vh;
-  margin-top: 10px;
+  margin-top: 8px;
   width: -webkit-fill-available;
 }
 
 .image {
   display: flex;
   justify-content: center;
+  padding-top: 10px;
+}
+
+.emoji-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
 }
 
 .emoji {
-  font-size: 22vh;
+  font-size: 9.5rem;
+  line-height: normal;
 }
 
 .completed {

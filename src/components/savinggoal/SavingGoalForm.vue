@@ -99,6 +99,7 @@
   });
   const userStore = useUserStore();
   const userId = userStore.getUserId;
+  const userEmail = userStore.getUserName;
   const createdSavingGoal = ref<SavingGoal | null>(null);
   
   const minDeadline = new Date();
@@ -210,9 +211,9 @@
       const newSavingGoal = await createSavingGoal(savingGoalData);
       console.log(newSavingGoal);
       createdSavingGoal.value = newSavingGoal;
-      const savingGoalId = createdSavingGoal.value.id;
+      const savingGoalId = createdSavingGoal.value ? createdSavingGoal.value.id : null;
       console.log(savingGoalId)
-      await addSavingGoalToUser(userId, Number(savingGoalId));
+      await addSavingGoalToUser(userEmail, Number(savingGoalId));
       console.log("Saving goal created:", newSavingGoal);
       router.push(`/saving-goals/user/${userId}`);
     } catch (error) {
@@ -310,6 +311,7 @@
     font-size: 2rem;
     text-align: center;
     margin-top: 20px;
+    opacity: 1;
   }
   
   button {

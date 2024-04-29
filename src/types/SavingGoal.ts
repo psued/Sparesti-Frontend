@@ -14,3 +14,10 @@ export interface SavingGoal {
   mediaUrl?: string;
   completed?: boolean;
 }
+
+export interface SavingGoalDetails {
+  userEmail?: string;
+  profilePictureUrl?: string;
+  contributionAmount?: number;
+  lastContributed?: string;
+}
