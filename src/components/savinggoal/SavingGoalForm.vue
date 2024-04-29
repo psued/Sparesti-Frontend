@@ -38,12 +38,8 @@
   
         <div class="form-group" v-if="uploadType === 'emoji'">
           <label for="emoji">Velg en emoji:</label>
-          <input
-            type="text"
-            id="emoji"
-            v-model="emoji"
-            placeholder="🐷 Kopier og lim inn emoji her"
-          />
+          <Picker :data="emojiIndex" set="twitter" @select="handleEmojiSelect" :fallback="customEmojiFallback" />
+          <div class="emoji" v-if="emoji">{{ emoji }}</div>
         </div>
   
         <div class="form-group">
@@ -68,7 +64,7 @@
             type="date"
             id="deadline"
             v-model="savingGoal.deadline"
-            :min="minDeadline"
+            :min="minDeadline.toISOString().split('T')[0]"
           />
         </div>
   
@@ -85,6 +81,9 @@
   import { useUserStore } from "@/stores/userStore";
   import { uploadImage } from "@/utils/imageUtils";
   import type { SavingGoal } from "@/types/SavingGoal";
+  import { Picker, EmojiIndex } from "emoji-mart-vue-fast/src";
+  import data from "emoji-mart-vue-fast/data/all.json";
+  import "emoji-mart-vue-fast/css/emoji-mart.css";
   
   interface Icon {
     name: string;
@@ -102,10 +101,20 @@
   const userId = userStore.getUserId;
   const createdSavingGoal = ref<SavingGoal | null>(null);
   
-  const minDeadline = new Date().toISOString().split("T")[0];
+  const minDeadline = new Date();
+  minDeadline.setDate(minDeadline.getDate() + 1);
   const imagePreview = ref<string | null>(null);
   const selectedIconUrl = ref<string | null>(null);
   const emoji = ref("");
+  let emojiIndex = new EmojiIndex(data);
+
+  const handleEmojiSelect = (selectedEmoji: { native: string; }) => {
+    emoji.value = selectedEmoji.native;
+  };
+
+  const customEmojiFallback = (emoji: { short_names: any[]; }) => {
+    return `:${emoji.short_names[0]}:`;
+  };
   
   const icons = reactive<Icon[]>([
     {
@@ -299,6 +308,12 @@
   .icon-preview img {
     width: 30vh;
     height: auto;
+    margin-top: 20px;
+  }
+
+  .emoji {
+    font-size: 2rem;
+    text-align: center;
     margin-top: 20px;
   }
   

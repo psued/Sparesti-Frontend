@@ -1,6 +1,6 @@
 <template>
   <router-link to="/savinggoal" class="back-arrow">← Tilbake til opprettelse</router-link>
-  <h1 class="title">Sparemål Detaljer</h1>
+  <h1 class="title">Sparemål</h1>
 
   <div class="saving-goals-container">
     <div v-for="goal in savingGoals" :key="goal.id" class="saving-goal-item">
@@ -56,7 +56,8 @@
 
   .title {
     text-align: center;
-    font-size: 25px;
+    font-size: 2rem;
+    margin-bottom: 20px;
   }
 
   .saving-goals-container {

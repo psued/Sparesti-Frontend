@@ -72,6 +72,14 @@ const confirmDelete = async () => {
   border-radius: 8px;
   background-color: white;
   margin-bottom: 5%;
+  transition: transform 0.3s ease;
+}
+
+.saving-goal-card:hover {
+  background-color: #f0f0f0;
+  box-shadow: 0 0 5px #ccc;
+  transform: scale(1.05);
+  cursor: pointer;
 }
 
 .name {
