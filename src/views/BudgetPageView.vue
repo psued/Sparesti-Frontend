@@ -29,18 +29,22 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, computed, nextTick} from "vue";
+import type { Ref } from 'vue';
+import {ref, onMounted, computed, nextTick } from "vue";
 import BudgetProgressBar from "./BudgetProgressBar.vue";
 import { useUserStore} from "@/stores/userStore";
 import { type Budget } from "@/types/Budget";
 import {addRowToUserBudget, getBudgetByUser} from "@/api/budgetHooks";
 
+
+const modalRef: Ref<HTMLElement | null> = ref(null);
+
 const userStore = useUserStore();
-const budgetData = ref<Budget | null>(null);
+const budgetData = ref<Budget[] | null>(null);
 
 
 
-const calculateTotalBudget = (budgetItem) => {
+const calculateTotalBudget = (budgetItem: Budget) => {
   let total = 0;
   for (const row of budgetItem.row){
     total += row.maxAmount;
@@ -48,7 +52,7 @@ const calculateTotalBudget = (budgetItem) => {
   return total;
 };
 
-const calculateBudget = (budgetItem) => {
+const calculateBudget = (budgetItem: Budget) => {
   let total = 0;
   for (const row of budgetItem.row){
     total += row.usedAmount;
@@ -56,7 +60,7 @@ const calculateBudget = (budgetItem) => {
   return total;
 };
 
-const calculateDaysLeft = (budgetItem) => {
+const calculateDaysLeft = (budgetItem: Budget) => {
   const today = new Date();
   const expiryDate = new Date(budgetItem.expiryDate);
   return Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
@@ -70,14 +74,15 @@ onMounted(async () => {
     console.log(budgetData.value);
   }
 
-  const modalRef = ref(null);
 
   await nextTick();
-  modalRef.value.addEventListener('click', (event) => {
-    if (event.target === modalRef.value) {
-      showModal.value = false;
-    }
-  });
+  if (modalRef.value) {
+    modalRef.value.addEventListener('click', (event: Event) => {
+      if (event.target === modalRef.value) {
+        showModal.value = false;
+      }
+    });
+  }
 });
 
 const showModal = ref(false);
@@ -90,7 +95,10 @@ const handleNewBudget = () => {
 };
 
 const sortedBudgetData = computed(() => {
-  return budgetData.value.slice().sort((a, b) => new Date(b.expiryDate).getTime() - new Date(a.expiryDate).getTime());
+  if (budgetData.value) {
+    return budgetData.value.slice().sort((a, b) => new Date(b.expiryDate).getTime() - new Date(a.expiryDate).getTime());
+  }
+  return [];
 });
 
 

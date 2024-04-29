@@ -140,8 +140,7 @@ onMounted(async () => {
 
     console.log(userId);
 
-    const expensesResponse = await getBudgetById(userId, route.params.id);
-
+    const expensesResponse = await getBudgetById(userId, Number(route.params.id));
     console.log(expensesResponse);
 
     if (expensesResponse && expensesResponse.row) {
