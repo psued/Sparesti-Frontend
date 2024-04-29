@@ -38,9 +38,9 @@ const userStore = useUserStore();
 const userId = userStore.getUserId;
 
 onMounted(async () => {
-  badges.value = (await getAllBadges()) as Badge[];
-  console.log(userId);
-  userBadges.value = (await getBadgesByUser(userId)) as unknown as UserBadge[];
+  badges.value = await getAllBadges() as Badge[];
+  console.log(userId)
+  userBadges.value = await getBadgesByUser() as unknown as UserBadge[];
 });
 
 const isBadgeOwned = (badge: Badge) => {

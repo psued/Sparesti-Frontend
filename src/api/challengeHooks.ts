@@ -1,9 +1,9 @@
 import { api } from "@/api/axiosConfig";
 import { type ChallengesResponse, type MasterChallenge } from "@/types/challengeTypes";
 
-export const getSortedChallengesByUser = async (userId: number): Promise<ChallengesResponse | null> => {
+export const getSortedChallengesByUser = async (): Promise<ChallengesResponse | null> => {
   try {
-    const response = await api.get(`/challenges/users/${userId}/challenges`);
+    const response = await api.get(`/challenges/users/challenges`);
 
     if (response.status === 200) {
       return response.data;
@@ -17,9 +17,9 @@ export const getSortedChallengesByUser = async (userId: number): Promise<Challen
   }
 };
 
-export const getUserChallenges = async (userId: number): Promise<MasterChallenge[] | null> => {
+export const getUserChallenges = async (): Promise<MasterChallenge[] | null> => {
   try {
-    const response = await api.get(`/challenges/users/${userId}/challenges`);
+    const response = await api.get(`/challenges/users/challenges`);
 
     if (response.status === 200) {
       return response.data;
