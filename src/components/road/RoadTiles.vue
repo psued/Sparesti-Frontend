@@ -48,7 +48,7 @@ import { useLogin } from "@/api/authenticationHooks";
 
 const selectedChallenge = ref<Challenge | null>(null);
 const showPopup = ref(false);
-const comleteImg = "https://ahaslides.com/wp-content/uploads/2021/12/Year-End-Review-1-1024x576.png";
+const comleteImg = "src/assets/star-circle.svg";
 const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 let totChallenges = 0;
 let roadBox: Ref<HTMLElement | null> = ref(null);
@@ -262,8 +262,6 @@ onMounted(async () => {
 
 
 .road-box {
-  padding-top: 90px;
-  padding-bottom: 60px;
   position: absolute;
   align-items: center;
   justify-content: center;
@@ -274,7 +272,6 @@ onMounted(async () => {
   overflow-y: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  box-shadow: 0px -90px 90px -90px rgba(0, 0, 0, 0.5);
 }
 
 .road-tile-start {
