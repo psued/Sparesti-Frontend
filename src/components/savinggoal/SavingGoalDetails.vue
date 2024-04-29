@@ -1,6 +1,6 @@
 <template>
   <div class="header">
-    <router-link to="/savinggoal" class="back-arrow">← Tilbake til opprettelse</router-link>
+    <router-link to="/saving-goal/create" class="back-arrow">← Tilbake til opprettelse</router-link>
     <h1 class="title">Sparemål</h1>
   </div>
 
