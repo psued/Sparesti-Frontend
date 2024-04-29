@@ -6,7 +6,7 @@
   <div class="budget-details">
     <div class="budget-left">
       <h2>Resterende budsjett</h2>
-      <p>{{ remainingBudget }} kr av {{ totalBudget }} kr</p>
+      <p>{{ leftAmount }} kr av {{ totalAmount }} kr</p>
       <progress-bar :value="remainingBudget" :max="totalBudget"></progress-bar>
     </div>
   </div>
@@ -14,13 +14,22 @@
   <div class="expenses">
     <div class="header-container">
       <h3>Utgifter</h3>
-      <button class="add-category-btn" @click="addCategory">
-        <span class="add-category-icon">➕</span> Legg til kategori
-      </button>
+      <div class="add-and-delete-category">
+        <button class="add-category-btn" @click="addCategory">
+          <span class="add-category-icon">➕</span> Legg til kategori
+        </button>
+        <button class="delete-category-btn" @click="toggleDeleteMode">
+          <span class="add-category-icon">➖</span> {{ deleteMode ? 'Slett' : 'Slett kategori' }}
+        </button>
+        <button v-if="deleteMode" @click="toggleDeleteMode">Avbryt</button>
+      </div>
     </div>
+
+
 
     <ul>
       <li v-for="(expense, category) in expenses" :key="category">
+        <input v-if="deleteMode" type="checkbox">
         <span class="emoji">{{ expense.emoji }}</span>
         <span class="category">{{ category }}</span>
         <span class="amount"
@@ -31,7 +40,7 @@
     </ul>
   </div>
 
-  <div v-if="showModal" class="modal">
+  <div v-if="showModal" class="modal" @click.self="showModal = false">
     <div class="modal-content">
       <span class="close" @click="toggleModal">&times;</span>
       <h3>Legg til en ny utgift</h3>
@@ -54,6 +63,11 @@ import axios from "axios";
 import {addRowToUserBudget, getBudgetById, getBudgetByUser} from "@/api/budgetHooks";
 
 const userStore = useUserStore();
+
+const deleteMode = ref(false);
+
+let totalAmount = 0;
+let leftAmount= 0;
 
 const props = defineProps({
   remainingBudget: {
@@ -91,6 +105,13 @@ const toggleModal = () => {
   showModal.value = !showModal.value;
 };
 
+const toggleDeleteMode = () => {
+  if (deleteMode.value) {
+    // Execute your variable here
+  }
+  deleteMode.value = !deleteMode.value;
+};
+
 const addCategory = () => {
   console.log("Add new category function triggered");
   showModal.value = true; // Open the modal
@@ -119,14 +140,13 @@ onMounted(async () => {
 
     console.log(userId);
 
-    const expensesResponse = await getBudgetByUser(userId);
+    const expensesResponse = await getBudgetById(userId, route.params.id);
 
     console.log(expensesResponse);
 
     if (expensesResponse && expensesResponse.row) {
       for (const entry of expensesResponse.row) {
           const {category, usedAmount, maxAmount, emoji} = entry;
-          // Use category from row as the key for expenses
           expenses[category as ExpenseCategory] = {
             left: usedAmount, // Assuming usedAmount represents the left amount
             total: maxAmount, // Assuming maxAmount represents the total amount
@@ -192,6 +212,12 @@ const ProgressBar = BudgetProgressBar;
     justify-content: space-between;
   }
 
+  .add-and-delete-category {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
   .expenses {
     margin: 15px;
   }
@@ -248,6 +274,18 @@ const ProgressBar = BudgetProgressBar;
     cursor: pointer;
   }
 
+.delete-category-btn {
+  padding: 0 1rem;
+  width: max-content;
+  display: flex;
+  background-color: #f14306;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  border-width: 0.15rem;
+  cursor: pointer;
+}
+
 .modal {
   position: fixed;
   left: 0;
@@ -270,6 +308,14 @@ const ProgressBar = BudgetProgressBar;
 .close {
   float: right;
   font-size: 28px;
+  cursor: pointer;
+}
+
+.delete-button{
+  background-color: #ff0000;
+  color: #ffffff;
+  border-radius: 5px;
+  padding: 5px;
   cursor: pointer;
 }
 </style>
