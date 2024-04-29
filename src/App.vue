@@ -1,10 +1,14 @@
 <template>
   <div class="layout">
-    <NAV />
+    <div id="nav">
+      <NAV />
+    </div>
 
-    <RouterView class="content" />
-
+    <div id="content">
+      <RouterView/>
+    </div>
     <FOOTER v-if="isPhone" class="footer-box"/>
+    
   </div>
 </template>
 
@@ -40,12 +44,19 @@ onMounted(() => {
 .layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-}
-.content {
-  overflow-y: hidden;
 }
 
+#nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+#content{
+  position: relative;
+  top: 90px;
+  overflow-y: hidden;
+}
 @media screen and (max-width: 480px) {
   .content{
     bottom: 90px
