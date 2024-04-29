@@ -50,13 +50,13 @@ const router = createRouter({
       component: BudgetDetails,
     },
     {
-      path: "/savinggoal",
-      name: "savinggoal",
+      path: "/saving-goal/create",
+      name: "saving-goal-create",
       component: SavingGoalView,
     },
     {
-      path: "/savinggoal-details/:id",
-      name: "savinggoaldetails",
+      path: "/saving-goals/user/:id",
+      name: "savingGoalDetails",
       component: SavingGoalDetails,
       props: true,
     },

@@ -71,7 +71,7 @@ export const deleteSavingGoalFromUser = async (userId: number, savingGoalId: num
   try {
     const response = await api.delete(`/savings-goals/${savingGoalId}/user/${userId}/delete`);
 
-    if (response.status === 200) {
+    if (response.status === 204) {
       return response.data;
     } else {
       throw new Error("Failed to delete saving goal from user");
@@ -85,7 +85,7 @@ export const deleteSavingGoal = async (savingGoalId: number) => {
   try {
     const response = await api.delete(`/savings-goals/${savingGoalId}`);
 
-    if (response.status === 200) {
+    if (response.status === 204) {
       return response.data;
     } else {
       throw new Error("Failed to delete saving goal");

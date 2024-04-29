@@ -214,7 +214,7 @@
       console.log(savingGoalId)
       await addSavingGoalToUser(userId, Number(savingGoalId));
       console.log("Saving goal created:", newSavingGoal);
-      router.push(`/savinggoal-details/${userId}`);
+      router.push(`/saving-goals/user/${userId}`);
     } catch (error) {
       console.error("Error creating saving goal:", error);
     }
