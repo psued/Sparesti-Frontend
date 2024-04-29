@@ -1,11 +1,15 @@
 <template>
-  <div id="challengesViewDiv" :class="{showingPopup : showNewChallenge}">
+  <div id="challengesViewDiv">
     <h1 id="challengesTitle">Challenges</h1>
     <div id="challengesDiv">
       <ChallengeComponent class="challenge" v-for="challengeObject in challengeObjects.values()" :key="challengeObject.id" :challenge-object="challengeObject" />
     </div>
-    <NewChallengeComponent v-if="showNewChallenge" @close="toggleModal"/>
-    <NewChallengeButtonComponent v-if="!showNewChallenge" @click="toggleModal" class="newChallengeButton"/>
+    <NewChallengeComponent @togglePopup="toggleIsVisible" :is-visible="isVisible" ref="popup">
+      <template v-slot:content>
+        <div class="newChallengePopup"></div>
+      </template>
+    </NewChallengeComponent>
+    <NewChallengeButtonComponent v-if="!isVisible" @click="toggleIsVisible" class="newChallengeButton"/>
   </div>
 
 </template>
@@ -14,10 +18,11 @@
 import ChallengeComponent from '../components/challenges/ChallengeComponent.vue'
 import { getUserChallenges } from "@/api/challengeHooks";
 import { useUserStore } from "@/stores/userStore";
-import {onMounted, ref, watchEffect} from "vue";
+import {onMounted, ref, inject, computed} from "vue";
 import type { MasterChallenge } from '@/types/challengeTypes';
-import NewChallengeComponent from "@/components/challenges/NewChallengeComponent.vue";
+import NewChallengeComponent from "@/components/assets/PopupComponent.vue";
 import NewChallengeButtonComponent from "@/components/challenges/NewChallengeButtonComponent.vue";
+import {mount} from "cypress/vue";
 const challengeObjects = ref<MasterChallenge[]>([]);
 
 async function fetchChallengeObjects() {
@@ -30,26 +35,11 @@ onMounted(async () => {
   await fetchChallengeObjects();
 });
 
-let showNewChallenge = ref(false)
 
-function toggleModal() {
-  showNewChallenge.value = !showNewChallenge.value
+const isVisible = ref(false)
+function toggleIsVisible() {
+  isVisible.value = !isVisible.value
 }
-
-import { watchEffect } from 'vue';
-
-let scrollTop = 0;
-
-watchEffect(() => {
-  if (showNewChallenge.value) {
-    scrollTop = document.documentElement.scrollTop;
-    document.body.style.setProperty('--st', -scrollTop + "px");
-    document.body.classList.add('no-scroll');
-  } else {
-    document.body.classList.remove('no-scroll');
-    document.documentElement.scrollTop = scrollTop;
-  }
-});
 </script>
 
 <style scoped>
@@ -79,11 +69,6 @@ watchEffect(() => {
   flex-shrink: 0;
 }
 
-NewChallengeComponent{
-  text-align: center;
-  vertical-align: center;
-}
-
 .newChallengeButton{
   position: fixed;
   cursor: pointer;
@@ -94,4 +79,15 @@ NewChallengeComponent{
   left: 50%;
   transform: translateX(-50%);
 }
+
+.newChallengePopup {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background-color: red;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
 </style>

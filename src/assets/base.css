@@ -1,3 +1,7 @@
+:root {
+  --navbarHeight: 90px
+}
+
 /* color palette from me */
 :root {
   --vt-c-white: #f0f0f0;
