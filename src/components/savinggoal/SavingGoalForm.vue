@@ -226,11 +226,6 @@
       return;
     }
   
-    if (savingGoal.deadline < minDeadline) {
-      window.alert("Deadline kan ikke være før dagens dato!");
-      return;
-    }
-  
     if (uploadType.value === "image") {
       const fileInput = document.getElementById("image") as HTMLInputElement;
       if (fileInput && fileInput.files && fileInput.files[0]) {

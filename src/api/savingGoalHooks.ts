@@ -67,6 +67,19 @@ export const getSavingGoalById = async (savingGoalId: number) => {
   }
 };
 
+export const deleteSavingGoalFromUser = async (userId: number, savingGoalId: number) => {
+  try {
+    const response = await api.delete(`/savings-goals/${savingGoalId}/user/${userId}/delete`);
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Failed to delete saving goal from user");
+    }
+  } catch (error) {
+    throw new Error(`Error deleting saving goal from user: ${error}`);
+  }
+};
 
 export const deleteSavingGoal = async (savingGoalId: number) => { 
   try {

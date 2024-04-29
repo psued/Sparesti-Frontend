@@ -1,10 +1,12 @@
 <template>
-  <router-link to="/savinggoal" class="back-arrow">← Tilbake til opprettelse</router-link>
-  <h1 class="title">Sparemål</h1>
+  <div class="header">
+    <router-link to="/savinggoal" class="back-arrow">← Tilbake til opprettelse</router-link>
+    <h1 class="title">Sparemål</h1>
+  </div>
 
   <div class="saving-goals-container">
     <div v-for="goal in savingGoals" :key="goal.id" class="saving-goal-item">
-      <SavingGoalCard :savingGoal="goal" @deleteGoal="handleDelete(goal.id)" @editGoal="handleEdit(goal.id)" />
+      <SavingGoalCard :savingGoal="goal" @deleteGoal="handleDelete(goal.id)" @editGoal="handleEdit(goal.id)" class="saving-goal-card"/>
     </div>
   </div>
 </template>
@@ -12,7 +14,7 @@
 <script setup lang="ts">
   import { ref, onMounted } from 'vue';
   import { useRoute } from 'vue-router';
-  import { getSavingGoals, deleteSavingGoal } from '@/api/savingGoalHooks';
+  import { getSavingGoals } from '@/api/savingGoalHooks';
   import { useUserStore } from '@/stores/userStore';
   import SavingGoalCard from '@/components/savinggoal/SavingGoalCard.vue';
   import type { SavingGoal } from '@/types/SavingGoal';
@@ -22,6 +24,12 @@
   const route = useRoute();
   const userStore = useUserStore();
 
+  const handleDelete = async (id: string) => {
+  };
+
+  const handleEdit = async (id: string) => {
+  };
+
   onMounted(async () => {
     const userId = userStore.getUserId;
     if (userId) {
@@ -29,18 +37,6 @@
       console.log(savingGoals.value);
     }
   });
-
-  const handleDelete = async (goalId: string) => {
-    try {
-      await deleteSavingGoal(Number(goalId)); // Call your API method to delete the goal
-    } catch (error) {
-      console.error('Feil ved å slette sparemål:', error);
-    }
-  };
-
-  const handleEdit = (goalId: string) => {
-    console.log('Edit goal with id:', goalId);
-  };
 
 </script>
 
@@ -52,20 +48,36 @@
     padding-bottom: 10px;
     display: block;
     max-width: fit-content;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+  }
+
+  .back-arrow:hover {
+    background-color: #e9e9e9;
+    border-radius: 8px;
+  }
+
+  .header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
   }
 
   .title {
     text-align: center;
-    font-size: 2rem;
+    font-size: 3rem;
     margin-bottom: 20px;
+    width: fit-content;
+    margin: auto;
   }
 
   .saving-goals-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Creates a 3x3 grid layout */
-  grid-gap: 20px; /* This is the space between each card */
-  justify-content: center;
-  align-items: center;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-gap: 20px;
+    justify-content: center;
+    align-items: center;
   }
 
   .saving-goal-item {
