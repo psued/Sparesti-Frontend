@@ -7,7 +7,8 @@
     <div id="content">
       <RouterView/>
     </div>
-    <FOOTER v-if="isPhone" class="footer-box"/>
+    
+    <FOOTER v-if="isPhone" id="footer-box"/>
 
   </div>
 </template>
@@ -59,9 +60,16 @@ onMounted(() => {
   overflow-y: hidden;
 }
 
+#footer-box {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
 @media screen and (max-width: 480px) {
-  .content{
-    bottom: 90px
+  #content{
+    padding-bottom: 90px
   }
 }
 </style>

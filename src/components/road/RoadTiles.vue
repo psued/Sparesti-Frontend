@@ -251,17 +251,15 @@ onMounted(async () => {
 }
 
 .road-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: 100vh;
+  position: relative;
   width: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100vh;
 }
+
 
 .road-box {
   padding-top: 90px;
@@ -273,7 +271,7 @@ onMounted(async () => {
   height: 100%;
   min-width: 520px;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
   box-shadow: 0px -90px 90px -90px rgba(0, 0, 0, 0.5);
