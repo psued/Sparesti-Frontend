@@ -9,7 +9,14 @@
         <NewChallengeComponent @toggleFreeze="toggleIsFrozen" @close="toggleIsVisible"/>
       </template>
     </PopupComponent>
-    <NewChallengeButtonComponent v-if="!isVisible" @click="toggleIsVisible" class="newChallengeButton"/>
+    <SVGButtonComponent  v-if="!isVisible" @click="toggleIsVisible" class="newChallengeButton">
+      <template v-slot:icon>
+        <svg class="pluss" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15" stroke="#F09217" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M7 3.33782C8.47087 2.48697 10.1786 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 10.1786 2.48697 8.47087 3.33782 7" stroke="#F09217" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </template>
+    </SVGButtonComponent>
   </div>
 
 </template>
@@ -18,12 +25,11 @@
 import ChallengeComponent from '../components/challenges/ChallengeComponent.vue'
 import { getUserChallenges } from "@/api/challengeHooks";
 import { useUserStore } from "@/stores/userStore";
-import {onMounted, ref, inject, computed} from "vue";
+import {onMounted, ref} from "vue";
 import type { MasterChallenge } from '@/types/challengeTypes';
 import NewChallengeComponent from "@/components/challenges/NewChallengeComponent.vue";
-import NewChallengeButtonComponent from "@/components/challenges/NewChallengeButtonComponent.vue";
-import {mount} from "cypress/vue";
 import PopupComponent from "@/components/assets/PopupComponent.vue";
+import SVGButtonComponent from "@/components/assets/SVGButtonComponent.vue";
 const challengeObjects = ref<MasterChallenge[]>([]);
 
 async function fetchChallengeObjects() {
