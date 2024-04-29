@@ -1,16 +1,20 @@
 <template>
   <div class="layout">
-    <NAV />
+    <div id="nav">
+      <NAV />
+    </div>
 
-    <RouterView class="content" />
+    <div id="content">
+      <RouterView/>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useDark, useToggle } from "@vueuse/core";
-import { RouterLink, RouterView } from "vue-router";
-import NAV from "./views/Nav_View.vue";
-import road from "./components/road/RoadTiles.vue";
+import { useDark, useToggle } from '@vueuse/core'
+import { RouterLink, RouterView } from 'vue-router'
+import NAV from './views/Nav_View.vue';
+import road from './components/road/RoadTiles.vue';
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
@@ -25,9 +29,17 @@ document.body.classList.toggle("dark", isDark.value);
 .layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
 }
-.content {
-  overflow: auto;
+
+#nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+#content{
+  position: relative;
+  top: 90px;
 }
 </style>
