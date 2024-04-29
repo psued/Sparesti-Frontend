@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref } from 'vue';
 import type { SavingGoal } from '@/types/SavingGoal';
-import { updateSavingGoal } from '@/api/savingGoalHooks';
+import { updateSavingGoal, deleteSavingGoal } from '@/api/savingGoalHooks';
 
 const props = defineProps({
   savingGoal: {
@@ -34,7 +34,7 @@ const props = defineProps({
 const emits = defineEmits(['deleteGoal', 'updateGoal']);
 
 const isEditing = ref(false);
-const editableGoal = ref({ ...props.savingGoal }); // Create a reactive copy of props.savingGoal
+const editableGoal = ref({ ...props.savingGoal }); 
 
 const startEditing = () => {
   isEditing.value = true;
@@ -45,16 +45,18 @@ const saveChanges = async () => {
     await updateSavingGoal(Number(props.savingGoal.id), { ...editableGoal.value, mediaUrl: editableGoal.value.mediaUrl || '' });
     emits('updateGoal', editableGoal.value);
     isEditing.value = false;
+    window.location.reload();
   } catch (error) {
     console.error('Error updating saving goal:', error);
-    // Handle error
   }
 };
 
-const confirmDelete = () => {
-  if (window.confirm('Er du sikker på at du vil slette dette sparemålet?')) {
+const confirmDelete = async () => {
+  try {
+    await deleteSavingGoal(Number(props.savingGoal.id));
     emits('deleteGoal', props.savingGoal.id);
-    // Removed window.location.reload(), it's not recommended in SPAs.
+  } catch (error) {
+    console.error('Error deleting saving goal:', error);
   }
 };
 </script>
