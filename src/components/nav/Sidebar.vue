@@ -210,7 +210,8 @@ onMounted(() => {
   align-items: center;
   height: 90px;
   width: 100%;
-  overflow: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 /* Styles for the theme mode toggle */
@@ -270,6 +271,19 @@ onMounted(() => {
   justify-content: center;
   transform: 0.5s;
   text-decoration: none;
+}
+
+
+@media screen and (max-height: 1000px) {
+  .bar-item-desktop{
+    height: 60px;
+    font-size: 28px;
+  }
+  .bar-item-sign{
+    height: 60px;
+    font-size: 28px;
+  
+  }
 }
 
 .text-dark {

@@ -2,7 +2,7 @@
   <div class="layout">
     <NAV />
 
-    <RouterView />
+    <RouterView class="content" />
   </div>
 </template>
 
@@ -25,5 +25,9 @@ document.body.classList.toggle("dark", isDark.value);
 .layout {
   display: flex;
   flex-direction: column;
+  height: 100vh;
+}
+.content {
+  overflow: auto;
 }
 </style>
