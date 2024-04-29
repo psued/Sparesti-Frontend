@@ -3,14 +3,17 @@
     <NAV />
 
     <RouterView class="content" />
+
+    <FOOTER v-if="isPhone" class="footer-box"/>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useDark, useToggle } from "@vueuse/core";
 import { RouterLink, RouterView } from "vue-router";
+import { onMounted, ref } from "vue";
 import NAV from "./views/Nav_View.vue";
-import road from "./components/road/RoadTiles.vue";
+import FOOTER from "./views/Footer_View.vue";
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
@@ -19,6 +22,18 @@ function toggleTheme() {
   document.body.classList.toggle("dark", isDark.value);
 }
 document.body.classList.toggle("dark", isDark.value);
+
+const isPhone = ref(false);
+let mql;
+
+onMounted(() => {
+  mql = window.matchMedia('(max-width: 480px)');
+  isPhone.value = mql.matches;
+
+  mql.addEventListener('change', (e) => {
+    isPhone.value = e.matches;
+  });
+});
 </script>
 
 <style scoped>
@@ -28,6 +43,12 @@ document.body.classList.toggle("dark", isDark.value);
   height: 100vh;
 }
 .content {
-  overflow: auto;
+  overflow-y: hidden;
+}
+
+@media screen and (max-width: 480px) {
+  .content{
+    bottom: 90px
+  }
 }
 </style>
