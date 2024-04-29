@@ -108,7 +108,7 @@ const addNode = (ch: any, index: number) => {
 };
 
 async function movePig(node: Node, nodes: Node[], index: number) {
-  if(totChallenges <= index+1){
+  if(totChallenges <= index+1 || totChallenges === 0){
     return;
   }
   if(nodes[index+1].challenge.completed && nodes[index+1].moved === false){
@@ -119,10 +119,14 @@ async function movePig(node: Node, nodes: Node[], index: number) {
 
     nodes[index+1].pig = `src/assets/animation/pig-walking-${nodes[index+1].point}.gif`;
     const pig = document.getElementsByClassName('walking-pig-' + (index+1))[0];
-    if((index+1) % 2 === 0){
-      pig.classList.add('animation-pig-left');
+    if(pig){
+      if((index+1) % 2 === 0){
+        pig.classList.add('animation-pig-left');
+      } else {
+        pig.classList.add('animation-pig-right');
+      }
     } else {
-      pig.classList.add('animation-pig-right');
+      console.log("Pig not found");
     }
   
     // Wait for the animation to finish
