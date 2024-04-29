@@ -4,11 +4,11 @@
     <div id="challengesDiv">
       <ChallengeComponent class="challenge" v-for="challengeObject in challengeObjects.values()" :key="challengeObject.id" :challenge-object="challengeObject" />
     </div>
-    <NewChallengeComponent @togglePopup="toggleIsVisible" :is-visible="isVisible" ref="popup">
+    <PopupComponent @togglePopup="toggleIsVisible" :is-visible="isVisible" ref="popup">
       <template v-slot:content>
-        <div class="newChallengePopup"></div>
+        <NewChallengeComponent @close="toggleIsVisible"/>
       </template>
-    </NewChallengeComponent>
+    </PopupComponent>
     <NewChallengeButtonComponent v-if="!isVisible" @click="toggleIsVisible" class="newChallengeButton"/>
   </div>
 
@@ -20,9 +20,10 @@ import { getUserChallenges } from "@/api/challengeHooks";
 import { useUserStore } from "@/stores/userStore";
 import {onMounted, ref, inject, computed} from "vue";
 import type { MasterChallenge } from '@/types/challengeTypes';
-import NewChallengeComponent from "@/components/assets/PopupComponent.vue";
+import NewChallengeComponent from "@/components/challenges/NewChallengeComponent.vue";
 import NewChallengeButtonComponent from "@/components/challenges/NewChallengeButtonComponent.vue";
 import {mount} from "cypress/vue";
+import PopupComponent from "@/components/assets/PopupComponent.vue";
 const challengeObjects = ref<MasterChallenge[]>([]);
 
 async function fetchChallengeObjects() {
@@ -79,15 +80,4 @@ function toggleIsVisible() {
   left: 50%;
   transform: translateX(-50%);
 }
-
-.newChallengePopup {
-  position: absolute;
-  width: 400px;
-  height: 400px;
-  background-color: red;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
 </style>

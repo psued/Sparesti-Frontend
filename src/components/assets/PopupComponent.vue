@@ -55,7 +55,7 @@ watchEffect(() => {
   position: fixed;
   top: var(--navbarHeight);
   display: table;
-  background: rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.5);
   width: 100%;
   height: calc(100vh - var(--navbarHeight));
 }
