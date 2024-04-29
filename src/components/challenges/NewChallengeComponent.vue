@@ -1,13 +1,13 @@
 <template>
   <div id="NewChallengeContainer" >
-    <ExitButtonComponent @close="close" id="exitButton"/>
+    <ExitButtonComponent v-if="!showCreateChallenge && !showGenerateChallenge" @close="close" id="exitButton"/>
     <div id="header">
-
+      <BackButtonComponent @click="back" v-if="showCreateChallenge || showGenerateChallenge" id="backButton"/>
     </div>
     <div v-if="!showCreateChallenge && !showGenerateChallenge">
       <h1>New Challenge</h1>
 
-      <ButtonComponent class="button" @click="createChallenge">
+      <ButtonComponent class="button" @click="toggleCreateChallenge">
         <template v-slot:content>
           <h2>Create</h2>
         </template>
@@ -27,18 +27,30 @@ import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 import CreateChallengeComponent from "@/components/challenges/CreateChallengeComponent.vue";
 import {ref} from "vue";
 import ExitButtonComponent from "@/components/assets/ExitButtonComponent.vue";
+import BackButtonComponent from "@/components/assets/BackButtonComponent.vue";
 
 const showCreateChallenge = ref(false);
 const showGenerateChallenge = ref(false);
 
-const createChallenge = () => {
+const toggleCreateChallenge = () => {
   showCreateChallenge.value = true;
+  toggleFreeze()
 }
 
-const emit = defineEmits(['close'])
+const back = () => {
+  showCreateChallenge.value = false;
+  showGenerateChallenge.value = false;
+  toggleFreeze()
+}
+
+const emit = defineEmits(['close', 'toggleFreeze'])
 
 const close = () => {
   emit('close')
+}
+
+const toggleFreeze = () => {
+  emit('toggleFreeze')
 }
 </script>
 
@@ -53,6 +65,13 @@ const close = () => {
 
 #header {
   height: 50px;
+  align-content: center;
+}
+
+#backButton {
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
 }
 
 #NewChallengeContainer {

@@ -6,7 +6,7 @@
     </div>
     <PopupComponent @togglePopup="toggleIsVisible" :is-visible="isVisible" ref="popup">
       <template v-slot:content>
-        <NewChallengeComponent @close="toggleIsVisible"/>
+        <NewChallengeComponent @toggleFreeze="toggleIsFrozen" @close="toggleIsVisible"/>
       </template>
     </PopupComponent>
     <NewChallengeButtonComponent v-if="!isVisible" @click="toggleIsVisible" class="newChallengeButton"/>
@@ -36,10 +36,15 @@ onMounted(async () => {
   await fetchChallengeObjects();
 });
 
-
+let isFrozen = false
+function toggleIsFrozen(){
+  isFrozen = !isFrozen
+}
 const isVisible = ref(false)
 function toggleIsVisible() {
-  isVisible.value = !isVisible.value
+  if(!isFrozen){
+    isVisible.value = !isVisible.value
+  }
 }
 </script>
 
