@@ -11,21 +11,27 @@ Pass the isVisible prop to control its visibility.
 The content of the popup is passed through the default slot.
 -->
 
-<template >
-  <div class="backdrop" @click.self="togglePopup" v-if="props.isVisible">
+<template>
+  <div :class="{ backdrop: true, flashing: props.flashingBorder }" @click.self="togglePopup" v-if="props.isVisible">
     <slot name="content"></slot>
   </div>
 </template>
 
 <script setup lang="ts">
-import {watchEffect} from 'vue'
+import { defineProps, defineEmits, defineExpose, watchEffect } from 'vue';
 
-const props = defineProps(['isVisible'])
-const emit = defineEmits(['togglePopup'])
+const props = defineProps({
+  isVisible: Boolean,
+  flashingBorder: {
+    type: Boolean,
+    default: false // Default value is false if not provided
+  }
+});
+const emit = defineEmits(['togglePopup']);
 
 const togglePopup = () => {
-  emit('togglePopup')
-}
+  emit('togglePopup');
+};
 
 defineExpose({
   togglePopup
@@ -47,7 +53,7 @@ watchEffect(() => {
     document.body.classList.remove('no-scroll');
     document.documentElement.scrollTop = scrollTop;
   }
-})
+});
 </script>
 
 <style scoped>
@@ -58,5 +64,20 @@ watchEffect(() => {
   background: rgba(0,0,0,0.5);
   width: 100%;
   height: calc(100vh - var(--navbarHeight));
+}
+
+.flashing {
+  /* Add flashing border styles here */
+  animation: flashBorder 2s infinite alternate;
+  border: 3px solid green;
+}
+
+@keyframes flashBorder {
+  0% {
+    border-color: green; /* Initial border color */
+  }
+  100% {
+    border-color: yellow; /* Alternate border color */
+  }
 }
 </style>
