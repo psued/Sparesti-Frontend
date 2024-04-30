@@ -4,21 +4,23 @@
     <div id="header">
       <BackButtonComponent @click="back" v-if="showCreateChallenge || showGenerateChallenge" id="backButton"/>
     </div>
-    <div v-if="!showCreateChallenge && !showGenerateChallenge">
-      <h1>New Challenge</h1>
+    <div id="contentContainer">
+      <div v-if="!showCreateChallenge && !showGenerateChallenge">
+        <h1>New Challenge</h1>
 
-      <ButtonComponent class="button" @click="toggleCreateChallenge">
-        <template v-slot:content>
-          <h2>Create</h2>
-        </template>
-      </ButtonComponent>
-      <ButtonComponent class="button" @click="">
-        <template v-slot:content>
-          <h2>Generate</h2>
-        </template>
-      </ButtonComponent>
+        <ButtonComponent class="button" @click="toggleCreateChallenge">
+          <template v-slot:content>
+            <h2>Create</h2>
+          </template>
+        </ButtonComponent>
+        <ButtonComponent class="button" @click="">
+          <template v-slot:content>
+            <h2>Generate</h2>
+          </template>
+        </ButtonComponent>
+      </div>
+      <CreateChallengeComponent v-if="showCreateChallenge"/>
     </div>
-    <CreateChallengeComponent v-if="showCreateChallenge"/>
   </div>
 </template>
 
@@ -55,6 +57,17 @@ const toggleFreeze = () => {
 </script>
 
 <style scoped>
+#NewChallengeContainer {
+  position: absolute;
+  width: 400px;
+  height: 90%;
+  background-color: var(--color-background);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+}
+
 #exitButton {
   position: absolute;
   top: -7px;
@@ -74,15 +87,10 @@ const toggleFreeze = () => {
   margin-left: 10px;
 }
 
-#NewChallengeContainer {
-  position: absolute;
-  width: 400px;
-  height: 90%;
-  background-color: var(--color-background);
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 10px;
+#contentContainer {
+  height: calc(100% - 80px);
+  overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
 }
 
 .button {

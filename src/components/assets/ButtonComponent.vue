@@ -71,7 +71,7 @@ const props = defineProps({
 }
 
 .animation1 {
-  animation: button-animation1 100ms;
+  animation: button-animation1 150ms;
   animation-fill-mode: forwards;
 
 }
