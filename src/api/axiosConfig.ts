@@ -29,8 +29,6 @@ api.interceptors.request.use(
       }
       config.headers.Authorization = `Bearer ${token}`;
 
-      // Check and award badges if the user has met the requirements
-      checkAndAwardBadges();
     }
     return config;
   },
@@ -39,19 +37,5 @@ api.interceptors.request.use(
     return Promise.reject(error);
   },
 );
-
-/**
- * Checks and awards badges to the user if they have met the requirements.
- */
-async function checkAndAwardBadges() {
-  // Make a request to your endpoint to check and award badges
-  try {
-    const response = await api.post(`/badges/check-and-award`);
-    const data = response.data;
-    console.log("Badges awarded:", data);
-  } catch (error) {
-    console.error("Error checking and awarding badges:", error);
-  }
-}
 
 export { api, oauth2 };
