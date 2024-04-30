@@ -27,20 +27,18 @@
   import BadgeComponent from "@/components/badge/BadgeComponent.vue";
   import { type Badge, type UserBadge } from "@/types/Badge"; // Importing the Badge interface
   import { getAllBadges, getBadgesByUser } from "@/api/badgeHooks";
-  import { getUserByUsername } from "@/api/userHooks";
   import { useRouter } from "vue-router";
   import { useUserStore } from "@/stores/userStore";
   
   const badges = ref<Badge[]>([]);
   const userBadges = ref<UserBadge[]>([]);
-  const router = useRouter();
   const userStore = useUserStore();
   const userId = userStore.getUserId;
   
   onMounted(async () => {
     badges.value = (await getAllBadges()) as Badge[];
     console.log(userId);
-    userBadges.value = (await getBadgesByUser(userId)) as unknown as UserBadge[];
+    userBadges.value = (await getBadgesByUser()) as unknown as UserBadge[];
   });
   
   const isBadgeOwned = (badge: Badge) => {
