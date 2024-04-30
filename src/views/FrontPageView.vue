@@ -1,7 +1,9 @@
 <template>
+  <daily-tip-blimp />
   <div class="container">
     <div class="background-container">
       <div class="background"></div>
+
     </div>
     <div class="clouds" v-if="maxMedia">
       <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
@@ -31,6 +33,7 @@ import road from "../components/road/RoadTiles.vue";
 
 import checkCircleIcon from "@/assets/check-circle.svg";
 import starCircleIcon from "@/assets/star-circle.svg";
+import DailyTipBlimp from "../components/frontpage/DailyTipBlimp.vue";
 
 const selectedChallenge = ref<Challenge | null>(null);
 const showPopup = ref(false);
