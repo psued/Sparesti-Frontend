@@ -16,7 +16,7 @@
   
   const props = defineProps({
     id: {
-      type: String,
+      type: Number,
       required: true,
     },
     budget: {
