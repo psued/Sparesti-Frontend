@@ -1,9 +1,9 @@
 <template>
-    <router-link to="/details" tag="div" class="budget-overview">
+    <router-link :to="`/details/${id}`" tag="div" class="budget-overview" :class="expiredClass">
       <div class="budget-summary">
         <h2>Månedtlig Budsjett</h2>
         <p>{{ budget }} kr av {{ totalBudget }} kr</p>
-        <span>{{ daysLeft }} Dager Igjen</span>
+        <span>{{ daysLeft <= 0 ? 'Expired' : daysLeft + ' Dager Igjen' }}</span>
         <progress-bar :value="budget" :max="totalBudget"></progress-bar>
       </div>
     </router-link>
@@ -15,6 +15,10 @@
   import { defineProps } from "vue";
   
   const props = defineProps({
+    id: {
+      type: Number,
+      required: true,
+    },
     budget: {
       type: Number,
       default: () => Math.floor(Math.random() * 10000),
@@ -34,9 +38,17 @@
   });
   
   const ProgressBar = BudgetProgressBar;
+
+  const expiredClass = computed(() => {
+    return props.daysLeft <= 0 ? 'expired' : '';
+  });
   </script>
   
   <style scoped>
+
+  .expired {
+    background-color: grey !important;
+  }
   .budget-overview {
     background-color: #a6cd94;
     border: solid 1px #c9d6b8;
