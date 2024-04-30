@@ -92,6 +92,7 @@ export const updateAccounts = async (checkingAccountNr: number | null, savingsAc
     checkingAccountNr,
     savingsAccountNr,
   };
+  console.log("Body:", body);
   try {
     const res = await api.post('/users/update', body)
     return res;

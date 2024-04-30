@@ -1,7 +1,7 @@
 <template>
   <div class="layout">
     <div id="nav">
-      <NAV />
+      <NAV v-if="!isSetup"/>
     </div>
 
     <div id="content">
@@ -12,7 +12,8 @@
 
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core'
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { computed } from 'vue'
 import NAV from './views/Nav_View.vue';
 import road from './components/road/RoadTiles.vue';
 
@@ -23,6 +24,11 @@ function toggleTheme() {
   document.body.classList.toggle("dark", isDark.value);
 }
 document.body.classList.toggle("dark", isDark.value);
+
+const route = useRoute();
+
+const isSetup = computed(() => route.name === 'setup');
+
 </script>
 
 <style scoped>

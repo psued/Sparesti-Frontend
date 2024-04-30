@@ -7,6 +7,10 @@
       <section class="top-part-profile">
         <div class="profile-pic-container">
           <ProfilePicComponent :userProfilePic="user.pictureUrl" />
+					<div class="overlay">
+						<i class="icon-pencil"></i>
+					</div>
+					<input type="file" ref="fileInput" @change="handleProfilePictureChange" style="display:none">
         </div>
         <div class="total-savings-container">
           <TotalSavingsComponent :totalSavings="user.totalSavings" />
@@ -106,61 +110,89 @@ onMounted(fetchAndSetUserInfo);
 </script>
 
 <style scoped>
+/* Base styles for links within the profile */
 .badge-link {
   text-decoration: none;
   color: var(--vt-c-black-soft);
   display: block;
 }
+
 .badge-link:hover {
-  background: none;
+  background: none; /* Ensure no background change on hover */
 }
 
-/* Desktop View */
+/* Styling for the profile picture container */
+.profile-pic-container, .total-savings-container {
+  position: relative;
+  width: 12vw;
+  height: 12vw;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Overlay styling that appears on hover */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.profile-pic-container:hover .overlay {
+  opacity: 1;
+}
+
+/* Ensure top-part-profile is always flex row */
+.top-part-profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5rem; /* Adjust space between elements */
+  margin-bottom: 2rem;
+}
+
+/* Desktop view */
 @media (min-width: 769px) {
   .header {
     padding-bottom: 2rem;
     font-size: 1.5rem;
     padding-left: 2rem;
   }
+
   .profile-page-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-  }
-  .user-info-section {
-    display: flex;
-    flex-direction: column;
-    border-right: 2px solid;
-  }
-  .badges-section {
-    display: flex;
-    flex-direction: column;
-  }
-  .top-part-profile {
-    display: flex;
-    gap: 5rem;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 2rem;
-  }
-  .profile-pic-container,
-  .total-savings-container {
-    height: 12vw;
-    width: 12vw;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid;
-  }
-  .profile-page-container {
-    display: grid;
-    justify-content: center;
     padding: 2rem;
   }
+
+  .user-info-section, .badges-section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-info-section {
+    border-right: 2px solid;
+    padding-right: 2rem;
+  }
+
   .settings-section {
     display: flex;
     justify-content: center;
     align-items: center;
     padding-top: 5%;
   }
+
   .settings-button {
     display: flex;
     justify-content: center;
@@ -169,26 +201,26 @@ onMounted(fetchAndSetUserInfo);
     padding: 1rem;
     border-radius: 1rem;
   }
-  .user-info-section {
-    padding-right: 2rem;
-  }
+
   .badge-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
   }
+
   .badge-link {
     max-height: fit-content;
   }
 }
 
+/* Mobile view */
 @media (max-width: 768px) {
   .profile-page-container {
     grid-template-columns: 1fr;
     justify-content: center;
   }
 
-  .profile-pic-container {
+  .profile-pic-container, .total-savings-container {
     width: 150px;
     height: 150px;
   }
