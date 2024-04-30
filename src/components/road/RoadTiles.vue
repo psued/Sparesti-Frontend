@@ -104,8 +104,7 @@ onMounted(async () => {
     useLogin();
   }
 
-    const userId = 1; // Change this to the actual user ID
-    const challengesResponse = await getSortedChallengesByUser(userId);
+    const challengesResponse = await getSortedChallengesByUser();
     console.log(challengesResponse) 
     if(challengesResponse === null){
         console.log("No challenges found");

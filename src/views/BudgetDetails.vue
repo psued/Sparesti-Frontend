@@ -25,11 +25,9 @@
       </div>
     </div>
 
-
-
     <ul>
       <li v-for="(expense, category) in expenses" :key="category">
-        <input v-if="deleteMode" type="checkbox">
+        <input v-if="deleteMode" type="checkbox" v-model="expense.selected">
         <span class="emoji">{{ expense.emoji }}</span>
         <span class="category">{{ category }}</span>
         <span class="amount"
@@ -56,11 +54,11 @@
 
 <script setup lang="ts">
 import BudgetProgressBar from "./BudgetProgressBar.vue";
-import { ref, reactive, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import { useUserStore} from "@/stores/userStore";
+import { ref, reactive, onMounted } from "vue";
+import { useUserStore } from "@/stores/userStore";
 import axios from "axios";
-import {addRowToUserBudget, getBudgetById, getBudgetByUser} from "@/api/budgetHooks";
+import {addRowToUserBudget, deleteBudgetRow, getBudgetById, getBudgetByUser} from "@/api/budgetHooks";
+import {useRoute} from "vue-router";
 
 const userStore = useUserStore();
 
@@ -80,34 +78,45 @@ const props = defineProps({
   },
 });
 
-type ExpenseCategory = 'Kvitteringer' | 'Mat' | 'Klær' | 'Fritid' | 'Betting';
+type ExpenseCategory = "Kvitteringer" | "Mat" | "Klær" | "Fritid" | "Betting";
 
 type Expense = {
-  [key in ExpenseCategory]: {
+  [key: string]: {
     left: number;
     total: number;
     emoji: string;
+    id: number;
+    selected: boolean;
   };
 };
 
 const expenses: Expense = reactive({
-  Kvitteringer: { left: 2000, total: 4000, emoji: '🧾' },
-  Mat: { left: 1500, total: 2500, emoji: '🍞' },
-  Klær: { left: 400, total: 1000, emoji: '👕' },
-  Fritid: { left: 2700, total: 3000, emoji: '🍻' },
-  Betting: { left: 1250, total: 2000, emoji: '🎲' }
+  Kvitteringer: { left: 2000, total: 4000, emoji: "🧾", id: 98 , selected: false },
+  Mat: { left: 1500, total: 2500, emoji: "🍞", id: 99, selected: false },
+  Klær: { left: 400, total: 1000, emoji: "👕", id: 100, selected: false },
+  Fritid: { left: 2700, total: 3000, emoji: "🍻", id: 101,  selected: false },
+  Betting: { left: 1250, total: 2000, emoji: "🎲", id: 102, selected: false },
 });
 
 const showModal = ref(false);
-const newCategory = reactive({ name: '', total: 0, emoji: '' });
+const newCategory = reactive({ name: "", total: 0, emoji: "" });
 
 const toggleModal = () => {
   showModal.value = !showModal.value;
 };
 
-const toggleDeleteMode = () => {
+const route = useRoute();
+
+const toggleDeleteMode = async () => {
   if (deleteMode.value) {
-    // Execute your variable here
+    for (const category in expenses) {
+      if (expenses[category].selected) {
+        const budgetId = Number(route.params.id);
+        console.log("Deleting category: ", expenses[category].id);
+        await deleteBudgetRow(budgetId, expenses[category].id);
+        delete expenses[category];
+      }
+    }
   }
   deleteMode.value = !deleteMode.value;
 };
@@ -117,45 +126,58 @@ const addCategory = () => {
   showModal.value = true; // Open the modal
 };
 
-const handleNewCategory = () => {
-  expenses[newCategory.name as keyof typeof expenses] = {
-    left: newCategory.total,
-    total: newCategory.total,
-    emoji: newCategory.emoji
-  };
-  addRowToUserBudget(userStore.getUserId, "string", 0, newCategory.total, newCategory.name, newCategory.emoji)
+const handleNewCategory = async () => {
+  await addRowToUserBudget(
+      "string",
+      0,
+      newCategory.total,
+      newCategory.name,
+      newCategory.emoji,
+  );
   toggleModal(); // Close modal after adding the category
   newCategory.name = '';
   newCategory.total = 0;
   newCategory.emoji = '';
+
+  const expensesResponse = await getBudgetById(Number(route.params.id));
+
+  if (expensesResponse && expensesResponse.row) {
+    for (const entry of expensesResponse.row) {
+      const {category, usedAmount, maxAmount, emoji, id} = entry;
+      expenses[category as ExpenseCategory] = {
+        left: usedAmount, // Assuming usedAmount represents the left amount
+        total: maxAmount, // Assuming maxAmount represents the total amount
+        emoji: emoji,
+        id: id,
+        selected: false
+      };
+      totalAmount += maxAmount;
+      leftAmount += usedAmount;
+    }
+  }
+
 };
 
 onMounted(async () => {
   try {
-    let userStore = useUserStore();
-    const userId = userStore.getUserId;
 
-
-    const route = useRoute();
-
-    console.log(userId);
-
-    const expensesResponse = await getBudgetById(userId, Number(route.params.id));
-    console.log(expensesResponse);
+    const expensesResponse = await getBudgetById(Number(route.params.id));
 
     if (expensesResponse && expensesResponse.row) {
       for (const entry of expensesResponse.row) {
-          const {category, usedAmount, maxAmount, emoji} = entry;
-          expenses[category as ExpenseCategory] = {
-            left: usedAmount, // Assuming usedAmount represents the left amount
-            total: maxAmount, // Assuming maxAmount represents the total amount
-            emoji: emoji // Hardcoding emoji for now
-          };
-          totalAmount += maxAmount;
-          leftAmount += usedAmount;
-        }
+        const {category, usedAmount, maxAmount, emoji, id} = entry;
+        expenses[category as ExpenseCategory] = {
+          left: usedAmount, // Assuming usedAmount represents the left amount
+          total: maxAmount, // Assuming maxAmount represents the total amount
+          emoji: emoji,
+          id: id,
+          selected: false
+        };
+        totalAmount += maxAmount;
+        leftAmount += usedAmount;
       }
-    } catch (error) {
+    }
+  } catch (error) {
     console.error(error);
   }
 });
@@ -265,7 +287,7 @@ const ProgressBar = BudgetProgressBar;
     padding: 0 1rem;
     width: max-content;
     display: flex;
-    background-color: #a6cd94; 
+    background-color: #a6cd94;
     justify-content: center;
     align-items: center;
     border-radius: 10px;

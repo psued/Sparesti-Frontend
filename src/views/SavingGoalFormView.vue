@@ -80,7 +80,6 @@ import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import type { SavingGoalCreation } from "@/types/SavingGoal";
 import { createSavingGoal } from "@/api/savingGoalHooks";
-import { useUserStore } from "@/stores/userStore";
 import { uploadImage } from "@/utils/imageUtils";
 
 interface Icon {
@@ -95,8 +94,6 @@ const savingGoal = reactive<SavingGoalCreation>({
   mediaUrl: "",
   deadline: new Date().toISOString().split("T")[0],
 });
-const userStore = useUserStore();
-const userId = ref(userStore.getUserId);
 
 const minDeadline = new Date().toISOString().split("T")[0];
 const imagePreview = ref<string | null>(null);
@@ -194,7 +191,7 @@ const router = useRouter();
 
 const createSavingsGoal = async (savingGoalData: SavingGoalCreation) => {
   try {
-    const newSavingGoal = await createSavingGoal(userId.value, savingGoalData);
+    const newSavingGoal = await createSavingGoal(savingGoalData);
     console.log("Saving goal created:", newSavingGoal);
     router.push(`/savinggoal-details/${(newSavingGoal as any).id}`);
   } catch (error) {

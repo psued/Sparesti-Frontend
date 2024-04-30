@@ -68,7 +68,7 @@ const calculateDaysLeft = (budgetItem: Budget) => {
 onMounted(async () => {
   const userId = userStore.getUserId;
   console.log(userId);
-  const expensesResponse = await getBudgetByUser(userId);
+  const expensesResponse = await getBudgetByUser();
   if (expensesResponse) {
     budgetData.value = expensesResponse;
     console.log(budgetData.value);

@@ -10,15 +10,12 @@
 <script setup lang="ts">
 import ChallengeComponent from '../components/challenges/ChallengeComponent.vue'
 import { getUserChallenges } from "@/api/challengeHooks";
-import { useUserStore } from "@/stores/userStore";
 import { onMounted, ref } from "vue";
 import type { MasterChallenge } from '@/types/challengeTypes';
 const challengeObjects = ref<MasterChallenge[]>([]);
 
 async function fetchChallengeObjects() {
-  const userStore = useUserStore()
-  const userId = userStore.getUserId
-  challengeObjects.value = await getUserChallenges(userId) || [];
+  challengeObjects.value = await getUserChallenges() || [];
   console.log(challengeObjects.value);
 }
 

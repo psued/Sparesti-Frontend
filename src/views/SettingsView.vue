@@ -40,9 +40,9 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import DeleteAccountModal from "@/components/profile/DeleteAccountModal.vue";
-import { getUserByUsername } from "@/api/userHooks";
+import { getUserByUsername, updateAccounts } from "@/api/userHooks";
 import { useUserStore } from "@/stores/userStore";
-import { getBankAccountDetails, updateAccounts } from "@/api/bankHooks";
+import { getBankAccountDetails } from "@/api/bankHooks";
 
 const router = useRouter();
 const userStore = useUserStore();
