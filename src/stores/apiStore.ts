@@ -6,8 +6,8 @@ export const useApiStore = defineStore({
   state: () => ({
     codeVerifier: useStorage("codeVerifier", "", sessionStorage),
     clientId: "sparestiClient",
-    baseUrl: "http://localhost:5173", // Used for redirects
-    backendUrl: "http://127.0.0.1:8080", // Used for API calls
+    baseUrl: import.meta.env.VITE_BASE_URL, // Used for redirects
+    backendUrl: import.meta.env.VITE_BACKEND_URL, // Used for API calls
   }),
   getters: {
     getCodeVerifier(): string {
