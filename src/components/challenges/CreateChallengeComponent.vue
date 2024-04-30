@@ -1,11 +1,8 @@
 <template>
   <p>Challenge Title</p>
-  <input
-      type="type"
-      placeholder="placeholder"
-  />
+  <input type="text" placeholder="Title"/>
 
-  <p>Challenge Title</p>
+  <p>Challenge Description</p>
   <textarea></textarea>
 
   <SVGButtonComponent class="emojiButton">
@@ -19,11 +16,18 @@
       </svg>
     </template>
   </SVGButtonComponent>
+
+  <div id="timeIntervalRadio">
+    <ButtonComponent class="timeIntervalButton"></ButtonComponent>
+    <ButtonComponent class="timeIntervalButton"></ButtonComponent>
+    <ButtonComponent class="timeIntervalButton"></ButtonComponent>
+  </div>
 </template>
 
 <script setup lang="ts">
 
 import SVGButtonComponent from "@/components/assets/SVGButtonComponent.vue";
+import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 </script>
 
 <style scoped>
@@ -31,5 +35,20 @@ import SVGButtonComponent from "@/components/assets/SVGButtonComponent.vue";
   width: 100px;
   height: 100px;
   margin: auto;
+}
+
+#timeIntervalRadio {
+  text-align: justify;
+  text-align-last:center;
+  width: 100%;
+  background-color: red;
+
+}
+
+.timeIntervalButton {
+  width: 100px;
+  height: 50px;
+  display: inline-block;
+  margin: 0 auto;
 }
 </style>
