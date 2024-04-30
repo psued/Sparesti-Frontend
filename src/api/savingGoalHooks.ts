@@ -120,3 +120,17 @@ export const getUsersBySavingGoal = async (savingGoalId: number) => {
     throw new Error(`Error getting users by saving goal: ${error}`);
   }
 }
+
+export const userHasActiveSavingGoal = async (userEmail: string) => {
+  try {
+    const response = await api.get(`/savings-goals/user/${encodeURIComponent(userEmail)}/active`);
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Failed to get active saving goal");
+    }
+  } catch (error) {
+    throw new Error(`Error getting active saving goal: ${error}`);
+  }
+}

@@ -13,6 +13,7 @@ export interface SavingGoal {
   deadline: string;
   mediaUrl?: string;
   completed?: boolean;
+  authorId?: number;
 }
 
 export interface SavingGoalDetails {

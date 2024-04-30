@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { defineProps, ref, onMounted } from 'vue'
 import { getUserByUsername } from '@/api/userHooks'
-import { addSavingGoalToUser, getUsersBySavingGoal, deleteSavingGoalFromUser } from '@/api/savingGoalHooks'
+import { addSavingGoalToUser, getUsersBySavingGoal, deleteSavingGoalFromUser, userHasActiveSavingGoal } from '@/api/savingGoalHooks'
 import { useUserStore } from '@/stores/userStore'
 
 const props = defineProps({
@@ -62,10 +62,18 @@ const addToSavingGoal = async () => {
     collaborators.value.some((collaborator) => collaborator.userEmail === username.value)
   ) {
     alert('Invalid username')
+    username.value = ''
   }
   const user = await getUserByUsername(username.value)
   if (!user) {
     alert('User not found')
+    username.value = ''
+    return
+  }
+
+  if (await userHasActiveSavingGoal(username.value)) {
+    alert('User already has an active saving goal!')
+    username.value=''
     return
   }
 

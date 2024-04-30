@@ -77,7 +77,7 @@
   import { ref, reactive } from "vue";
   import { useRouter } from "vue-router";
   import type { SavingGoalCreation } from "@/types/SavingGoal";
-  import { createSavingGoal, addSavingGoalToUser } from "@/api/savingGoalHooks";
+  import { createSavingGoal, addSavingGoalToUser, userHasActiveSavingGoal } from "@/api/savingGoalHooks";
   import { useUserStore } from "@/stores/userStore";
   import { uploadImage } from "@/utils/imageUtils";
   import type { SavingGoal } from "@/types/SavingGoal";
@@ -134,14 +134,21 @@
   
   const createSavingsGoal = async (savingGoalData: SavingGoalCreation) => {
     try {
-      const newSavingGoal = await createSavingGoal(savingGoalData);
-      console.log(newSavingGoal);
-      createdSavingGoal.value = newSavingGoal;
-      const savingGoalId = createdSavingGoal.value ? createdSavingGoal.value.id : null;
-      console.log(savingGoalId)
-      await addSavingGoalToUser(userEmail, Number(savingGoalId));
-      console.log("Saving goal created:", newSavingGoal);
-      router.push(`/saving-goals/user/${userId}`);
+      if (await userHasActiveSavingGoal(userEmail)) {
+        window.alert("Du har allerede et aktivt sparemål!");
+        router.push(`/saving-goals/user/${userId}`);
+      } 
+      else {
+        const newSavingGoal = await createSavingGoal(savingGoalData);
+        console.log(newSavingGoal);
+        createdSavingGoal.value = newSavingGoal;
+        const savingGoalId = createdSavingGoal.value ? createdSavingGoal.value.id : null;
+        console.log(savingGoalId)
+        await addSavingGoalToUser(userEmail, Number(savingGoalId));
+        console.log("Saving goal created:", newSavingGoal);
+        alert("Sparemål opprettet!");
+        router.push(`/saving-goals/user/${userId}`);
+      }
     } catch (error) {
       console.error("Error creating saving goal:", error);
     }
@@ -173,7 +180,6 @@
     } else if (uploadType.value === "emoji") {
       savingGoal.mediaUrl = emoji.value;
     }
-    window.alert("Sparemål opprettet!");
     createSavingsGoal(savingGoal);
   };
   </script>

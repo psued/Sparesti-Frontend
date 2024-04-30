@@ -5,19 +5,24 @@
           Tilbake til Sparemål
         </button>
         <h1 class="header">Sparemål Detaljer</h1>
-        <button class="add-button" @click="showCollaborateModal">
+        <button class="add-button" @click="showCollaborateModal" v-if="author">
           Legg til Brukere
         </button>
       </div>
       <div class="saving-goal-info">
-        <SavingGoalCard :savingGoal="savingGoal || undefined" :editable="true" />
+        <SavingGoalCard :savingGoal="savingGoal || undefined" :editable="true && author" />
       </div>
       <div v-if="usersWithSavingGoal?.length">
       <h2 class="header2">Brukere med dette sparemålet:</h2>
       <div
         v-for="(user, index) in usersWithSavingGoal"
         :key="index"
-        class="user-card"
+        :class="{
+          'user-card': true,
+          'red-border': (user.contributionAmount || 0) / (savingGoal?.targetAmount || 1) <= 0.2,
+          'yellow-border': (user.contributionAmount || 0) / (savingGoal?.targetAmount || 1) > 0.2 && (user.contributionAmount || 0) / (savingGoal?.targetAmount || 1) <= 0.4,
+          'green-border': (user.contributionAmount || 0) / (savingGoal?.targetAmount || 1) > 0.4
+        }"
       >
         <img
           v-if="user.profilePictureUrl"
@@ -48,6 +53,7 @@
   import CollaborationModal from "@/components/savinggoal/CollaborationModal.vue";
   import { type SavingGoal, type SavingGoalDetails } from "@/types/SavingGoal";
   import { getSavingGoalById, getUsersBySavingGoal } from "@/api/savingGoalHooks";
+  import { getUserByUsername } from "@/api/userHooks";
   import { useUserStore } from "@/stores/userStore";
   import { formatDate } from "@/utils/dateUtils";
   
@@ -55,19 +61,23 @@
   const route = useRoute();
   const router = useRouter();
   const savingGoalId = Number(route.params.saving_goal_id);
-  const userStore = useUserStore();
-  const userId = userStore.getUserId;
+  const userId = ref(0);
+  const authorId = ref(0);
+  const author = ref(false);
   const showCollaborate = ref(false);
   const usersWithSavingGoal = ref<SavingGoalDetails[] | null>(null);
+  const userStore = useUserStore();
   
   onMounted(async () => {
     savingGoal.value = await getSavingGoalById(savingGoalId);
     usersWithSavingGoal.value = await getUsersBySavingGoal(savingGoalId);
+    const user = await getUserByUsername(userStore.getUserName);
+    userId.value = user.id;
+    isAuthor();
   });
   
   const navigateToSavingGoalsPage = () => {
-    console.log(userId);
-    router.push(`/saving-goals/user/${userId}`);
+    router.push(`/saving-goals/user/${userId.value}`);
   };
 
   const onUpdate = async () => {
@@ -80,6 +90,13 @@
 
   const closeCollaborateModal = () => {
     showCollaborate.value = false
+  }
+
+  const isAuthor = async () => {
+    authorId.value = savingGoal.value?.authorId ?? 0;
+    if (userId.value === authorId.value) {
+      author.value = true;
+    }
   }
   </script>
 
@@ -124,7 +141,7 @@
   @media screen and (min-width: 901px) {
     .header-container {
       display: grid;
-      grid-template-columns: auto 1fr auto; /* Three columns layout on larger screens */
+      grid-template-columns: auto 1fr auto; /* Default three columns layout */
       grid-template-areas: "return header add-user";
       align-items: center; /* Center vertically */
       width: 100%;
@@ -138,6 +155,7 @@
     .header {
       grid-area: header;
       justify-self: center; /* Center horizontally */
+      position: absolute;
     }
 
     .add-button {
@@ -235,13 +253,15 @@
   color: black;
 }
 
-/* Second to Second to last user - yellow border */
-.user-card:nth-child(n+3):nth-last-child(n+2) {
-  border-color: var(--border-color-yellow);
+.red-border {
+  border: 2px solid var(--border-color-red);
 }
 
-/* Last user - red border */
-.user-card:last-child {
-  border-color: var(--border-color-red);
+.yellow-border {
+  border: 2px solid var(--border-color-yellow);
+}
+
+.green-border {
+  border: 2px solid var(--border-color-green);
 }
 </style>
