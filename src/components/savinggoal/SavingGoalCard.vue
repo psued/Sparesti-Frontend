@@ -195,11 +195,14 @@ function handleImageUpload(event: Event) {
   padding-top: 10px;
 }
 
-.icon-preview img {
+.icon-preview img, .image-preview img {
   width: 50%;
   height: 50%;
 }
 
+.image-preview {
+  padding-top: 10px;
+}
 
 .emoji-div {
   display: flex;
