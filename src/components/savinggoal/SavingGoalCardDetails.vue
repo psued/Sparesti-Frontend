@@ -102,6 +102,15 @@
 
   
   <style scoped>
+
+  .saving-goal-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Ensures the container takes full width */
+    padding-bottom: 2%;
+  }
+
    .back-button {
     margin-left: 10px;
   }
@@ -130,6 +139,7 @@
 
     .header {
       grid-area: header;
+      padding-top: 1%;
     }
 
     .add-button {

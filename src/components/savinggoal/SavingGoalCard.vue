@@ -36,11 +36,13 @@
         <Picker :data="emojiIndex" set="twitter" @select="handleEmojiSelect" :fallback="customEmojiFallback" />
         <div class="emoji" v-if="emoji">{{ emoji }}</div>
       </div>
+      <div class = "button-group">
       <button @click="saveChanges" class="editing-button">Save Changes</button>
       <button @click="isEditing = false" class="editing-button">Cancel</button>
     </div>
+    </div>
     <div v-else>
-      <h2 class="name">{{ savingGoal.name }}</h2>
+      <h2 class="name" :title="savingGoal.name">{{ savingGoal.name }}</h2>
       <p><strong>Sparemål:</strong> {{ savingGoal.savedAmount }} / {{ savingGoal.targetAmount }} kr</p>
       <p><strong>Frist:</strong> {{ savingGoal.deadline }}</p>
       <div class="image" v-if="savingGoal.mediaUrl?.length && savingGoal.mediaUrl.length > 4">
@@ -159,7 +161,6 @@ function handleImageUpload(event: Event) {
   position: relative;
   max-width: 600px;
   width: 222px;
-  height: 365px;
   margin: auto;
   margin-top: 2%;
   padding: 20px;
@@ -177,9 +178,8 @@ function handleImageUpload(event: Event) {
   cursor: pointer;
 }
 
-.name {
-  font-weight: revert;
-  margin-bottom: 10px;
+.header {
+  padding-top: 1%;
 }
 
 .image img {
@@ -192,6 +192,15 @@ function handleImageUpload(event: Event) {
 .image {
   display: flex;
   justify-content: center;
+  padding-top: 10px;
+}
+
+.icon-preview img, .image-preview img {
+  width: 50%;
+  height: 50%;
+}
+
+.image-preview {
   padding-top: 10px;
 }
 
@@ -228,17 +237,13 @@ function handleImageUpload(event: Event) {
 }
 
 .delete-icon {
-  right: 10px;
+  right: 3%;
   color: red;
 }
 
 .edit-icon {
-  right: 50px; 
+  right: 13%; 
   color: green;
-}
-
-.editing-area {
-  margin-bottom: 20px;
 }
 
 .editing-input {
@@ -252,11 +257,11 @@ function handleImageUpload(event: Event) {
 
 .editing-input:focus {
   outline: none;
-  border-color: dodgerblue;
+  border-color: #8fbf7f;
 }
 
 .editing-button {
-  background-color: dodgerblue;
+  background-color: #8fbf7f;
   color: white;
   border: none;
   border-radius: 4px;
@@ -266,11 +271,14 @@ function handleImageUpload(event: Event) {
 }
 
 .editing-button:hover {
-  background-color: #007bff;
+  background-color: #67a652;
 }
 
 h2 {
   padding-right: 70px; 
+  overflow-wrap: anywhere;
+  overflow: hidden;
+  max-height: 70px;
 }
 
 .saving-goal-card.green-border {
@@ -283,6 +291,31 @@ h2 {
 
 .saving-goal-card.red-border {
   border: 2px solid var(--border-color-red);
+}
+
+.editing-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.icon-preview {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  width: 60%; 
+  height: auto; 
+}
+
+.editing-button {
+  width: 48%; 
+  margin: 5px 1%; 
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between; 
+  padding-bottom: 2%;
 }
 </style>
   
