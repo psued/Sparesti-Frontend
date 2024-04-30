@@ -34,6 +34,7 @@
 <script setup lang="ts">
 import { ref, defineEmits, onMounted, computed } from "vue";
 import { useQuestionnaireStore } from "@/stores/questionnaireStore";
+import { updateAccounts } from "@/api/userHooks";
 import FormButton from "@/components/forms/FormButton.vue";
 
 const emit = defineEmits(["update-step"]);
@@ -100,6 +101,7 @@ function isFormValid() {
 
   return isValid;
 }
+
 
 onMounted(() => {
   checkingAccount.value = store.stepTwoData.checkingAccount;

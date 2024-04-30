@@ -20,7 +20,7 @@
     </div>
     <div class="button-container">
       <FormButton type="button" @click="goBack">Back</FormButton>
-      <FormButton type="submit" @click="updateAccounts">Update</FormButton>
+      <FormButton type="submit" @click="goToNextStep">goToNextStep</FormButton>
     </div>
   </div>
 </template>
@@ -40,15 +40,16 @@ const emit = defineEmits(['update-step']);
 const checkingAccount = ref(store.stepTwoData.checkingAccount);
 const savingsAccount = ref(store.stepTwoData.savingsAccount);
 
+
 const formattedCheckingAccount = computed({
-  get: () => checkingAccount.value.replace(/(\d{4})(?=\d)/g, '$1 '),
+  get: () => checkingAccount.value.replace(/\s/g, ''),
   set: (val) => {
     checkingAccount.value = val.replace(/\s/g, '');
   }
 });
 
 const formattedSavingsAccount = computed({
-  get: () => savingsAccount.value.replace(/(\d{4})(?=\d)/g, '$1 '),
+  get: () => savingsAccount.value.replace(/\s/g, ''),
   set: (val) => {
     savingsAccount.value = val.replace(/\s/g, '');
   }
@@ -56,18 +57,24 @@ const formattedSavingsAccount = computed({
 
 async function updateAccountNumbers() {
   isLoading.value = true;
+  // Ensure all whitespace is removed before sending
+  const formattedChecking = formattedCheckingAccount.value.replace(/\s/g, '');
+  const formattedSavings = formattedSavingsAccount.value.replace(/\s/g, '');
+
   try {
-    const response = await updateAccounts(
-      formattedCheckingAccount.value.replace(/\s/g, ''), 
-      formattedSavingsAccount.value.replace(/\s/g, '')
-    );
+    const response = await updateAccounts(formattedChecking, formattedSavings);
     console.log('Update successful:', response);
+    emit('update-step', 6);  // Only proceed if update is successful
   } catch (err) {
     error.value = `Failed to update accounts: ${err.message}`;
-    console.error(err);
+    console.error('Error updating accounts:', err);
   } finally {
     isLoading.value = false;
   }
+}
+
+function goToNextStep() {
+  updateAccountNumbers();
 }
 
 function goBack() {
