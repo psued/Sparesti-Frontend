@@ -6,13 +6,15 @@
       </div>
       <div class="account">
         <h2>Brukskonto</h2>
-        <p>{{ checkingAccountNr }}</p>
-        <p>Balance: 17.438,05,-</p>
+        <p v-show="!accountEditMode">{{ checkingAccountNr !== null ?  checkingAccountNr : "Ingen konto satt"}}</p>
+        <input type="text" v-model="checkingAccountNr" v-show="accountEditMode" />
+        <p v-if="checkingAccountNr">{{ checkingBalance.toFixed(2) }}</p>
       </div>
       <div class="account">
         <h2>Sparekonto</h2>
-        <p>{{ savingsAccountNr }}</p>
-        <p>Balance: 157.562,32,-</p>
+        <p v-show="!accountEditMode">{{ savingsAccountNr !== null ? savingsAccountNr : "Ingen konto satt" }}</p>
+        <input type="text" v-model="savingsAccountNr" v-show="accountEditMode" />
+        <p v-if="savingsAccountNr">{{ savingsBalance.toFixed(2) }}</p>
       </div>
     </div>
     <div class="settings-section">
@@ -20,7 +22,7 @@
         <h1>Instillinger</h1>
       </div>
       <div class="settings-buttons">
-        <button class="button">Endre kontoer</button>
+        <button class="button" @click="toggleAccountEdit">{{ accountEditMode ? "Lagre endringer" : "Endre kontoer"}}</button>
         <button class="button">Endre passord</button>
         <button class="delete-button" @click="toggleModal">Slett konto</button>
       </div>
@@ -38,15 +40,22 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import DeleteAccountModal from "@/components/profile/DeleteAccountModal.vue";
-import { getUserByUsername } from "@/api/userHooks";
+import { getUserByUsername, updateAccounts } from "@/api/userHooks";
 import { useUserStore } from "@/stores/userStore";
+import { getBankAccountDetails } from "@/api/bankHooks";
 
 const router = useRouter();
 const userStore = useUserStore();
 
 const showModal = ref(false);
-const checkingAccountNr = ref("");
-const savingsAccountNr = ref("");
+const accountEditMode = ref(false);
+
+const checkingAccountNr = ref(0);
+const checkingBalance = ref(0.0);
+
+const savingsAccountNr = ref(0);
+const savingsBalance = ref(0.0);
+
 
 const toggleModal = () => {
   showModal.value = !showModal.value;
@@ -61,11 +70,39 @@ const handleAccountDeletion = (password: string) => {
   showModal.value = false;
 };
 
-onMounted(async () => {
+const getBankDetails = async () => {
   const userByUsername = await getUserByUsername(userStore.getUserName);
   checkingAccountNr.value = userByUsername.checkingAccountNr;
   savingsAccountNr.value = userByUsername.savingsAccountNr;
-  console.log(userByUsername);
+  if (checkingAccountNr.value !== null) {
+    const checkingAccountDetails = await getBankAccountDetails(checkingAccountNr.value);
+    checkingBalance.value = checkingAccountDetails.balance;
+  }
+  if (savingsAccountNr.value !== null) {
+    const savingsAccountDetails = await getBankAccountDetails(savingsAccountNr.value);
+    savingsBalance.value = savingsAccountDetails.balance;
+  }
+}
+
+const toggleAccountEdit = async () => {
+  if (accountEditMode.value) {
+    const res = await updateAccounts(checkingAccountNr.value, savingsAccountNr.value);
+    if (!res) {
+      console.error("An unexpected error occurred while updating accounts. Please try again later.");
+      return;
+    } else if (res.status === 200) {
+      console.log("Accounts updated successfully");
+    } else {
+      //Insert error message component here if desired
+      alert("Failed to update accounts: " + res.data.title)
+    }
+    await getBankDetails();
+  }
+  accountEditMode.value = !accountEditMode.value;
+};
+
+onMounted(async () => {
+  await getBankDetails();
 });
 </script>
 

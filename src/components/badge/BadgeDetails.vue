@@ -1,9 +1,11 @@
 <template>
   <div class="badge-details">
-    <button class="medaljer-button" @click="navigateToBadgesPage">
-      Medaljer
-    </button>
-    <h1 class="header">Medalje Detaljer</h1>
+    <div class="header-container">
+      <button class="back-button" @click="navigateToBadgesPage">
+        Medaljer
+      </button>
+      <h1 class="header">Medalje Detaljer</h1>
+    </div>
     <div class="badge-info">
       <BadgeComponent :badge="badge" :owned="isOwned" />
       <div v-if="usersWithBadge?.length">
@@ -32,20 +34,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import BadgeComponent from '@/components/badge/BadgeComponent.vue';
-import type { Badge } from '@/types/Badge';
-import { getBadgeById, getAllUsersWithGivenBadge } from '@/api/badgeHooks';
-import type { UserBadgeResponse } from '@/types/UserBadgeResponse';
-import { formatDate } from '@/utils/dateUtils';
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import BadgeComponent from "@/components/badge/BadgeComponent.vue";
+import type { Badge } from "@/types/Badge";
+import { getBadgeById, getAllUsersWithGivenBadge } from "@/api/badgeHooks";
+import type { UserBadgeResponse } from "@/types/UserBadgeResponse";
+import { formatDate } from "@/utils/dateUtils";
 
 const badge = ref<Badge | null>(null);
 const route = useRoute();
 const router = useRouter();
 const badgeId = Number(route.params.id);
 const usersWithBadge = ref<UserBadgeResponse[] | null>(null);
-const isOwned = route.query.isOwned === 'true';
+const isOwned = route.query.isOwned === "true";
 
 onMounted(async () => {
   badge.value = await getBadgeById(badgeId);
@@ -58,10 +60,40 @@ const navigateToBadgesPage = () => {
 </script>
 
 <style scoped>
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+  }
+  
+.back-button {
+  font-size: 24px;
+  color: #333;
+  text-decoration: none;
+  padding-bottom: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 10px;
+  margin-left: 10px;
+  padding: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 0.2s;
+}
+
+.back-button:hover {
+  background-color: #e9e9e9;
+  box-shadow: 0 0 5px #ccc;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
 .header {
-  text-align: center;
-  font-size: 2.5em;
-  margin-top: 20px;
+  font-size: 3rem;
+  margin-top: 10px;
   margin-bottom: 10px;
 }
 
@@ -70,23 +102,6 @@ const navigateToBadgesPage = () => {
   font-size: 2em;
   margin-top: 10px;
   margin-bottom: 10px;
-}
-
-.medaljer-button {
-  align-self: start;
-  margin-top: 20px;
-  margin-left: 20px;
-  padding: 10px;
-  font-size: 1.2em;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.medaljer-button:hover {
-  background-color: #0056b3;
 }
 
 .badge-details {

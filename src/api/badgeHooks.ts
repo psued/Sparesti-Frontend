@@ -82,20 +82,20 @@ export const getAllUsersWithGivenBadge = async (
     console.error("Error fetching users with badge:", error);
     return null;
   }
-}
+};
 
-export const getBadgesByUser = async (userId: number): Promise<Badge[] | null> => {
+export const getBadgesByUser = async (): Promise<Badge[] | null> => {
   try {
-    const response = await api.get(`/badges/user/${userId}`);
+    const response = await api.get(`/badges/user`);
 
     if (response.status === 200) {
       return response.data;
     } else {
-      console.error('Failed to fetch badges:', response.statusText);
+      console.error("Failed to fetch badges:", response.statusText);
       return null;
     }
   } catch (error) {
-    console.error('Error fetching badges:', error);
+    console.error("Error fetching badges:", error);
     return null;
   }
-}
+};

@@ -1,7 +1,5 @@
 <template>
   <div class="container">
-
-
     <div class="background-container">
       <div class="background"></div>
     </div>
@@ -12,8 +10,12 @@
       <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
     </div>
     <road />
-    <ChallengeDetailsPopup :challenge="selectedChallengeForPopup" v-if="showPopup" @close="closePopup"
-      :position="popupPosition" />
+    <ChallengeDetailsPopup
+      :challenge="selectedChallengeForPopup"
+      v-if="showPopup"
+      @close="closePopup"
+      :position="popupPosition"
+    />
   </div>
 </template>
 
@@ -25,7 +27,7 @@ import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes"
 import { useUserStore } from "@/stores/userStore";
 import { useRouter } from "vue-router";
 import { useLogin } from "@/api/authenticationHooks";
-import road from '../components/road/RoadTiles.vue';
+import road from "../components/road/RoadTiles.vue";
 
 import checkCircleIcon from "@/assets/check-circle.svg";
 import starCircleIcon from "@/assets/star-circle.svg";
@@ -34,8 +36,11 @@ const selectedChallenge = ref<Challenge | null>(null);
 const showPopup = ref(false);
 const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 
-const selectedChallengeForPopup = computed(() => selectedChallenge.value || ({} as Challenge));
-const maxMedia = window.matchMedia && window.matchMedia('(min-width: 480px)').matches;
+const selectedChallengeForPopup = computed(
+  () => selectedChallenge.value || ({} as Challenge),
+);
+const maxMedia =
+  window.matchMedia && window.matchMedia("(min-width: 480px)").matches;
 const userStore = useUserStore();
 
 const openPopup = (challenge: Challenge, top: number, left: number) => {
@@ -44,28 +49,27 @@ const openPopup = (challenge: Challenge, top: number, left: number) => {
   popupPosition.value = { top, left };
   console.log("Popup opened");
   console.log(challenge);
-}
+};
 
 const closePopup = () => {
   selectedChallenge.value = null;
   showPopup.value = false;
-}
+};
 
 onMounted(() => {
   if (!userStore.isLoggedIn()) {
     useLogin();
   }
-})
+});
 </script>
 
 <style scoped>
 .container {
-  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  height: 100vh;
+  height: 100%;
+  overflow: hidden;
 }
 
 .background-container {
@@ -75,6 +79,7 @@ onMounted(() => {
   z-index: -1;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .background {
@@ -141,98 +146,5 @@ onMounted(() => {
   animation-delay: 13s;
   top: 65%;
   display: block;
-}
-
-.path-container {
-  width: 100%;
-  height: auto;
-  position: relative;
-  justify-content: center;
-  z-index: 2;
-  text-align: center;
-  width: 50vh;
-  filter: none;
-}
-
-#path-image {
-  width: -webkit-fill-available;
-  height: auto;
-}
-
-.progress-container {
-  width: 100%;
-  justify-content: center;
-}
-
-.progress-bar {
-  background-color: #ffffff;
-  border-radius: 5px;
-  height: 25px;
-  width: 130vh;
-  position: relative;
-  margin: 10px;
-}
-
-.progress-bar-fill {
-  background-color: #4caf50;
-  height: 100%;
-  border-radius: 5px;
-}
-
-.checkpoints {
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-
-.checkpoint {
-  background-color: #fff;
-  border: 2px solid #000000;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  position: absolute;
-  z-index: 3;
-}
-
-.checkpoint.completed {
-  background-color: #4caf50;
-  border-color: #000000;
-}
-
-.checkpoint.in-progress {
-  background-color: #ffc13b;
-  border-color: #000000;
-}
-
-.checkpoint.finish-line {
-  background: url("/finish-line.jpeg");
-  background-size: 1px;
-  border-color: #000000;
-}
-
-.avatar {
-  position: absolute;
-  width: 50px;
-  /* Adjust width as needed */
-  height: auto;
-  z-index: 4;
-  /* Ensure pig is above the checkpoints */
-  transition: all 2s ease;
-  /* Add smooth transition effect */
-}
-
-.checkpoint-icon {
-  position: absolute;
-}
-
-.check {
-  background-color: rgb(23, 228, 23);
-  border-radius: 50%;
-}
-
-.star {
-  background-color: rgb(255, 192, 55);
-  border-radius: 50%;
 }
 </style>

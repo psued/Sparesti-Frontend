@@ -1,44 +1,38 @@
-/**
-* @file Nav_View.vue
-* @description This file contains the implementation of the navigation view component.
-* The component includes a top bar with a logo, a hamburger menu, and a sidebar.
-* It also includes a phone bar for mobile devices.
-* The component handles dark mode and theme changes.
-*/
+/** * @file Nav_View.vue * @description This file contains the implementation of
+the navigation view component. * The component includes a top bar with a logo, a
+hamburger menu, and a sidebar. * It also includes a phone bar for mobile
+devices. * The component handles dark mode and theme changes. */
 <template>
   <!-- Top bar -->
   <div class="top-bar" :class="darkMode ? 'top-bar-dark' : ''">
     <RouterLink class="logo" to="/">
-      <img :src="darkMode ? './logo_long_dark.png' : './logo_long.png'" alt="logo" class="logo" />
+      <img
+        :src="darkMode ? './logo_long_dark.png' : './logo_long.png'"
+        alt="logo"
+        class="logo"
+      />
     </RouterLink>
-    <!-- Hamburger menu -->
-    <div :class="['hamburger', { darkMode: 'hamburger-dark' }]">
-      <div class="hamburger-box" @click="toggleSidebar()">
-        <span :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"></span>
-        <span :class="['hamburger-line', 'middle', { 'hamburger-line-dark': darkMode }]"></span>
-        <span :class="['hamburger-line', 'bottom', { 'hamburger-line-dark': darkMode }]"></span>
-      </div>
+  </div>
+  <!-- Hamburger menu -->
+  <div :class="['hamburger', { darkMode: 'hamburger-dark' }]">
+    <div class="hamburger-box" @click="toggleSidebar()">
+      <span :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"></span>
+      <span :class="['hamburger-line', 'middle', { 'hamburger-line-dark': darkMode }]"></span>
+      <span :class="['hamburger-line', 'bottom', { 'hamburger-line-dark': darkMode }]"></span>
     </div>
   </div>
 
 
+
   <!-- Sidebar -->
   <Transition name="move">
-    <sidebar :darkMode="darkMode" @theme="handleThemeChange" @bar="toggleSidebar" v-if="isSidebarOpen" />
+    <sidebar
+      :darkMode="darkMode"
+      @theme="handleThemeChange"
+      @bar="toggleSidebar"
+      v-if="isSidebarOpen"
+    />
   </Transition>
-
-  <!-- Phone bar -->
-  <div class="phone-bar" v-if="isPhone" :class="{ 'phone-bar-dark': darkMode }">
-    <RouterLink class="phone-bar-item" :class="{ 'phone-bar-item-dark': darkMode }" to="/">
-      <i :class="darkMode ? 'icon-home-dark' : 'icon-home'"></i>
-    </RouterLink>
-    <RouterLink class="phone-bar-item" :class="{ 'phone-bar-item-dark': darkMode }" to="/challenges">
-      <i :class="darkMode ? 'icon-challenges-dark' : 'icon-challenges'"></i>
-    </RouterLink>
-    <RouterLink class="phone-bar-item" :class="{ 'phone-bar-item-dark': darkMode }" to="/budget">
-      <i :class="darkMode ? 'icon-budget-dark' : 'icon-budget'"></i>
-    </RouterLink>
-  </div>
 
   <!-- Blur screen -->
   <Transition name="fade">
@@ -47,64 +41,68 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { Transition } from 'vue'
+import { onMounted, ref } from "vue";
+import { Transition } from "vue";
 import "@/assets/icons.css";
-import sidebar from '../components/nav/Sidebar.vue'
+import sidebar from "../components/nav/Sidebar.vue";
 
 // Dark mode preference based on user's system settings
-const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+const prefersDarkMode =
+  window.matchMedia &&
+  window.matchMedia("(prefers-color-scheme: dark)").matches;
 const darkMode = ref(prefersDarkMode);
 
 // Sidebar and phone bar state
-const isSidebarOpen = ref(false)
-const isPhone = ref(window.matchMedia && window.matchMedia('(max-width: 480px)').matches)
+const isSidebarOpen = ref(false);
+const isPhone = ref(
+  window.matchMedia && window.matchMedia("(max-width: 480px)").matches,
+);
 
 // Handle window resize event for mobile devices
 onMounted(() => {
-  window.matchMedia && window.matchMedia('(max-width: 480px)').addEventListener('change', (e) => {
-    if (isSidebarOpen.value) {
-      toggleSidebar();
-    }
-    isPhone.value = e.matches
-  })
+  window.matchMedia &&
+    window.matchMedia("(max-width: 480px)").addEventListener("change", (e) => {
+      if (isSidebarOpen.value) {
+        toggleSidebar();
+      }
+      isPhone.value = e.matches;
+    });
 });
 
 // Toggle sidebar visibility
 const toggleSidebar = () => {
-  isSidebarOpen.value = !isSidebarOpen.value
-  const top = document.querySelector('.top')
-  const middle = document.querySelector('.middle')
-  const bottom = document.querySelector('.bottom')
+  isSidebarOpen.value = !isSidebarOpen.value;
+  const top = document.querySelector(".top");
+  const middle = document.querySelector(".middle");
+  const bottom = document.querySelector(".bottom");
 
-  const openClass = darkMode.value ? '-open-dark' : '-open'
-  const closeClass = darkMode.value ? '-close-dark' : '-close'
+  const openClass = darkMode.value ? "-open-dark" : "-open";
+  const closeClass = darkMode.value ? "-close-dark" : "-close";
 
   if (isSidebarOpen.value) {
-    top?.classList.add(`top${openClass}`)
-    top?.classList.remove(`top${closeClass}`)
-    middle?.classList.add(`middle${openClass}`)
-    middle?.classList.remove(`middle${closeClass}`)
-    bottom?.classList.add(`bottom${openClass}`)
-    bottom?.classList.remove(`bottom${closeClass}`)
+    top?.classList.add(`top${openClass}`);
+    top?.classList.remove(`top${closeClass}`);
+    middle?.classList.add(`middle${openClass}`);
+    middle?.classList.remove(`middle${closeClass}`);
+    bottom?.classList.add(`bottom${openClass}`);
+    bottom?.classList.remove(`bottom${closeClass}`);
   } else {
-    top?.classList.remove(`top${openClass}`)
-    top?.classList.add(`top${closeClass}`)
-    middle?.classList.remove(`middle${openClass}`)
-    middle?.classList.add(`middle${closeClass}`)
-    bottom?.classList.remove(`bottom${openClass}`)
-    bottom?.classList.add(`bottom${closeClass}`)
+    top?.classList.remove(`top${openClass}`);
+    top?.classList.add(`top${closeClass}`);
+    middle?.classList.remove(`middle${openClass}`);
+    middle?.classList.add(`middle${closeClass}`);
+    bottom?.classList.remove(`bottom${openClass}`);
+    bottom?.classList.add(`bottom${closeClass}`);
   }
-}
+};
 
 // Handle theme change event
 const handleThemeChange = () => {
-  darkMode.value = !darkMode.value
+  darkMode.value = !darkMode.value;
   if (isSidebarOpen.value) {
     toggleSidebar();
   }
 };
-
 </script>
 
 <style scoped>
@@ -145,6 +143,7 @@ const handleThemeChange = () => {
 
 .hamburger {
   cursor: pointer;
+  position: fixed;
   margin-left: auto;
   width: fit-content;
   display: flex;
@@ -239,7 +238,6 @@ const handleThemeChange = () => {
 
   50% {
     transform: translateY(18px) rotate(0);
-
   }
 
   100% {
@@ -399,7 +397,6 @@ const handleThemeChange = () => {
 
   50% {
     transform: translateY(-18px) rotate(0);
-    ;
   }
 
   100% {
@@ -414,7 +411,6 @@ const handleThemeChange = () => {
 
   50% {
     transform: translateY(-18px) rotate(0);
-    ;
   }
 
   100% {
@@ -455,7 +451,7 @@ const handleThemeChange = () => {
 
 .move-enter-active,
 .move-leave-active {
-  transition: transform .35s;
+  transition: transform 0.35s;
 }
 
 .move-enter-from,
@@ -470,7 +466,7 @@ const handleThemeChange = () => {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity .35s ease-in-out;
+  transition: opacity 0.35s ease-in-out;
 }
 
 .fade-enter-from,
@@ -481,42 +477,5 @@ const handleThemeChange = () => {
 .fade-enter-to,
 .fade-leave-from {
   opacity: 1;
-}
-
-
-.phone-bar {
-  position: fixed;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  background-color: #ecffda;
-  border-top: 2px solid #4b644a;
-  z-index: 996;
-}
-
-.phone-bar-dark {
-  background-color: #23244b;
-  border-top: 2px solid #757bfd;
-}
-
-.phone-bar-item {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.phone-bar-item:hover {
-  background-color: #a6cd94;
-}
-
-.phone-bar-item-dark:hover {
-  background-color: #757bfd;
 }
 </style>

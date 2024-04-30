@@ -22,11 +22,13 @@ export interface Challenge {
   mediaUrl: string | null;
   expiryDate: string;
   timeInterval: string;
-  imageUrl: string;
+  imageUrl: string;  
+  completed: boolean;
 }
 
 export interface ChallengesResponse {
-  forEach(arg0: (challenge: any) => void): unknown;
-  allChallenges : MasterChallenge[];
+  indexOf(challenge: MasterChallenge): number;
+  forEach(callback: (challenge: MasterChallenge, index: number) => void): void;
+  allChallenges: MasterChallenge[];
+  reverse(): void;
 }
-  

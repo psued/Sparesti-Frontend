@@ -6,21 +6,28 @@
   <div class="budget-details">
     <div class="budget-left">
       <h2>Resterende budsjett</h2>
-      <p>{{ remainingBudget }} kr av {{ totalBudget }} kr</p>
-      <progress-bar :value="remainingBudget" :max="totalBudget"></progress-bar>
+      <p>{{ leftAmount }} kr av {{ totalAmount }} kr</p>
+      <progress-bar :value="leftAmount" :max="totalAmount"></progress-bar>
     </div>
   </div>
 
   <div class="expenses">
     <div class="header-container">
       <h3>Utgifter</h3>
-      <button class="add-category-btn" @click="addCategory">
-        <span class="add-category-icon">➕</span> Legg til kategori
-      </button>
+      <div class="add-and-delete-category">
+        <button class="add-category-btn" @click="addCategory">
+          <span class="add-category-icon">➕</span> Legg til kategori
+        </button>
+        <button class="delete-category-btn" @click="toggleDeleteMode">
+          <span class="add-category-icon">➖</span> {{ deleteMode ? 'Slett' : 'Slett kategori' }}
+        </button>
+        <button v-if="deleteMode" @click="toggleDeleteMode">Avbryt</button>
+      </div>
     </div>
 
     <ul>
       <li v-for="(expense, category) in expenses" :key="category">
+        <input v-if="deleteMode" type="checkbox" v-model="expense.selected">
         <span class="emoji">{{ expense.emoji }}</span>
         <span class="category">{{ category }}</span>
         <span class="amount"
@@ -31,7 +38,7 @@
     </ul>
   </div>
 
-  <div v-if="showModal" class="modal">
+  <div v-if="showModal" class="modal" @click.self="showModal = false">
     <div class="modal-content">
       <span class="close" @click="toggleModal">&times;</span>
       <h3>Legg til en ny utgift</h3>
@@ -47,12 +54,18 @@
 
 <script setup lang="ts">
 import BudgetProgressBar from "./BudgetProgressBar.vue";
-import { ref, reactive, onMounted } from 'vue';
-import { useUserStore} from "@/stores/userStore";
+import { ref, reactive, onMounted } from "vue";
+import { useUserStore } from "@/stores/userStore";
 import axios from "axios";
-import {addRowToUserBudget, getBudgetByUser} from "@/api/budgetHooks";
+import {addRowToUserBudget, deleteBudgetRow, getBudgetById, getBudgetByUser} from "@/api/budgetHooks";
+import {useRoute} from "vue-router";
 
 const userStore = useUserStore();
+
+const deleteMode = ref(false);
+
+let totalAmount = 0;
+let leftAmount= 0;
 
 const props = defineProps({
   remainingBudget: {
@@ -65,29 +78,47 @@ const props = defineProps({
   },
 });
 
-type ExpenseCategory = 'Kvitteringer' | 'Mat' | 'Klær' | 'Fritid' | 'Betting';
+type ExpenseCategory = "Kvitteringer" | "Mat" | "Klær" | "Fritid" | "Betting";
 
 type Expense = {
-  [key in ExpenseCategory]: {
+  [key: string]: {
     left: number;
     total: number;
     emoji: string;
+    id: number;
+    selected: boolean;
   };
 };
 
 const expenses: Expense = reactive({
-  Kvitteringer: { left: 2000, total: 4000, emoji: '🧾' },
-  Mat: { left: 1500, total: 2500, emoji: '🍞' },
-  Klær: { left: 400, total: 1000, emoji: '👕' },
-  Fritid: { left: 2700, total: 3000, emoji: '🍻' },
-  Betting: { left: 1250, total: 2000, emoji: '🎲' }
+  Kvitteringer: { left: 2000, total: 4000, emoji: "🧾", id: 98 , selected: false },
+  Mat: { left: 1500, total: 2500, emoji: "🍞", id: 99, selected: false },
+  Klær: { left: 400, total: 1000, emoji: "👕", id: 100, selected: false },
+  Fritid: { left: 2700, total: 3000, emoji: "🍻", id: 101,  selected: false },
+  Betting: { left: 1250, total: 2000, emoji: "🎲", id: 102, selected: false },
 });
 
 const showModal = ref(false);
-const newCategory = reactive({ name: '', total: 0, emoji: '' });
+const newCategory = reactive({ name: "", total: 0, emoji: "" });
 
 const toggleModal = () => {
   showModal.value = !showModal.value;
+};
+
+const route = useRoute();
+
+const toggleDeleteMode = async () => {
+  if (deleteMode.value) {
+    for (const category in expenses) {
+      if (expenses[category].selected) {
+        const budgetId = Number(route.params.id);
+        console.log("Deleting category: ", expenses[category].id);
+        await deleteBudgetRow(budgetId, expenses[category].id);
+        delete expenses[category];
+      }
+    }
+  }
+  deleteMode.value = !deleteMode.value;
 };
 
 const addCategory = () => {
@@ -95,40 +126,55 @@ const addCategory = () => {
   showModal.value = true; // Open the modal
 };
 
-const handleNewCategory = () => {
-  expenses[newCategory.name as keyof typeof expenses] = {
-    left: newCategory.total,
-    total: newCategory.total,
-    emoji: newCategory.emoji
-  };
-  addRowToUserBudget(userStore.getUserId, "string", 0, newCategory.total, newCategory.name, newCategory.emoji)
+const handleNewCategory = async () => {
+  await addRowToUserBudget(
+      "string",
+      0,
+      newCategory.total,
+      newCategory.name,
+      newCategory.emoji,
+  );
   toggleModal(); // Close modal after adding the category
   newCategory.name = '';
   newCategory.total = 0;
   newCategory.emoji = '';
+
+  const expensesResponse = await getBudgetById(Number(route.params.id));
+
+  if (expensesResponse && expensesResponse.row) {
+    for (const entry of expensesResponse.row) {
+      const {category, usedAmount, maxAmount, emoji, id} = entry;
+      expenses[category as ExpenseCategory] = {
+        left: usedAmount, // Assuming usedAmount represents the left amount
+        total: maxAmount, // Assuming maxAmount represents the total amount
+        emoji: emoji,
+        id: id,
+        selected: false
+      };
+      totalAmount += maxAmount;
+      leftAmount += usedAmount;
+    }
+  }
+
 };
 
 onMounted(async () => {
   try {
-    const userId = userStore.getUserId;
 
-    console.log(userId);
+    const expensesResponse = await getBudgetById(Number(route.params.id));
 
-    const expensesResponse = await getBudgetByUser(userId);
-
-    console.log(expensesResponse);
-
-    if (expensesResponse) {
-      for (const entry of expensesResponse) {
-        for (const row of entry.row) {
-          const {category, usedAmount, maxAmount, emoji} = row;
-          // Use category from row as the key for expenses
-          expenses[category as ExpenseCategory] = {
-            left: usedAmount, // Assuming usedAmount represents the left amount
-            total: maxAmount, // Assuming maxAmount represents the total amount
-            emoji: emoji // Hardcoding emoji for now
-          };
-        }
+    if (expensesResponse && expensesResponse.row) {
+      for (const entry of expensesResponse.row) {
+        const {category, usedAmount, maxAmount, emoji, id} = entry;
+        expenses[category as ExpenseCategory] = {
+          left: usedAmount, // Assuming usedAmount represents the left amount
+          total: maxAmount, // Assuming maxAmount represents the total amount
+          emoji: emoji,
+          id: id,
+          selected: false
+        };
+        totalAmount += maxAmount;
+        leftAmount += usedAmount;
       }
     }
   } catch (error) {
@@ -187,6 +233,12 @@ const ProgressBar = BudgetProgressBar;
     justify-content: space-between;
   }
 
+  .add-and-delete-category {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
   .expenses {
     margin: 15px;
   }
@@ -235,13 +287,25 @@ const ProgressBar = BudgetProgressBar;
     padding: 0 1rem;
     width: max-content;
     display: flex;
-    background-color: #a6cd94; 
+    background-color: #a6cd94;
     justify-content: center;
     align-items: center;
     border-radius: 10px;
     border-width: 0.15rem;
     cursor: pointer;
   }
+
+.delete-category-btn {
+  padding: 0 1rem;
+  width: max-content;
+  display: flex;
+  background-color: #f14306;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  border-width: 0.15rem;
+  cursor: pointer;
+}
 
 .modal {
   position: fixed;
@@ -265,6 +329,14 @@ const ProgressBar = BudgetProgressBar;
 .close {
   float: right;
   font-size: 28px;
+  cursor: pointer;
+}
+
+.delete-button{
+  background-color: #ff0000;
+  color: #ffffff;
+  border-radius: 5px;
+  padding: 5px;
   cursor: pointer;
 }
 </style>

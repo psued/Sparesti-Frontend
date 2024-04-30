@@ -26,11 +26,9 @@ export const getUserByDisplayName = async (
   }
 };
 
-export const getSavingsGoalsByUserId = async (
-  userId: number,
-): Promise<any[] | null> => {
+export const getSavingsGoalsByUserId = async (): Promise<any[] | null> => {
   try {
-    const response = await api.get(`/api/users/${userId}/savings-goals`);
+    const response = await api.get(`/api/users/savings-goals`);
     return response.data;
   } catch (error) {
     console.error("Error getting savings goals by user ID:", error);
@@ -38,15 +36,6 @@ export const getSavingsGoalsByUserId = async (
   }
 };
 
-export const getChallenges = async (userId: number): Promise<any[] | null> => {
-  try {
-    const response = await api.get(`/api/users/${userId}/savings-goals`);
-    return response.data;
-  } catch (error) {
-    console.error("Error getting savings goals by user ID:", error);
-    return null;
-  }
-};
 
 export const getUserInfo = async (): Promise<UserInfo | null> => {
   const userStore = useUserStore();
@@ -63,13 +52,12 @@ export const getUserInfo = async (): Promise<UserInfo | null> => {
     console.log("User id set: " + response.data.id);
     userStore.setUserId(response.data.id);
   });
-  
+
   return userInfoRes.data;
 };
 
 export const submitUserInfo = async (userInfo: any) => {
   console.log(userInfo);
-  const userStore = useUserStore();
   try {
     const response = await api.post("/user-info/create", userInfo, {
       headers: {
@@ -87,10 +75,8 @@ export const submitUserInfo = async (userInfo: any) => {
 export const updateUserInfo = async (
   userInfo: any,
 ): Promise<UserInfo | null> => {
-  const userStore = useUserStore();
-  const userId = userStore.getUserId;
   const res = api
-    .post(`/user-info/update/${userId}`, userInfo)
+    .post(`/user-info/update`, userInfo)
     .then((response) => {
       return response.data;
     })
@@ -100,3 +86,17 @@ export const updateUserInfo = async (
     });
   return res;
 };
+
+export const updateAccounts = async (checkingAccountNr: number | null, savingsAccountNr: number | null): Promise<any | null> => {
+  const body = {
+    checkingAccountNr,
+    savingsAccountNr,
+  };
+  try {
+    const res = await api.post('/users/update', body)
+    return res;
+  } catch (error: any) {
+    console.error("Error updating accounts:", error);
+    return error.response;
+  }
+}
