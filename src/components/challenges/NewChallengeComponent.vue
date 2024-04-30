@@ -1,9 +1,7 @@
 <template>
   <div id="NewChallengeContainer" >
     <ExitButtonComponent v-if="!showCreateChallenge && !showGenerateChallenge" @close="close" id="exitButton"/>
-    <div id="header">
-      <BackButtonComponent @click="back" v-if="showCreateChallenge || showGenerateChallenge" id="backButton"/>
-    </div>
+    <BackButtonComponent @click="back" v-if="showCreateChallenge || showGenerateChallenge" id="backButton"/>
     <div id="contentContainer">
       <div v-if="!showCreateChallenge && !showGenerateChallenge">
         <h1>New Challenge</h1>
@@ -76,15 +74,12 @@ const toggleFreeze = () => {
   height: 50px;
 }
 
-#header {
-  height: 50px;
-  align-content: center;
-}
-
 #backButton {
+  position: absolute;
   width: 30px;
   height: 30px;
-  margin-left: 10px;
+  top: 10px;
+  left: 10px;
 }
 
 #contentContainer {

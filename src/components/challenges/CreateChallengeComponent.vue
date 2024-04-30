@@ -131,6 +131,7 @@ function clickConsumption() {
 </script>
 
 <style scoped>
+
 #createChallengeContainer {
   margin: 0 20px;
   height: 100%;
