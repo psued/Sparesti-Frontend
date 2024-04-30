@@ -1,13 +1,13 @@
 import { api } from "@/api/axiosConfig";
 import { type Budget } from "@/types/Budget";
 
-export const getBudgetByUser = async (): Promise<Budget | null> => {
+export const getBudgetByUser = async (): Promise<Budget[] | null> => {
     try {
         const response = await api.get(`/budget/budgets`);
 
     if (response.status === 200) {
       console.log(response.data);
-      return response.data;
+        return Array.isArray(response.data) ? response.data : [response.data];
     } else {
       console.error("Failed to fetch budget:", response.statusText);
       return null;
