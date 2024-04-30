@@ -1,83 +1,69 @@
 <template>
   <div class="form-container">
-    <h2>Your Bank Accounts</h2>
-    <div v-if="isLoading">Loading accounts...</div>
-    <div v-if="error">An error occurred: {{ error }}</div>
-    <div class="account-form">
-      <label for="checkingAccountInput">Checking Account:</label>
-      <input id="checkingAccountInput"
-             class="account-input"
-             v-model="formattedCheckingAccount"
-             placeholder="xxxx xxxx xxxx xxxx"
-             required>
-      <div class="input-gap"></div>
-      <label for="savingsAccountInput">Savings Account:</label>
-      <input id="savingsAccountInput"
-             class="account-input"
-             v-model="formattedSavingsAccount"
-             placeholder="xxxx xxxx xxxx xxxx"
-             required>
+    <h2>Your Transactions</h2>
+    <div v-if="isLoading">Loading transactions...</div>
+    <div v-if="error">{{ error }}</div>
+    <div v-if="transactions.length">
+      <ul class="transaction-list">
+        <li v-for="transaction in transactions" :key="transaction.id">
+          <span>{{ transaction.date }} - {{ transaction.description }}</span>
+          <span>{{ transaction.amount }}</span>
+        </li>
+      </ul>
     </div>
     <div class="button-container">
-      <FormButton type="button" @click="goBack">Back</FormButton>
-      <FormButton type="submit" @click="goToNextStep">goToNextStep</FormButton>
+      <FormButton @click="goToNextStep">Sjekke utfordringer</FormButton>
     </div>
   </div>
 </template>
 
-
 <script setup>
-import { ref, computed } from 'vue';
-import { useQuestionnaireStore } from '@/stores/questionnaireStore';
-import { updateAccounts } from '@/api/userHooks'; // This is the imported function from your API hooks.
+import { ref, onMounted, defineEmits } from 'vue';
+import { getBankAccountRecentTransactions } from '@/api/bankHooks';
 import FormButton from '@/components/forms/FormButton.vue';
+import { useQuestionnaireStore } from '@/stores/questionnaireStore';
 
+const emit = defineEmits(["update-step"]);
 const store = useQuestionnaireStore();
+const transactions = ref([]);
 const isLoading = ref(false);
-const error = ref(null);
-const emit = defineEmits(['update-step']);
+const error = ref('');
 
-const checkingAccount = ref(store.stepTwoData.checkingAccount);
-const savingsAccount = ref(store.stepTwoData.savingsAccount);
-
-
-const formattedCheckingAccount = computed({
-  get: () => checkingAccount.value.replace(/\s/g, ''),
-  set: (val) => {
-    checkingAccount.value = val.replace(/\s/g, '');
-  }
-});
-
-const formattedSavingsAccount = computed({
-  get: () => savingsAccount.value.replace(/\s/g, ''),
-  set: (val) => {
-    savingsAccount.value = val.replace(/\s/g, '');
-  }
-});
-
-async function updateAccountNumbers() {
+onMounted(async () => {
   isLoading.value = true;
-  // Ensure all whitespace is removed before sending
-  const formattedChecking = formattedCheckingAccount.value.replace(/\s/g, '');
-  const formattedSavings = formattedSavingsAccount.value.replace(/\s/g, '');
-
   try {
-    const response = await updateAccounts(formattedChecking, formattedSavings);
-    console.log('Update successful:', response);
-    emit('update-step', 6);  // Only proceed if update is successful
+    const accountNr = store.stepTwoData.checkingAccount; 
+    const data = await getBankAccountRecentTransactions(accountNr);
+    transactions.value = data.transactions;
   } catch (err) {
-    error.value = `Failed to update accounts: ${err.message}`;
-    console.error('Error updating accounts:', err);
+    console.error("Error loading transactions:", err);
+    error.value = "Failed to load transactions.";
   } finally {
     isLoading.value = false;
   }
-}
+});
 
 function goToNextStep() {
-  updateAccountNumbers();
-}
-
-function goBack() {
-  emit('update-step', 4);
+  emit("update-step", 6);
 }
 </script>
+
+<style scoped>
+.transaction-list {
+  list-style: none;
+  padding: 0;
+}
+
+.transaction-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+</style>

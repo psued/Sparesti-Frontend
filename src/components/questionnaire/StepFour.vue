@@ -35,80 +35,82 @@
       <button @click="addProduct" class="add-button">Add</button>
     </div>
     <div class="button-container">
-      <FormButton type="button" @click="goBack">Back</FormButton>
-      <FormButton type="submit" @click="finishQuestionnaire">Next</FormButton>
+      <FormButton type="button" @click="goBack">Tilbake</FormButton>
+      <FormButton type="submit" @click="finishQuestionnaire">Submit informasjon</FormButton>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, defineEmits, onMounted, watch } from "vue";
 import { useQuestionnaireStore } from "@/stores/questionnaireStore";
-import type { Product } from "@/types/QuestionnaireData";
+import { submitUserInfo, updateAccounts } from "@/api/userHooks";
 import FormButton from "@/components/forms/FormButton.vue";
-import { submitUserInfo } from "@/api/userHooks";
 import { useUserStore } from "@/stores/userStore";
-
 
 const store = useQuestionnaireStore();
 const userStore = useUserStore();
+const isLoading = ref(false);
+const error = ref(null);
 const emit = defineEmits(["update-step"]);
 
-
-function goBack() {
-  emit("update-step", 3);
-}
-
-const products = ref<Product[]>(store.stepFourData.products);
+const products = ref(store.stepFourData.products);
 const newProduct = ref({ name: "", frequency: "", timeUnit: "day", price: "" });
 
-watch(
-  products,
-  (newProducts) => {
-    store.updateStepFourData({ products: newProducts });
-  },
-  { deep: true },
-);
+const checkingAccount = ref(store.stepTwoData.checkingAccount.replace(/\s/g, ''));
+const savingsAccount = ref(store.stepTwoData.savingsAccount.replace(/\s/g, ''));
+
+watch(products, (newProducts) => {
+  store.updateStepFourData({ products: newProducts });
+}, { deep: true });
 
 function addProduct() {
-  if (
-    newProduct.value.name &&
-    newProduct.value.frequency &&
-    newProduct.value.price
-  ) {
+  if (newProduct.value.name && newProduct.value.frequency && newProduct.value.price) {
     products.value.push({
-      name: newProduct.value.name,
-      frequency: newProduct.value.frequency,
-      timeUnit: newProduct.value.timeUnit,
-      price: newProduct.value.price,
+      ...newProduct.value,
+      price: parseFloat(newProduct.value.price) 
     });
     newProduct.value = { name: "", frequency: "", timeUnit: "day", price: "" };
   }
 }
 
-function removeProduct(index: number) {
+function removeProduct(index) {
   products.value.splice(index, 1);
 }
 
-
 const finishQuestionnaire = async () => {
-  const userInfo = store.getAllData();
-  userInfo.userId = userStore.getUserId;
-  console.log("Submitting questionnaire data:", userInfo);
-  submitUserInfo(userInfo)
-    .then(() => {
-      console.log("Questionnaire data submitted successfully!");
-      emit("update-step", 5);
-    })
-    .catch((error) => {
-      console.error("Failed to submit questionnaire data:", error);
-    });
+  isLoading.value = true;
+  const userInfo = {
+    ...store.getAllData(),
+    userId: userStore.getUserId,
+    checkingAccount: checkingAccount.value,
+    savingsAccount: savingsAccount.value
+  };
+
+  try {
+    console.log("Submitting questionnaire data:", userInfo);
+    await submitUserInfo(userInfo);
+    console.log("Questionnaire data submitted successfully!");
+    await updateAccounts(checkingAccount.value, savingsAccount.value);
+    console.log("Account numbers updated successfully!");
+    emit("update-step", 5);
+  } catch (err) {
+    console.error("Failed during the process:", err);
+    error.value = err.message || "Failed to complete all updates.";
+  } finally {
+    isLoading.value = false;
+  }
 };
+
+function goBack() {
+  emit("update-step", 3);
+}
 
 onMounted(() => {
   products.value = [...store.stepFourData.products];
 });
 </script>
+
 
 <style scoped>
 .product-list {
