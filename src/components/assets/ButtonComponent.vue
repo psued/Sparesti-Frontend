@@ -5,9 +5,9 @@
   The button has a click animation that moves the foreground circle slightly downwards.
 -->
 <template>
-  <div @mousedown="buttonClick" @mouseup="buttonClick" class="buttonContainer">
+  <div @mousedown="clicked = true" @mouseup="handleMouseup" @mouseleave="clicked = false" class="buttonContainer">
     <div class="bgCircle"/>
-    <div :class="{animation1 : buttonClicked}" class="fgCircle">
+    <div :class="[{animation1 : pressed || clicked && !pressed}]" class="fgCircle">
       <slot name="content"></slot>
     </div>
   </div>
@@ -16,9 +16,12 @@
 <script setup lang="ts">
 import {ref} from "vue";
 
-const buttonClicked = ref(false);
-function buttonClick() {
-  buttonClicked.value = !buttonClicked.value;
+const clicked = ref(false);
+
+function handleMouseup() {
+  setTimeout(() => {
+    clicked.value = false;
+  }, 100);
 }
 
 const props = defineProps({
@@ -29,9 +32,11 @@ const props = defineProps({
   foregroundColor: {
     type: String,
     default: '#F5C116'
+  },
+  pressed: {
+    type: Boolean
   }
 })
-
 </script>
 
 <style scoped>
@@ -50,6 +55,7 @@ const props = defineProps({
   left: 50%;
   transform: translateX(-50%);
 }
+
 .fgCircle {
   display: flex;
   position: absolute;
@@ -66,6 +72,8 @@ const props = defineProps({
 
 .animation1 {
   animation: button-animation1 100ms;
+  animation-fill-mode: forwards;
+
 }
 
 @keyframes button-animation1 {

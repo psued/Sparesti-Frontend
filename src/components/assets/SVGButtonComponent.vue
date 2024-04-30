@@ -6,7 +6,7 @@
    The SVG icon for the button is passed through the 'icon' slot.
  -->
 <template>
-  <div @mousedown="buttonClick" @mouseup="buttonClick" class="buttonContainer">
+  <div @mousedown="buttonClicked = true" @mouseup="handleMouseup" @mouseleave="buttonClicked = false" class="buttonContainer">
     <div class="bgCircle"/>
     <div :class="{animation1 : buttonClicked}" class="fgCircle"/>
     <div :class="{animation2 : buttonClicked}" class="innerCircle"/>
@@ -22,8 +22,10 @@
 import {ref} from "vue";
 
 const buttonClicked = ref(false);
-function buttonClick() {
-  buttonClicked.value = !buttonClicked.value;
+function handleMouseup() {
+  setTimeout(() => {
+    buttonClicked.value = false;
+  }, 100);
 }
 </script>
 
@@ -56,6 +58,7 @@ function buttonClick() {
 
 .animation1 {
   animation: button-animation1 100ms;
+  animation-fill-mode: forwards;
 }
 
 .innerCircle {
@@ -82,6 +85,7 @@ function buttonClick() {
 
 .animation2 {
   animation: button-animation2 100ms;
+  animation-fill-mode: forwards;
 }
 
 @keyframes button-animation1 {
