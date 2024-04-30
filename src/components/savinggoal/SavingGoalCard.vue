@@ -50,10 +50,8 @@
         <span class="emoji">{{ savingGoal.mediaUrl }}</span>
       </div>
       <p v-if="savingGoal.completed && (savingGoal.savedAmount >= savingGoal.targetAmount)" class="completed">Completed</p>
-      <div v-if="editable">
-        <div class="delete-icon" @click="confirmDelete">✖</div>
-        <div class="edit-icon" @click="startEditing">✎</div>
-      </div>
+        <div v-if="editable" class="delete-icon" @click="confirmDelete">✖</div>
+        <div v-if="author" class="edit-icon" @click="startEditing">✎</div>
     </div>
   </div>
 </template>
@@ -73,6 +71,10 @@ const props = defineProps({
   savingGoal: {
     type: Object as () => SavingGoal,
     default: () => ({ name: '', targetAmount: 0, savedAmount: '0', deadline: '', mediaUrl: '', completed: false })
+  },
+  author :{
+    type: Boolean,
+    default: false
   },
   editable: {
     type: Boolean,
@@ -124,7 +126,7 @@ const saveChanges = async () => {
 
 const confirmDelete = async () => {
   try {
-    const confirmDelete = confirm('Are you sure you want to delete this saving goal?');
+    const confirmDelete = confirm('Er du sikker på at du vil fjerne deg selv fra dette sparemålet?');
     if (!confirmDelete) return;
     await deleteSavingGoalFromUser(userEmail, Number(props.savingGoal.id));
     try {
