@@ -20,6 +20,18 @@ const buttonClicked = ref(false);
 function buttonClick() {
   buttonClicked.value = !buttonClicked.value;
 }
+
+const props = defineProps({
+  backgroundColor: {
+    type: String,
+    default: '#F09217'
+  },
+  foregroundColor: {
+    type: String,
+    default: '#F5C116'
+  }
+})
+
 </script>
 
 <style scoped>
@@ -32,7 +44,7 @@ function buttonClick() {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #F09217;
+  background-color: v-bind('props.backgroundColor');
   border-radius: 30px;
   top: 5px;
   left: 50%;
@@ -43,7 +55,7 @@ function buttonClick() {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #F5C116;
+  background-color: v-bind('props.foregroundColor');
   border-radius: 30px;
   top: 0;
   left: 50%;
