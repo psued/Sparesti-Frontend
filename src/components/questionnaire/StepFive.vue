@@ -1,7 +1,7 @@
 <template>
   <div class="form-container">
-    <h2>Your Transactions</h2>
-    <div v-if="isLoading">Loading transactions...</div>
+    <h2>Dine transaksjoner</h2>
+    <div v-if="isLoading">Laster inn transaksjoner...</div>
     <div v-if="error">{{ error }}</div>
     <div v-if="transactions.length">
       <ul class="transaction-list">
@@ -36,7 +36,7 @@ onMounted(async () => {
     const data = await getBankAccountRecentTransactions(accountNr);
     transactions.value = data.transactions;
   } catch (err) {
-    console.error("Error loading transactions:", err);
+    console.error("Error loading transactions:", accountNr, err);
     error.value = "Failed to load transactions.";
   } finally {
     isLoading.value = false;

@@ -44,7 +44,7 @@
 <script setup>
 import { ref, defineEmits, onMounted, watch } from "vue";
 import { useQuestionnaireStore } from "@/stores/questionnaireStore";
-import { submitUserInfo, updateAccounts } from "@/api/userHooks";
+import { submitUserInfo, updateUserInfo, updateAccounts } from "@/api/userHooks";
 import FormButton from "@/components/forms/FormButton.vue";
 import { useUserStore } from "@/stores/userStore";
 
@@ -89,8 +89,16 @@ const finishQuestionnaire = async () => {
 
   try {
     console.log("Submitting questionnaire data:", userInfo);
-    await submitUserInfo(userInfo);
-    console.log("Questionnaire data submitted successfully!");
+
+    if (userStore.userInfoExists) {
+      await updateUserInfo(userInfo);
+      console.log("User info updated successfully!");
+    } else {
+      await submitUserInfo(userInfo);
+      userStore.userInfoExists = true; 
+      console.log("User info submitted successfully!");
+    }
+
     await updateAccounts(checkingAccount.value, savingsAccount.value);
     console.log("Account numbers updated successfully!");
     emit("update-step", 5);

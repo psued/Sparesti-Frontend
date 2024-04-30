@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, } from "vue";
+import { ref, watch, computed } from "vue";
 import { useQuestionnaireStore } from "@/stores/questionnaireStore";
 import ProgressBar from "@/components/questionnaire/ProgressBar.vue";
 import StepOne from "@/components/questionnaire/StepOne.vue";

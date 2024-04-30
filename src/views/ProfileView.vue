@@ -3,6 +3,8 @@
     <section v-if="user" class="user-info-section">
       <div class="header">
         <h1>{{ user.displayName }}'s profile</h1>
+        <button v-if="!isEditing" @click="toggleEdit">Edit Profile</button>
+        <button v-if="isEditing" @click="saveChanges">Save Changes</button>
       </div>
       <section class="top-part-profile">
         <div class="profile-pic-container">
