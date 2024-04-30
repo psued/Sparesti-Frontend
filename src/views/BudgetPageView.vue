@@ -42,7 +42,7 @@ const modalRef: Ref<HTMLElement | null> = ref(null);
 const userStore = useUserStore();
 
 
-const budgetData = ref<Budget[] | null>(null);
+const budgetData = ref<Budget[]>([]);
 
 
 
