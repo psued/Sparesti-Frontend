@@ -14,11 +14,12 @@
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "serve": "vite --host"
+    "serve": "vite preview --host --port 5173"
   },
   "dependencies": {
     "@vueuse/core": "^10.9.0",
     "axios": "^1.6.8",
+    "emoji-mart-vue-fast": "^15.0.2",
     "pinia": "^2.1.7",
     "vue": "^3.4.23",
     "vue-router": "^4.3.2"

@@ -29,6 +29,10 @@
 
   --vt-c-button-base-dark: #757bfd;
   --vt-c-button-hover-dark: #313273;
+
+  --border-color-green: #00cc00;
+  --border-color-yellow: #ffff00; 
+  --border-color-red: #ff0000;
 }
 
 /* Defualt Light theme */

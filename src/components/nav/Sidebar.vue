@@ -79,7 +79,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         class="bar-item-desktop"
         :class="[{ 'text-dark': darkMode }]"
         @click="toggleBar"
-        to="/savinggoalform"
+        to="/saving-goal/create"
       >
         <text>Saving Goal</text>
       </router-link>
