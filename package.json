@@ -14,7 +14,7 @@
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "serve": "vite --host"
+    "serve": "vite preview --host --port 5173"
   },
   "dependencies": {
     "@vueuse/core": "^10.9.0",
