@@ -10,7 +10,7 @@
         </button>
       </div>
       <div class="saving-goal-info">
-        <SavingGoalCard :savingGoal="savingGoal || undefined" :editable="true && author" />
+        <SavingGoalCard :savingGoal="savingGoal || undefined" :editable="true" :author="author" />
       </div>
       <div v-if="usersWithSavingGoal?.length">
       <h2 class="header2">Brukere med dette sparemålet:</h2>
