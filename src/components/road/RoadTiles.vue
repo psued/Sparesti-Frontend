@@ -20,7 +20,7 @@
           :id="'node-' + index">
         </img>
         <div class="start-area" :class="'start-' + node.point">
-          <img v-show="(index > 0 && node.challenge.completed && node.moved === false && nodes[index-1] && nodes[index-1].moved === false && nodes[index+1] && nodes[index+1].moved === true) || (!nodes[index+1] && node.challenge.completed && node.moved === false) " :class="['walking-pig', 'walking-pig-' + index]"  :src="node.pig" ></img>
+          <img v-show="node.challenge.completed && node.moved === false && (nodes[index+1] && nodes[index+1].moved === true || !nodes[index+1])" :class="['walking-pig', 'walking-pig-' + index]"  :src="node.pig" ></img>
           </div>
         <svg class="road-svg" :class="node.direction">
         </svg>
@@ -48,7 +48,7 @@ import { useLogin } from "@/api/authenticationHooks";
 
 const selectedChallenge = ref<Challenge | null>(null);
 const showPopup = ref(false);
-const comleteImg = "https://ahaslides.com/wp-content/uploads/2021/12/Year-End-Review-1-1024x576.png";
+const comleteImg = "src/assets/star-circle.svg";
 const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 let totChallenges = 0;
 let roadBox: Ref<HTMLElement | null> = ref(null);
@@ -91,14 +91,14 @@ const addNode = (ch: any, index: number) => {
   const pig = nodes.value.length % 2 === 0 ? 'src/assets/animation/pig-sitting-left.png' : 'src/assets/animation/pig-sitting-right.png';
 
   // Test data
-  if(index === 0 || index === 1 || index === 2){
+  if(index === 0 || index === 1){
     ch.completed = true;
-    if(index === 1 || 2){
+    if(index === 1){
       const moved = false;
       nodes.value.unshift({ direction, point, image, name, moved, pig, challenge: ch });
       return;
     }
-    const moved = true;
+    const moved = false;
     nodes.value.unshift({ direction, point, image, name, moved, pig, challenge: ch });
     return;
   }
@@ -108,13 +108,13 @@ const addNode = (ch: any, index: number) => {
 };
 
 async function movePig(node: Node, nodes: Node[], index: number) {
-  if(totChallenges <= index+1 || totChallenges === 0){
+  if(totChallenges <= index+1 || !node){
     return;
   }
   if(nodes[index+1].challenge.completed && nodes[index+1].moved === false){
     movePig(nodes[index+1], nodes, index+1)
   }
-  if(node.moved === false && node.challenge.completed === true && nodes[index-1].moved === false){
+  if(node.moved === false && node.challenge.completed === true){
     console.log("Moving pig from " + (index+1) + " to " + index);
 
     nodes[index+1].pig = `src/assets/animation/pig-walking-${nodes[index+1].point}.gif`;
@@ -174,6 +174,7 @@ onMounted(async () => {
       }
       for (let i = 0; i <= nodes.value.length; i++) {
         if (nodes.value[i+1] && nodes.value[i].challenge.completed) {
+          console.log(nodes.value[i])
           movePig(nodes.value[i], nodes.value, i);
           break;
         }
@@ -250,21 +251,17 @@ onMounted(async () => {
 }
 
 .road-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: 100vh;
+  position: relative;
   width: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100vh;
 }
 
+
 .road-box {
-  padding-top: 90px;
-  padding-bottom: 60px;
   position: absolute;
   align-items: center;
   justify-content: center;
@@ -272,10 +269,9 @@ onMounted(async () => {
   height: 100%;
   min-width: 520px;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  box-shadow: 0px -90px 90px -90px rgba(0, 0, 0, 0.5);
 }
 
 .road-tile-start {
