@@ -1,3 +1,10 @@
+<!--
+   SVGButtonComponent
+   This component is a reusable SVG button. It can be used anywhere an SVG button is needed in the application.
+   The button is styled with a circular background and a foreground circle that contains the button content.
+   The button has a click animation that moves the foreground circle slightly downwards.
+   The SVG icon for the button is passed through the 'icon' slot.
+ -->
 <template>
   <div @mousedown="buttonClick" @mouseup="buttonClick" class="buttonContainer">
     <div class="bgCircle"/>
@@ -48,7 +55,7 @@ function buttonClick() {
 }
 
 .animation1 {
-  animation: button-animation1 200ms;
+  animation: button-animation1 100ms;
 }
 
 .innerCircle {
@@ -74,7 +81,7 @@ function buttonClick() {
 }
 
 .animation2 {
-  animation: button-animation2 200ms;
+  animation: button-animation2 100ms;
 }
 
 @keyframes button-animation1 {

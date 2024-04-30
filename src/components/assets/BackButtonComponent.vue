@@ -1,3 +1,8 @@
+<!--
+  BackButtonComponent
+  This component is a reusable back button. It can be used anywhere a back button is needed in the application.
+  The button is styled with a green circular background and a left-pointing arrow.
+-->
 <<template>
   <div class="buttonContainer">
     <div class="bgCircle">
@@ -10,11 +15,6 @@
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits(['close'])
-
-const close = () => {
-  emit('close')
-}
 </script>
 
 <style scoped>

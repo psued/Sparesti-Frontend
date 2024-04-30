@@ -1,3 +1,9 @@
+<!--
+  ExitButtonComponent
+  This component is a reusable exit button. It can be used anywhere an exit button is needed in the application.
+  The button is styled with a grey circular background and a cross icon.
+  The button emits a 'close' event when clicked.
+-->
 <<template>
   <div class="buttonContainer">
     <div class="bgCircle">
