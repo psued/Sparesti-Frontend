@@ -6,15 +6,16 @@ import CompleteAccountForm from '@/components/forms/CompleteAccountForm.vue'
 import ChallengesView from "../views/ChallengesView.vue";
 import LoadingView from "@/views/LoadingView.vue";
 import BudgetPageView from "@/views/BudgetPageView.vue";
-import BudgetDetails from "@/views/BudgetDetails.vue";
+import BudgetDetails from "@/components/budget/BudgetDetails.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import SettingsView from "@/views/SettingsView.vue";
 import BadgesView from "@/views/BadgesView.vue";
 import FrontPageView from "@/views/FrontPageView.vue";
 import QuestionnaireView from "@/views/QuestionnaireView.vue";
 import BadgeDetailsView from "@/views/BadgeDetailsView.vue";
-import SavingGoalFormView from "@/views/SavingGoalFormView.vue";
-import SavingGoalDetailsView from "@/views/SavingGoalDetailsView.vue";
+import SavingGoalView from "@/views/SavingGoalView.vue";
+import SavingGoalDetails from "@/components/savinggoal/SavingGoalDetails.vue";
+import SavingGoalCardDetails from "@/components/savinggoal/SavingGoalCardDetails.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,14 +57,20 @@ const router = createRouter({
       props: true
     },
     {
-      path: "/savinggoalform",
-      name: "savinggoalform",
-      component: SavingGoalFormView,
+      path: "/saving-goal/create",
+      name: "saving-goal-create",
+      component: SavingGoalView,
     },
     {
-      path: "/savinggoal-details/:id",
-      name: "savinggoaldetails",
-      component: SavingGoalDetailsView,
+      path: "/saving-goals/user/:user_id",
+      name: "savingGoalDetails",
+      component: SavingGoalDetails,
+      props: true,
+    },
+    {
+      path: "/saving-goal/details/:saving_goal_id",
+      name: "savingGoalCardDetails",
+      component: SavingGoalCardDetails,
       props: true,
     },
     {

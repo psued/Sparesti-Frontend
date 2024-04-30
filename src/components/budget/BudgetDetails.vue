@@ -7,7 +7,7 @@
     <div class="budget-left">
       <h2>Resterende budsjett</h2>
       <p>{{ leftAmount }} kr av {{ totalAmount }} kr</p>
-      <progress-bar :value="remainingBudget" :max="totalBudget"></progress-bar>
+      <progress-bar :value="leftAmount" :max="totalAmount"></progress-bar>
     </div>
   </div>
 
