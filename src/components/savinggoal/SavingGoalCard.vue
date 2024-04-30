@@ -58,6 +58,7 @@ const userStore = useUserStore();
 const userEmail = userStore.getUserName;
 const userId = userStore.getUserId;
 const router = useRouter();
+import { icons } from '@/utils/saving-goal-icons';
 
 const startEditing = () => {
   editableGoal.value = { ...props.savingGoal };
