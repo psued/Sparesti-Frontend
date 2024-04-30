@@ -11,12 +11,12 @@
 <template>
   <div class="road-container">
     <div class="road-box" ref="roadBox">
-      <div v-if="nodes.length > 0" class="road-tile-start">
+      <div v-if="goal > 0" class="road-tile-start">
         <div class="road-start-area road-end-area" id="node-(-1)">Node -1</div>
         <div class="road-start road-end"></div>
       </div>
-      <div @click="movePig(node, nodes, index)"  class="road-tile" v-for="(node, index) in nodes" :key="index">
-        <img class="road-node" :src="((nodes[index+1] && nodes[index+1].moved) || (!nodes[index+1] && node.challenge.completed)) ? comleteImg : node.image" :class="[node.point , { 'completed-node': node.challenge.completed }]"
+      <div class="road-tile" v-for="(road, index) in roads" :key="index">
+        <img class="road-node" :src="(road.amount <= saved) ? comleteImg : road.emoji" :class="[road.direction , { 'completed-node': road.amount <= saved}]"
           :id="'node-' + index">
         </img>
         <div class="start-area" :class="'start-' + node.point">
@@ -25,7 +25,7 @@
         <svg class="road-svg" :class="node.direction">
         </svg>
       </div>
-      <div v-if="nodes.length > 0" class="road-tile-start">
+      <div v-if="goal > 0" class="road-tile-start">
         <div class="road-start-area" id="node-0">Node 0</div>
         <div class="road-start"></div>
       </div>
@@ -54,88 +54,59 @@ let totChallenges = 0;
 let roadBox: Ref<HTMLElement | null> = ref(null);
 
 
-/**
- * @interface Node
- * @description Represents a node in the road.
- * @property {string} direction - The direction of the node.
- * @property {string} point - The direction of the point of the node.
- * @property {string} name - The name of the node.
- */
-interface Node {
+const goal = ref(0);
+const saved = ref(0);
+const step = ref(0);
+
+interface Road {
+  id: number;
+  amount: number,
+  emoji: string;
   direction: string;
-  point: string;
-  image: string;
-  name: string;
   moved: boolean;
   pig: string;
-  challenge: Challenge;
 }
+const roads = ref<Road[]>([]);
 
-/**
- * @constant nodes
- * @description A reactive reference to the array of nodes.
- */
-const nodes = ref<Node[]>([]);
 
-/**
- * @function addNode
- * @description Adds a new node/tile to the road.
- */
-const addNode = (ch: any, index: number) => {
+const addRoad = (id:number, amount: number) => {
 
-  const direction = nodes.value.length % 2 === 0 ? 'road-right-light' : 'road-left-light';
-  const point = nodes.value.length % 2 === 0 ? 'road-node-right' : 'road-node-left';
-  const image = ch.mediaUrl;
-  const name = `Node ${nodes.value.length + 1}`;
+  const direction = id % 2 === 0 ? 'left' : 'right';
   const moved = false;
-  const pig = nodes.value.length % 2 === 0 ? 'src/assets/animation/pig-sitting-left.png' : 'src/assets/animation/pig-sitting-right.png';
+  const pig = 'src/assets/animation/pig-sitting-' + direction + '.png';
 
-  // Test data
-  if(index === 0 || index === 1){
-    ch.completed = true;
-    if(index === 1){
-      const moved = false;
-      nodes.value.unshift({ direction, point, image, name, moved, pig, challenge: ch });
-      return;
-    }
-    const moved = false;
-    nodes.value.unshift({ direction, point, image, name, moved, pig, challenge: ch });
-    return;
-  }
-
-
-  nodes.value.unshift({ direction, point, image, name, moved, pig, challenge: ch });
+  roads.value.push({id, amount, emoji: "something", direction, moved, pig });
 };
 
-async function movePig(node: Node, nodes: Node[], index: number) {
-  if(totChallenges <= index+1 || !node){
-    return;
-  }
-  if(nodes[index+1].challenge.completed && nodes[index+1].moved === false){
-    movePig(nodes[index+1], nodes, index+1)
-  }
-  if(node.moved === false && node.challenge.completed === true){
-    console.log("Moving pig from " + (index+1) + " to " + index);
+// async function movePig(node: Node, nodes: Node[], index: number) {
+//   if(totChallenges <= index+1 || !node){
+//     return;
+//   }
+//   if(nodes[index+1].challenge.completed && nodes[index+1].moved === false){
+//     movePig(nodes[index+1], nodes, index+1)
+//   }
+//   if(node.moved === false && node.challenge.completed === true){
+//     console.log("Moving pig from " + (index+1) + " to " + index);
 
-    nodes[index+1].pig = `src/assets/animation/pig-walking-${nodes[index+1].point}.gif`;
-    const pig = document.getElementsByClassName('walking-pig-' + (index+1))[0];
-    if(pig){
-      if((index+1) % 2 === 0){
-        pig.classList.add('animation-pig-left');
-      } else {
-        pig.classList.add('animation-pig-right');
-      }
-    } else {
-      console.log("Pig not found");
-    }
+//     nodes[index+1].pig = `src/assets/animation/pig-walking-${nodes[index+1].point}.gif`;
+//     const pig = document.getElementsByClassName('walking-pig-' + (index+1))[0];
+//     if(pig){
+//       if((index+1) % 2 === 0){
+//         pig.classList.add('animation-pig-left');
+//       } else {
+//         pig.classList.add('animation-pig-right');
+//       }
+//     } else {
+//       console.log("Pig not found");
+//     }
   
-    // Wait for the animation to finish
-    pig.addEventListener('animationend', () => {
-      nodes[index+1].pig = 'src/assets/animation/pig-sitting.png';
-      nodes[index+1].moved = true;
-    }, { once: true }); // The listener is removed after it has been called once
-  }
-}
+//     // Wait for the animation to finish
+//     pig.addEventListener('animationend', () => {
+//       nodes[index+1].pig = 'src/assets/animation/pig-sitting.png';
+//       nodes[index+1].moved = true;
+//     }, { once: true }); // The listener is removed after it has been called once
+//   }
+// }
 
 const userStore = useUserStore();
 
@@ -156,29 +127,25 @@ onMounted(async () => {
     useLogin();
   }
 
-    const challengesResponse = await getSortedChallengesByUser();
-    console.log(challengesResponse) 
-    if(challengesResponse === null){
-        console.log("No challenges found");
-        return;
-    }
-    challengesResponse.forEach(challenge => {
-        totChallenges += 1;
-        addNode(challenge, challengesResponse.indexOf(challenge));
-    });
+  goal.value = 100;
+  saved.value = 50;
+  step.value = 50;
 
 
+  for(let i = 1; i = 10; i++){
+    addRoad(i, step.value*i);
+  }
     nextTick(() => {
       if (roadBox.value) {
         roadBox.value.scrollTop = roadBox.value.scrollHeight;
       }
-      for (let i = 0; i <= nodes.value.length; i++) {
-        if (nodes.value[i+1] && nodes.value[i].challenge.completed) {
-          console.log(nodes.value[i])
-          movePig(nodes.value[i], nodes.value, i);
-          break;
-        }
-      }
+      // for (let i = 0; i <= nodes.value.length; i++) {
+      //   if (nodes.value[i+1] && nodes.value[i].challenge.completed) {
+      //     console.log(nodes.value[i])
+      //     movePig(nodes.value[i], nodes.value, i);
+      //     break;
+      //   }
+      // }
     });
 });
 </script>
