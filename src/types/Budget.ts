@@ -1,5 +1,4 @@
 export interface Budget {
-    [Symbol.iterator](): Iterator<Budget>;
     id: number;
     row: BudgetRow[];
     expiryDate: string;

@@ -33,13 +33,15 @@ import type { Ref } from 'vue';
 import {ref, onMounted, computed, nextTick } from "vue";
 import BudgetProgressBar from "./BudgetProgressBar.vue";
 import { useUserStore} from "@/stores/userStore";
-import { type Budget } from "@/types/Budget";
+import {type Budget} from "@/types/Budget";
 import {addRowToUserBudget, getBudgetByUser} from "@/api/budgetHooks";
 
 
 const modalRef: Ref<HTMLElement | null> = ref(null);
 
 const userStore = useUserStore();
+
+
 const budgetData = ref<Budget[] | null>(null);
 
 
