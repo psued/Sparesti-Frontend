@@ -59,6 +59,15 @@ const userBadges = ref<UserBadge[]>([]);
 const userStore = useUserStore();
 
 const fetchAndSetUserInfo = async () => {
+	try {
+		userBadges.value = (await getBadgesByUser()) as unknown as UserBadge[];
+		for (let i = 0; i < userBadges.value.length; i++) {
+			userBadges.value[i].badge.description = "";
+		}
+	} catch (error) {
+		console.error("Failed to load badges for user:", error);
+	}
+
   try {
     const userByUsername = getUserByUsername(userStore.getUserName);
     const userInfo = await getUserInfo();
@@ -92,25 +101,6 @@ const setUser = (userInfo: any) => {
     birthdate: userInfo.birthdate || "Unknown birthdate",
   };
 };
-
-watch(
-  () => userStore.userId,
-  async (userId) => {
-    if (userId && userId !== -1) {
-      try {
-        userBadges.value = (await getBadgesByUser(
-          userId,
-        )) as unknown as UserBadge[];
-        for (let i = 0; i < userBadges.value.length; i++) {
-          userBadges.value[i].badge.description = "";
-        }
-      } catch (error) {
-        console.error("Failed to load badges for user:", error);
-      }
-    }
-  },
-  { immediate: true },
-);
 
 onMounted(fetchAndSetUserInfo);
 </script>
