@@ -57,7 +57,8 @@ import { ref } from "vue";
 import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
 import RadioButtonsComponent from "@/components/assets/RadioButtonsComponent.vue";
-import { createSavingChallenge, createPurchaseChallenge, createConsumptionChallenge } from "@/api/challengeHooks";
+import { createSavingChallenge, createPurchaseChallenge, createConsumptionChallenge, addChallengeToUser } from "@/api/challengeHooks";
+import { type ChallengeCreation } from "@/types/challengeTypes";
 
 const challengeTitle = ref("");
 const challengeDescription = ref("");
@@ -70,6 +71,7 @@ const productName = ref("");
 const quantityLimit = ref(0);
 const category = ref("");
 const reductionAmount = ref(0);
+const createdChallenge = ref<ChallengeCreation | null>(null);
 
 function pickEmoji(e: string) {
   emoji.value = e;
@@ -90,7 +92,7 @@ function setChallengeType(type : string) {
 async function createChallenge() {
   try {
     if (challengeType.value === 'Save') {
-      await createSavingChallenge({
+      createdChallenge.value = await createSavingChallenge({
         title: challengeTitle.value,
         description: challengeDescription.value,
         timeInterval: timeInterval.value.toUpperCase(),
@@ -98,8 +100,10 @@ async function createChallenge() {
         mediaUrl: emoji.value,
         targetAmount: targetAmount.value
       });
+      addChallengeToUser(Number(createdChallenge.value.id));
+      createdChallenge.value = null;
     } else if (challengeType.value === 'Buy') {
-      await createPurchaseChallenge({
+      createdChallenge.value = await createPurchaseChallenge({
         title: challengeTitle.value,
         description: challengeDescription.value,
         timeInterval: timeInterval.value.toUpperCase(),
@@ -108,8 +112,10 @@ async function createChallenge() {
         productName: productName.value,
         targetAmount: quantityLimit.value
       });
+      addChallengeToUser(Number(createdChallenge.value.id));
+      createdChallenge.value = null;
     } else if (challengeType.value === 'Consumption') {
-      await createConsumptionChallenge({
+      createdChallenge.value = await createConsumptionChallenge({
         title: challengeTitle.value,
         description: challengeDescription.value,
         targetAmount: targetAmount.value,
@@ -119,6 +125,8 @@ async function createChallenge() {
         productCategory: category.value,
         reductionPercentage: reductionAmount.value
       });
+      addChallengeToUser(Number(createdChallenge.value.id));
+      createdChallenge.value = null;
     } else {
       throw new Error("Invalid challenge type");
     }

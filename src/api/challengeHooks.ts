@@ -75,3 +75,20 @@ export const createConsumptionChallenge = async (data: ChallengeCreation): Promi
   }
 }
 
+export const addChallengeToUser = async (
+  challengeId: number
+): Promise<void> => {
+  try {
+    const response = await api.post(
+      `/challenges/users/challenges/${challengeId}`
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Failed to add challenge to user");
+    }
+  } catch (error) {
+    throw new Error(`Error adding challenge to user: ${error}`);
+  }
+}

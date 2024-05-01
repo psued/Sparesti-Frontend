@@ -27,6 +27,7 @@ export interface Challenge {
 }
 
 export interface ChallengeCreation {
+  id?: number;
   title: string;
   description: string;
   targetAmount: number;
