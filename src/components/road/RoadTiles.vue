@@ -20,6 +20,7 @@
       </div>
 
       <div class="road-tile" v-for="(road) in roads" :key="road.id">
+        <div class="road-amount-text" :class="`road-amount-text-${road.direction}` + ((road.arrived || road.moved) ? ' text-completed' : '')" >{{ road.amount }}</div>
         <img class="road-node" 
             @click="console.log('Clicked on road node ' + road.id + ' with amount ' + road.amount + ' and arrived ' + road.arrived + ' list id ' + roads[road.id].id)"
           :class="['road-node-' + road.direction , { 'road-completed': road.amount <= saved}]" 
@@ -30,12 +31,12 @@
           :class="'start-area-' + road.direction">
           <img class="walking-pig" :class="'pig-' + road.id" :src="road.pig" ></img>
         </div>
-        <svg class="road-svg" :class="'road-' + road.direction + '-light'"></svg>
+        <svg class="road-svg" :class="'road-' + road.direction + '-light'">{</svg>
       </div>
 
       <div v-if="goal > 0" class="road-edge-point road-start">
         <div class="road-edge-area" id="node-start">
-          <img v-if="!startmoved" class="walking-pig walking-pig-start" :src="startpig"></img>
+          <img v-if="!startmoved" class="walking-pig walking-pig-start" :src="startpig">{{ saved + " / " + goal}}</img>
         </div>
 
       </div>
@@ -162,13 +163,13 @@ onMounted(async () => {
   if (!userStore.isLoggedIn()) {
     useLogin();
   }
-  goal.value = 900;
-  saved.value = 900;
+  goal.value = 1000;
+  saved.value = 800;
   step.value = 300;
   const steps = goal.value / step.value;
 
 
-  for(let i = 0; i < steps; i++){
+  for(let i = 1; i < steps; i++){
     const amount = goal.value - (i * step.value);
     addRoad(amount);
   }
@@ -277,6 +278,29 @@ onMounted(async () => {
   height: 129px;
   width: 91px;
   left: 64px;
+}
+.road-amount-text {
+  position: absolute;
+  margin-top: 95px;
+  width: 100px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  z-index: 900;
+}
+.road-amount-text-left {
+  left: 50%;
+  transform: translateX(-50%);
+}
+.road-amount-text-right {
+  right: 50%;
+  transform: translateX(50%);
+}
+.text-completed {
+  font-size: 38px;
+  color: gold;
+  margin-top: 80px;
 }
 .road-completed {
   border: 2px solid #4b644a;
