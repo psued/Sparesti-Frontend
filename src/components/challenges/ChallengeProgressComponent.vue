@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-  import ChallengeProgressBar from '../challenges/ChallengeProgressBar.vue';
+  import ChallengeProgressBar from './ChallengeProgressBarComponent.vue';
 
   const props = defineProps({
     targetAmount: Number,

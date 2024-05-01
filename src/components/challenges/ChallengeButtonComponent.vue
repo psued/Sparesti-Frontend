@@ -8,11 +8,9 @@ import {ref} from "vue";
 const completeButtonPressed = ref(false);
 const completeButtonDown = () => {
   completeButtonPressed.value = true
-  console.log('hei')
 }
 const completeButtonUp = () => {
   completeButtonPressed.value = false
-  console.log('hade')
 }
 </script>
 

@@ -18,15 +18,35 @@
       @close="closePopup"
       :position="popupPosition"
     />
+    <PopupComponent :isVisible="showBadgePopup" :flashingBorder="true" @togglePopup="closeBadgePopup" class="popup">
+      <!-- Slot for content -->
+      <template #content>
+        <h2>Gratulerer, du har mottatt en medalje!</h2>
+        <!-- Render the rewarded badge here -->
+        <BadgeComponent :badge="rewardedBadge" :owned="true" />
+        <!-- Change this to be a ButtonComponent, I dont know why it doesnt work when I use it -->
+        <button @click="closeBadgePopup">Godta Medalje</button>
+        <div class="confetti-container" v-if="showConfetti"></div>
+      </template>
+    </PopupComponent>
   </div>
 </template>
 
 <script setup lang="ts">
 import ChallengeDetailsPopup from "@/components/ChallengeDetailsPopup.vue";
+import PopupComponent from "@/components/assets/PopupComponent.vue";
+import ButtonComponent from "@/components/assets/ButtonComponent.vue";
+import BadgeComponent from "@/components/badge/BadgeComponent.vue";
+import confetti from 'canvas-confetti';
+import coinImage from "@/assets/gold-coin.png";
+import { Howl } from 'howler';
+import plingSound from "@/assets/pling.wav";
 import { onMounted, computed, ref } from "vue";
 import { getSortedChallengesByUser } from "@/api/challengeHooks";
 import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
+import { type Badge } from "@/types/Badge";
 import { useUserStore } from "@/stores/userStore";
+import { checkAndAwardBadge } from "@/api/badgeHooks";
 import { useRouter } from "vue-router";
 import { useLogin } from "@/api/authenticationHooks";
 import road from "../components/road/RoadTiles.vue";
@@ -36,8 +56,13 @@ import starCircleIcon from "@/assets/star-circle.svg";
 import DailyTipBlimp from "../components/frontpage/DailyTipBlimp.vue";
 
 const selectedChallenge = ref<Challenge | null>(null);
+const rewardedBadge = ref<Badge | null>(null);
 const showPopup = ref(false);
+const showBadgePopup = ref(false);
 const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
+const showConfetti = ref(false);
+const plingAudio = ref<HTMLAudioElement | null>(null);
+const playSound = ref(true);
 
 const selectedChallengeForPopup = computed(
   () => selectedChallenge.value || ({} as Challenge),
@@ -54,14 +79,65 @@ const openPopup = (challenge: Challenge, top: number, left: number) => {
   console.log(challenge);
 };
 
+const handleBadgeRewarded = (badge: Badge) => {
+  rewardedBadge.value = badge;
+  showBadgePopup.value = true;
+};
+
 const closePopup = () => {
   selectedChallenge.value = null;
   showPopup.value = false;
+  showConfetti.value = false;
 };
 
-onMounted(() => {
+const closeBadgePopup = () => {
+  rewardedBadge.value = null;
+  showBadgePopup.value = false;
+  triggerConfetti();
+  playPlingSound();
+};
+
+const triggerConfetti = () => {
+  showConfetti.value = true;
+  
+  let scalar = 2;
+  let coin = confetti.shapeFromText({text: '💰', scalar})
+
+  // Configure custom shape options for confetti
+  const confettiOptions = {
+    particleCount: 100, // Number of confetti particles
+    spread: 70, // Spread of confetti
+    origin: { y: 0.6 }, // Starting position of confetti
+    sizes: [20, 30], // Size of the confetti particles (coins)
+    shapes: [coin], // Shape of the confetti particles (coins)
+    scalar,
+  };
+
+  // Trigger confetti with custom options
+  confetti(confettiOptions);
+  
+  // Optionally, set a timeout to hide the confetti after a certain duration
+  setTimeout(() => {
+    showConfetti.value = false;
+  }, 5000); // 5000 milliseconds (adjust as needed)
+};
+
+const playPlingSound = () => {
+  const sound = new Howl({
+    src: [plingSound],
+    autoplay: true,
+    loop: false,
+  });
+};
+
+onMounted(async () => {
   if (!userStore.isLoggedIn()) {
     useLogin();
+  } else {
+    const badge = await checkAndAwardBadge();
+    if (badge) {
+      handleBadgeRewarded(badge);
+    }
   }
 });
 </script>
@@ -149,5 +225,19 @@ onMounted(() => {
   animation-delay: 13s;
   top: 65%;
   display: block;
+}
+
+.popup {
+  position: absolute;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  max-height: fit-content;
+  overflow-y: auto;
+  padding: 20px;
+  width: 80%;
+  width: fit-content;
+  height: fit-content;
+  text-align: -webkit-center;
 }
 </style>
