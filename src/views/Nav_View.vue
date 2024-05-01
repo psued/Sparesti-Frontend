@@ -140,10 +140,9 @@ const handleThemeChange = () => {
 .logo {
   cursor: pointer;
   z-index: 900;
-  position: absolute;
-  top: 5px;
+  position: relative;
   height: 100px;
-  left: -30px;
+  margin-left: -30px;
 }
 
 .hamburger {
