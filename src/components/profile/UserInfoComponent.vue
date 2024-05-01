@@ -2,26 +2,30 @@
   <div class="user-info">
     <div class="user-details">
       <div class="detail">
-        <span class="label">Kallenavn:</span>
-        <span class="value">
-          <i class="icon-user"></i>
-          <span v-show="!editMode">{{ user.displayName }}</span>
-          <input type="text" v-model="editName" v-show="editMode" />
-          <button @click="toggleEditMode">
-            {{ editMode ? "Lagre" : "Rediger" }}
-          </button>
-        </span>
+        <span class="label">Epost:</span>
+        <div class="value-container">
+          <i v-show="!isEditing" class="icon-mail"></i>
+          <div v-show="!isEditing" class="value">{{ user.email }}</div>
+        </div>
       </div>
       <div class="detail">
-        <span class="label">Email:</span>
-        <span class="value"><i class="icon-mail"></i>{{ user.email }}</span>
+        <span class="label-name">Kallenavn:</span>
+        <div class="value-container">
+          <i v-show="!isEditing" class="icon-user"></i>
+          <div v-show="!isEditing" class="value">{{ user.displayName }}</div>
+          <input v-show="isEditing" type="text" v-model="user.displayName" class="input">
+        </div>
       </div>
       <div class="detail">
-        <span class="label">Navn:</span>
-        <span class="value"
-          ><i class="icon-user"></i>{{ user.firstName }}
-          {{ user.lastName }}</span
-        >
+        <span class="label-name">Navn:</span>
+        <div class="value-container">
+          <i v-show="!isEditing" class="icon-user"></i>
+          <div v-show="!isEditing" class="value">{{ user.firstName }} {{ user.lastName }}</div>
+          <div v-show="isEditing" class="input-group">
+            <input type="text" v-model="user.firstName" class="input">
+            <input type="text" v-model="user.lastName" class="input">
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -29,54 +33,66 @@
 
 <script setup lang="ts">
 import { defineProps, ref, computed } from "vue";
-import "@/assets/icons.css";
-import { updateUserInfo } from "@/api/userHooks";
 
 const props = defineProps<{
   user: any;
+  isEditing: boolean;
 }>();
 
-const editMode = ref(false);
 const editName = ref(props.user.displayName);
-const displayName = computed(() => {
-  return editMode.value ? editName.value : props.user.displayName;
-});
+const editEmail = ref(props.user.email);
+const editFirstName = ref(props.user.firstName);
 
-function toggleEditMode(): void {
-  if (editMode.value) {
-    updateUserInfo({ displayName: editName.value })
-      .then(() => {
-        props.user.displayName = editName.value;
-      })
-      .catch((error) => {
-        console.error("Failed to update user info:", error);
-      });
-  }
-  editMode.value = !editMode.value;
-}
 </script>
 
 <style scoped>
+.label-name {
+  font-weight: bold;
+
+}
 .user-details .detail {
-  margin-bottom: 0.5em;
+  margin-bottom: 1em;
 }
 
 .user-details .label {
   font-weight: bold;
+  display: block;
 }
 
-.user-details .value {
-  font-size: 1.5em;
-  display: block;
+.value-container {
+  display: flex;
+  align-items: center;
   border-bottom: 1px solid;
-  padding-bottom: 0.2em;
 }
+
 .icon {
-  width: 40em;
-  height: 1em;
+  min-width: 1.5em; 
+  margin-right: 0.5em;
 }
-.edit-button {
-  margin-left: auto;
+
+.value, .input, .input-group {
+  display: block;
+  padding-bottom: 0.3em;
+  font-size: 25px;
+}
+
+.input, .input-group {
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.input-group {
+  display: flex;
+  gap: 0.5em;
+}
+
+input.input {
+  padding: 0.2em 0; /* Match padding to align with text style */
 }
 </style>
+
+
+
 @/types/User

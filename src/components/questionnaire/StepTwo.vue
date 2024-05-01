@@ -9,7 +9,7 @@
         class="account-input"
         :value="formattedCheckingAccount"
         @input="formattedCheckingAccount = ($event.target as HTMLInputElement).value"
-        placeholder="xxxx xxxx xxxx xxxx"
+        placeholder="xxxx xx xxxxx"
         required
       />
       <div class="input-gap"></div>
@@ -19,7 +19,7 @@
         class="account-input"
         :value="formattedSavingsAccount"
         @input="formattedSavingsAccount = ($event.target as HTMLInputElement).value"
-        placeholder="xxxx xxxx xxxx xxxx"
+        placeholder="xxxx xx xxxxx"
         required
       />
     </div>
@@ -48,23 +48,30 @@ const formErrors = ref({
   savingsAccount: "",
 });
 
+const formattedCheckingAccount = computed({
+  get: () => formatAccountNumber(checkingAccount.value),
+  set: (val) => {
+    checkingAccount.value = val.replace(/\s/g, '');
+  }
+});
+
 const formattedSavingsAccount = computed({
-  get: () => {
-    return savingsAccount.value.replace(/(\d{4})(?=\d)/g, '$1 ');
-  },
+  get: () => formatAccountNumber(savingsAccount.value),
   set: (val) => {
     savingsAccount.value = val.replace(/\s/g, '');
   }
 });
 
-const formattedCheckingAccount = computed({
-  get: () => {
-    return checkingAccount.value.replace(/(\d{4})(?=\d)/g, '$1 ');
-  },
-  set: (val) => {
-    checkingAccount.value = val.replace(/\s/g, '');
+function formatAccountNumber(number) {
+  const digits = number.replace(/\D/g, '').substring(0, 11); 
+  if (digits.length <= 4) {
+    return digits;
+  } else if (digits.length <= 6) {
+    return `${digits.slice(0, 4)} ${digits.slice(4)}`;
+  } else {
+    return `${digits.slice(0, 4)} ${digits.slice(4, 6)} ${digits.slice(6)}`;
   }
-});
+}
 
 
 function goToNextStep() {

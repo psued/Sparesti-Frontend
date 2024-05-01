@@ -2,27 +2,26 @@
   <div class="profile-page-container">
     <section v-if="user" class="user-info-section">
       <div class="header">
-        <h1>{{ user.displayName }}'s profile</h1>
-        <button v-if="!isEditing" @click="toggleEdit">Edit Profile</button>
-        <button v-if="isEditing" @click="saveChanges">Save Changes</button>
+        <h1>{{ user.displayName }}'s Profile</h1>
+        <button class="togglebutton" @click="toggleEditMode">{{ isEditing ? 'Save Changes' : 'Edit Profile' }}</button>
       </div>
       <section class="top-part-profile">
         <div class="profile-pic-container">
           <ProfilePicComponent :userProfilePic="user.pictureUrl" />
-					<div class="overlay">
-						<i class="icon-pencil"></i>
-					</div>
-					<input type="file" ref="fileInput" @change="handleProfilePictureChange" style="display:none">
+          <div class="overlay" @click="triggerFileUpload">
+            <i class="icon-pencil"></i>
+          </div>
+          <input type="file" ref="fileInput" @change="handleProfilePictureChange" style="display:none">
         </div>
         <div class="total-savings-container">
           <TotalSavingsComponent :totalSavings="user.totalSavings" />
         </div>
       </section>
-      <UserInfoComponent :user="user" />
+      <UserInfoComponent :user="user" :isEditing="isEditing" />
     </section>
     <section class="badges-section">
-      <div class="header">
-        <h1>Alle Medaljer</h1>
+      <div class="header-badges">
+        <h1>Alle dine medaljer</h1>
       </div>
       <div class="badge-container">
         <router-link
@@ -42,17 +41,16 @@
     <section class="settings-section">
       <router-link to="/settings" class="settings-button">
         Information & Settings
-        <img src="" alt="Settings" />
       </router-link>
     </section>
-    <div></div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import { useUserStore } from "@/stores/userStore";
-import { getUserInfo, getUserByUsername } from "@/api/userHooks";
+import { getUserInfo, getUserByUsername, updateUserInfo } from "@/api/userHooks";
 import { getBadgesByUser } from "@/api/badgeHooks";
 import type { UserBadge } from "@/types/Badge";
 import ProfilePicComponent from "@/components/profile/ProfilePicComponent.vue";
@@ -63,6 +61,24 @@ import BadgeComponent from "@/components/badge/BadgeComponent.vue";
 const user = ref<any | null>(null);
 const userBadges = ref<UserBadge[]>([]);
 const userStore = useUserStore();
+const isEditing = ref(false);
+
+const triggerFileUpload = () => {
+  toggleEditMode();
+  console.log("Triggering file upload...");
+};
+
+const toggleEditMode = async () => {
+  if (isEditing.value) {
+    try {
+      await updateUserInfo(user.value);
+      console.log("Profile updated successfully.");
+    } catch (error) {
+      console.error("Failed to update user info:", error);
+    }
+  }
+  isEditing.value = !isEditing.value;
+};
 
 const fetchAndSetUserInfo = async () => {
 	try {
@@ -120,7 +136,7 @@ onMounted(fetchAndSetUserInfo);
 }
 
 .badge-link:hover {
-  background: none; /* Ensure no background change on hover */
+  background: none;
 }
 
 /* Styling for the profile picture container */
@@ -166,10 +182,14 @@ onMounted(fetchAndSetUserInfo);
 
 /* Desktop view */
 @media (min-width: 769px) {
-  .header {
+  .header-badges {
     padding-bottom: 2rem;
     font-size: 1.5rem;
     padding-left: 2rem;
+  }
+  .header {
+    padding-bottom: 2rem;
+    font-size: 1.5rem;
   }
 
   .profile-page-container {

@@ -131,11 +131,10 @@ onMounted(() => {
   text-align: left; 
 }
 
-/* Header for the product list */
 .product-header {
   display: flex;
   justify-content: space-between;
-  text-align: left;  /* Align text to the left */
+  text-align: left;
   padding: 10px;
   margin-bottom: 10px;
   border-bottom: 2px solid #ccc;
@@ -217,7 +216,7 @@ onMounted(() => {
 
 .product-header span:nth-child(1),
 .product-item span:nth-child(1) {
-  flex: 3;
+  flex: 1;
 }
 
 .product-header span:nth-child(2),
@@ -226,11 +225,5 @@ onMounted(() => {
 .product-item span:nth-child(3) {
   flex: 2; 
 }
-
-.product-header span:nth-child(4),
-.product-item span:nth-child(4) {
-  flex: 1;
-}
-
 </style>
 @/stores/QuestionnaireStore

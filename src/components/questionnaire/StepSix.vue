@@ -5,8 +5,8 @@
 			<p>Her er noen utvalgte utfordringer du kan starte på!</p>
 		</div>
 		<div class="button-container">
-      <FormButton type="button" @click="goBack">Back</FormButton>
-      <FormButton type="submit" @click="finishQuestionnaire">Next</FormButton>
+      <FormButton type="button" @click="goBack">Tilbake</FormButton>
+      <FormButton type="submit" @click="finishQuestionnaire">Ferdig</FormButton>
     </div>	
 	</div>
 </template>
@@ -16,11 +16,8 @@ import { defineEmits, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import FormButton from '@/components/forms/FormButton.vue';
 
-
 const router = useRouter();
 const emit = defineEmits(["update-step"]);
-
-
 
 function goBack() {
   emit("update-step", 5);
@@ -29,12 +26,9 @@ function goBack() {
 function finishQuestionnaire() {
 	router.push("/");
 }
-
-
 </script>
 
 <style scoped>
-
 .button-container {
   display: flex;
   justify-content: space-between;

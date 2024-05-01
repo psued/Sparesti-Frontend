@@ -17,13 +17,7 @@ import { computed } from 'vue'
 import NAV from './views/Nav_View.vue';
 import road from './components/road/RoadTiles.vue';
 
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
-function toggleTheme() {
-  toggleDark();
-  document.body.classList.toggle("dark", isDark.value);
-}
-document.body.classList.toggle("dark", isDark.value);
+
 
 const route = useRoute();
 

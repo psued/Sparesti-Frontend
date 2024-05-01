@@ -28,12 +28,12 @@ export const getBankAccountTransactions = async (
   }
 };
 
-export const getBankAccountRecentTransactions = async (
+export const getRecentTransacitonsSorted = async (
   accountNr: number,
 ): Promise<any | null> => {
   try {
     const response = await api.get(
-      `/bank/account/transactions/recent/${accountNr}`,
+      `/bank/transactions/recent/categories/${accountNr}`,
     );
     return response.data;
   } catch (error) {
