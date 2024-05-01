@@ -42,6 +42,7 @@ devices. * The component handles dark mode and theme changes. */
 
 <script setup lang="ts">
 import { onMounted, ref, defineEmits, defineProps } from "vue";
+import { useDark, useToggle } from "@vueuse/core";
 import { Transition } from "vue";
 import "@/assets/icons.css";
 import sidebar from "../components/nav/Sidebar.vue";
@@ -50,7 +51,7 @@ import sidebar from "../components/nav/Sidebar.vue";
 const prefersDarkMode =
   window.matchMedia &&
   window.matchMedia("(prefers-color-scheme: dark)").matches;
-const darkMode = ref(prefersDarkMode);
+const darkMode = useDark();
 
 // Sidebar and phone bar state
 const isSidebarOpen = ref(false);

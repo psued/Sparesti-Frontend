@@ -110,8 +110,10 @@ import { onMounted, ref, defineEmits, defineProps } from "vue";
 import { oauth2 } from "@/api/axiosConfig";
 import { useApiStore } from "@/stores/apiStore";
 import { useUserStore } from "@/stores/userStore";
+import { useDark, useToggle } from "@vueuse/core";
 
 // Reactive variables
+const darkMode = useDark();
 const isOpen = ref(false);
 const isPhone = ref(false);
 const hoverSign = ref(false);
@@ -147,15 +149,6 @@ const toggleHoverTheme = () => {
   hoverTheme.value = !hoverTheme.value;
 };
 
-// Props with default values
-const props = withDefaults(
-  defineProps<{
-    darkMode: boolean;
-  }>(),
-  {
-    darkMode: false,
-  },
-);
 
 /**
  * Function to logout the user and revoke the access token
