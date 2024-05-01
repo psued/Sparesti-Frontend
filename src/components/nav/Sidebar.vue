@@ -149,7 +149,6 @@ const toggleHoverTheme = () => {
   hoverTheme.value = !hoverTheme.value;
 };
 
-
 /**
  * Function to logout the user and revoke the access token
  */

@@ -140,8 +140,8 @@ const handleThemeChange = () => {
 
 .logo {
   cursor: pointer;
-  z-index: 996;
-  position: relative;
+  z-index: 900;
+  position: absolute;
   top: 5px;
   height: 100px;
   left: -30px;
