@@ -21,7 +21,7 @@
         <button class="delete-category-btn" @click="toggleDeleteMode">
           <span class="add-category-icon">➖</span> {{ deleteMode ? 'Slett' : 'Slett kategori' }}
         </button>
-        <button v-if="deleteMode" @click="toggleDeleteMode">Avbryt</button>
+        <button v-if="deleteMode" @click="toggleCancelDeleteMode">Avbryt</button>
       </div>
     </div>
 
@@ -119,6 +119,10 @@ const toggleDeleteMode = async () => {
     }
   }
   deleteMode.value = !deleteMode.value;
+};
+
+const toggleCancelDeleteMode = () => {
+  deleteMode.value = false;
 };
 
 const addCategory = () => {
