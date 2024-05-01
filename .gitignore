@@ -22,3 +22,6 @@ node_modules/
 # Ignore compiled files
 *.map
 .DS_Store
+
+# Ignore coverage files
+/coverage
