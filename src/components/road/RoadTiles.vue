@@ -52,7 +52,7 @@
 */
 <script setup lang="ts">
 import { onMounted, computed, ref, type Ref, nextTick} from "vue";
-import { getUserByUsername, getUserInfo } from "@/api/userHooks";
+import { getSavingsGoalsByUserId, getUserByUsername, getUserInfo } from "@/api/userHooks";
 import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
 import { useUserStore } from "@/stores/userStore";
 import { useLogin } from "@/api/authenticationHooks";
@@ -163,9 +163,13 @@ onMounted(async () => {
   if (!userStore.isLoggedIn()) {
     useLogin();
   }
-  goal.value = 1000;
-  saved.value = 800;
-  step.value = 300;
+  const userid = 1;
+  const savingGoal = await getSavingsGoalsByUserId();
+  if (savingGoal && savingGoal.length > 0) {
+    goal.value = savingGoal[0].goal;
+    saved.value = savingGoal[0].saved;
+  }
+  step.value = 100;
   const steps = goal.value / step.value;
 
 
