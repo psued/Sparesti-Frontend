@@ -1,7 +1,7 @@
 <template>
     <router-link :to="`/details/${id}`" tag="div" class="budget-overview" :class="expiredClass">
       <div class="budget-summary">
-        <h2>Månedtlig Budsjett</h2>
+        <h2>{{ displayName }}</h2>
         <p>{{ budget }} kr av {{ totalBudget }} kr</p>
         <span>{{ daysLeft <= 0 ? 'Expired' : daysLeft + ' Dager Igjen' }}</span>
         <progress-bar :value="budget" :max="totalBudget"></progress-bar>
@@ -15,6 +15,10 @@
   import { defineProps } from "vue";
   
   const props = defineProps({
+    name: {
+      type: String,
+      default: "Månedlig budsjett",
+    },
     id: {
       type: Number,
       required: true,
@@ -35,6 +39,10 @@
       type: Number,
       default: () => Math.floor(Math.random() * 30),
     },
+  });
+
+  const displayName = computed(() => {
+    return props.name !== null ? props.name : "Månedlig budsjett";
   });
   
   const ProgressBar = BudgetProgressBar;

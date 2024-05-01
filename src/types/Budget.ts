@@ -1,6 +1,7 @@
 export interface Budget {
     id: number;
     row: BudgetRow[];
+    name: string;
     expiryDate: string;
     creationDate: string;
 }
