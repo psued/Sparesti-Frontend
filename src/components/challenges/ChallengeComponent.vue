@@ -6,7 +6,7 @@
       </div>
       <p class="daysRemaining">{{Math.floor(daysLeft)}} Days Left</p>
     </div>
-    <h2 class="challengeTitle">Title</h2>
+    <h2 class="challengeTitle">{{challengeObject.title}}</h2>
     <ChallengeProgress :target-amount="challengeObject.targetAmount" :saved-amount="challengeObject.savedAmount" :media-url="challengeObject.mediaUrl || ''" />
     <p class="challengeText">{{challengeObject.description}}</p>
     <div class="completeButtonContainer">
@@ -16,8 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import ChallengeCompleteButton from '../challenges/ChallengeCompleteButton.vue';
-import ChallengeProgress from '../challenges/ChallengeProgress.vue';
+import ChallengeCompleteButton from './ChallengeButtonComponent.vue';
+import ChallengeProgress from './ChallengeProgressComponent.vue';
 import type { MasterChallenge } from '@/types/challengeTypes';
 import { ref } from 'vue';
 
@@ -33,7 +33,6 @@ if(props.challengeObject){
   if(props.challengeObject.expiryDate){
     let currentDate = new Date()
     let expiryDate = new Date(props.challengeObject.expiryDate)
-    console.log(expiryDate)
     daysLeft.value = (expiryDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24)
   }
 }
@@ -89,9 +88,4 @@ if(props.challengeObject){
   margin: 0.6rem 0.3rem;
   white-space: normal;
 }
-
-.completeButton{
-
-}
-
 </style>
