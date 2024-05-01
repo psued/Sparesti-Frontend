@@ -1,10 +1,10 @@
 <template>
   <div id="createChallengeContainer">
     <p>Challenge Title</p>
-    <input type="text" placeholder="Title" id="challengeTitle"/>
+    <input v-model="challengeTitle" type="text" placeholder="Title" id="challengeTitle"/>
 
     <p>Challenge Description</p>
-    <textarea maxlength="60" id="challengeDescriptionInput" rows="3"></textarea>
+    <textarea v-model="challengeDescription" maxlength="60" id="challengeDescriptionInput" rows="3"></textarea>
 
     <p>Velg en Emoji</p>
     <EmojiPickerComponent :emoji-prop="emoji" @pickEmoji="pickEmoji"/>
@@ -19,20 +19,21 @@
 
     <div v-if="challengeType === 'Save'">
       <p>Sett deg et sparemål</p>
-      <input type="number" min="0" step="1" placeholder="kr"/>
-
+      <input v-model="targetAmount" type="number" min="0" step="1" placeholder="kr"/>
     </div>
 
     <div v-if="challengeType === 'Buy'">
       <p>Produktnavn</p>
-      <input type="text" placeholder="Produkt"/>
+      <input v-model="productName" type="text" placeholder="Produkt"/>
       <p>Kjøpsgrense</p>
-      <input type="number" min="0" step="1" placeholder="Antall"/>
+      <input v-model="quantityLimit" type="number" min="0" step="1" placeholder="Antall"/>
     </div>
 
     <div v-if="challengeType === 'Consumption'">
-      <p>Sett deg et sparemål</p>
-      <input type="number" min="0" step="1" placeholder="Title"/>
+      <p>Velg en kategori</p>
+      <input v-model="category" type="number" min="0" step="1" placeholder="Kategori"/>
+      <p>Hvor mye mindre ønsker du å bruke?</p>
+      <input v-model="reductionAmount" type="number" min="0" step="1" placeholder="Antall"/>
     </div>
 
 
@@ -46,21 +47,26 @@ import { ref } from "vue";
 import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
 import RadioButtonsComponent from "@/components/assets/RadioButtonsComponent.vue";
 
+const challengeTitle = ref("");
+const challengeDescription = ref("");
+const timeInterval = ref("");
 const emoji = ref("");
+const challengeType = ref("");
+const targetAmount = ref(0);
+const productName = ref("");
+const quantityLimit = ref(0);
+const category = ref("");
+const reductionAmount = ref(0);
+
 
 function pickEmoji(e) {
   emoji.value = e;
-  console.log(emoji.value);
 }
 
 
-const timeInterval = ref("");
 function pickTimeInterval(interval) {
   timeInterval.value = interval;
-  console.log(timeInterval.value);
 }
-
-const challengeType = ref("");
 
 function setChallengeType(type) {
   challengeType.value = type;

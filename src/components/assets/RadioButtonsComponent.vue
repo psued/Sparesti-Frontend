@@ -51,8 +51,6 @@ function emitAnswer(radioButton) {
 
 <style scoped>
 #timeIntervalRadio {
-  margin: 10px 0;
-  width: 100%;
   display: flex;
   justify-content: space-between;
 
@@ -61,7 +59,6 @@ function emitAnswer(radioButton) {
 .timeIntervalButton {
   width: 100px;
   height: 30px;
-  display: inline-block;
 }
 
 .timeIntervalText {
