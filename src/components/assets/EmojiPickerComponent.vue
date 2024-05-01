@@ -34,8 +34,9 @@ pickEmoji: This event is emitted when an emoji is selected from the picker.
 
 <script setup lang="ts">
 import SVGButtonComponent from "@/components/assets/SVGButtonComponent.vue";
-import useClickOutside from "@/utils/useClickOutside.ts";
+import useClickOutside from "@/utils/useClickOutside";
 import EmojiPicker from 'vue3-emoji-picker'
+import type {EmojiExt} from 'vue3-emoji-picker'
 import 'vue3-emoji-picker/css'
 import {ref} from "vue";
 
@@ -46,10 +47,10 @@ const emojiPickerIsOpen = ref(true);
 function toggleEmojiPicker() {
   emojiPickerIsOpen.value = !emojiPickerIsOpen.value;
 }
-function pickEmoji(e) {
+function pickEmoji(e: string) {
   emit('pickEmoji', e)
 }
-function onSelectEmoji(e) {
+function onSelectEmoji(e : EmojiExt) {
   pickEmoji(e.i)
   toggleEmojiPicker()
 }

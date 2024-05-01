@@ -20,7 +20,7 @@ The label of the clicked button is passed as a payload with the event.
 
 <template>
   <div id="timeIntervalRadio">
-    <ButtonComponent @click="emitAnswer(radioButton)" :pressed="radioButton === pressedButton" v-for="radioButton in radioButtons" class="timeIntervalButton">
+    <ButtonComponent @click="emitAnswer(radioButton as string)" :pressed="radioButton === pressedButton" v-for="radioButton in radioButtons" class="timeIntervalButton">
       <template v-slot:content>
         <p class="timeIntervalText">{{radioButton}}</p>
       </template>
@@ -42,7 +42,7 @@ const props = defineProps({
 
 const emit = defineEmits(['radioClick'])
 
-function emitAnswer(radioButton) {
+function emitAnswer(radioButton: string) {
   pressedButton.value = radioButton;
   emit('radioClick', radioButton)
 }

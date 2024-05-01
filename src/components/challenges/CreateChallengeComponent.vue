@@ -41,8 +41,6 @@
 </template>
 
 <script setup lang="ts">
-import SVGButtonComponent from "@/components/assets/SVGButtonComponent.vue";
-import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 import { ref } from "vue";
 import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
 import RadioButtonsComponent from "@/components/assets/RadioButtonsComponent.vue";
@@ -59,25 +57,21 @@ const category = ref("");
 const reductionAmount = ref(0);
 
 
-function pickEmoji(e) {
+function pickEmoji(e: string) {
   emoji.value = e;
 }
 
 
-function pickTimeInterval(interval) {
+function pickTimeInterval(interval: string) {
   timeInterval.value = interval;
 }
 
-function setChallengeType(type) {
+function setChallengeType(type : string) {
   challengeType.value = type;
 }
 </script>
 
 <style scoped>
-#challengeTitle {
-
-}
-
 #createChallengeContainer {
   margin: 0 20px;
   height: 100%;
