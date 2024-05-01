@@ -104,7 +104,6 @@ const handleThemeChange = () => {
   if (isSidebarOpen.value) {
     toggleSidebar();
   }
-  console.log(darkMode.value);
   emit("theme");
 };
 

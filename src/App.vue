@@ -27,7 +27,6 @@ const isDark = useDark();
 const toggleDark = useToggle(isDark);
 const  emit  = defineEmits();
 const handleThemeChange = () => {
-  console.log("handleThemeChange");
   toggleDark();
   document.body.classList.toggle("dark", isDark.value);
 };
