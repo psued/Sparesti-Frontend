@@ -41,7 +41,7 @@ devices. * The component handles dark mode and theme changes. */
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, defineEmits, defineProps } from "vue";
 import { Transition } from "vue";
 import "@/assets/icons.css";
 import sidebar from "../components/nav/Sidebar.vue";
@@ -97,12 +97,17 @@ const toggleSidebar = () => {
 };
 
 // Handle theme change event
+const  emit  = defineEmits(["theme"]);
 const handleThemeChange = () => {
   darkMode.value = !darkMode.value;
   if (isSidebarOpen.value) {
     toggleSidebar();
   }
+  console.log(darkMode.value);
+  emit("theme");
 };
+
+
 </script>
 
 <style scoped>

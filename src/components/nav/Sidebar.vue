@@ -26,6 +26,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
                 ? 'icon-dark-mode'
                 : 'icon-dark-mode-hover',
           ]"
+          @click="toggleTheme"
         />
       </div>
     </div>
