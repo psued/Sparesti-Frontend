@@ -25,3 +25,6 @@ node_modules/
 
 # Ignore coverage files
 /coverage
+
+# Ignore cypress screenshots and videos
+/cypress/screenshots
