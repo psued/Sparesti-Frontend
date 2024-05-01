@@ -1,5 +1,6 @@
 export interface MasterChallenge {
   id: number;
+  title: string;
   description: string;
   targetAmount: number;
   savedAmount: number;
@@ -23,6 +24,19 @@ export interface Challenge {
   timeInterval: string;
   imageUrl: string;  
   completed: boolean;
+}
+
+export interface ChallengeCreation {
+  id?: number;
+  title: string;
+  description: string;
+  targetAmount: number;
+  mediaUrl: string | null;
+  timeInterval: string;
+  difficultyLevel: string;
+  productName?: string;
+  productCategory?: string;
+  reductionPercentage?: number;
 }
 
 export interface ChallengesResponse {
