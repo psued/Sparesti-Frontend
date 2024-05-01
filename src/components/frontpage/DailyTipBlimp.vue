@@ -1,7 +1,15 @@
 <template>
   <div class="blimp-container">
-    <img src="../../assets/BalloonPig.png" alt="Flying Pig Blimp" class="blimp"/>
-    <div class="speech-bubble">{{tip || "no tip available right now!"}}</div>
+    <img src="../../assets/BalloonPig.png" alt="Flying Pig Blimp" class="blimp" @click="showPopup = true"/>
+
+    <PopupComponent :is-visible="showPopup" @togglePopup="togglePopup">
+      <template #content>
+        <div class="popup-content">
+          <h1 class="saving-tip">{{tip || "No tip available 💀"}}</h1>
+        </div>
+      </template>
+    </PopupComponent>
+
   </div>
 </template>
 
@@ -9,12 +17,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useDailySavingTip } from '../../utils/useDailySavingTip'
+import PopupComponent from '../assets/PopupComponent.vue'
 
 const { tip, fetchTip } = useDailySavingTip()
-
+const showPopup = ref(false);
 onMounted(() => {
   fetchTip(); // Fetch a tip right when the component mounts
 })
+const togglePopup = () => {
+  showPopup.value = !showPopup.value;  // Toggle the visibility state
+}
 </script>
 
 
@@ -50,38 +62,25 @@ onMounted(() => {
 
 /* FYI, it is no longer a blimp but a hot air balloon*/
 .blimp {
-  /* animation will likely be infinite */
   animation: floatAcross 100s infinite; /* Adjust time as needed */
   width: 20%;
   /* Click me indicator */
-  /* Remove pig balloon cavity */
 }
 
-/*___SPEECH BUBBLE___*/
-.speech-bubble {
-  position: relative;
-  background: #fab120;
-  color: #FFFFFF;
-  font-family: Arial;
-  font-size: 18px;
-  line-height: 30px;
-  text-align: center;
-  width: 250px;
-  height: 120px;
-  border-radius: 10px;
-  padding: 0px;
+.blimp:hover {
+  cursor: pointer;
 }
-.speech-bubble:after {
-  content: '';
-  position: absolute;
-  display: block;
-  width: 0;
-  z-index: 1;
-  border-style: solid;
-  border-color: #fab120 transparent;
-  border-width: 20px 14px 0;
-  bottom: -20px;
-  left: 50%;
-  margin-left: -14px;
+
+.popup-content {
+  /* Add any styling for the content */
+  display: grid;
+  background-color: white;
+  border-radius: 8px;
+  width: 75%;
+  place-items: center;
+}
+
+.saving-tip {
+  align-self: center;
 }
 </style>
