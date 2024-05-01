@@ -236,5 +236,6 @@ onMounted(async () => {
   width: fit-content;
   height: fit-content;
   text-align: -webkit-center;
+  z-index: 999;
 }
 </style>

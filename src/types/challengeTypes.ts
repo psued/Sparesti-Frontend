@@ -26,6 +26,18 @@ export interface Challenge {
   completed: boolean;
 }
 
+export interface ChallengeCreation {
+  title: string;
+  description: string;
+  targetAmount: number;
+  mediaUrl: string | null;
+  timeInterval: string;
+  difficultyLevel: string;
+  productName?: string;
+  productCategory?: string;
+  reductionPercentage?: number;
+}
+
 export interface ChallengesResponse {
   indexOf(challenge: MasterChallenge): number;
   forEach(callback: (challenge: MasterChallenge, index: number) => void): void;
