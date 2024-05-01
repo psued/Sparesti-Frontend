@@ -111,3 +111,22 @@ export const checkAndAwardBadge = async (): Promise<Badge | null> => {
   }
   return null;
 };
+
+export const giveUserBadge = async (
+  badgeId: number,
+  userId: number,
+): Promise<Badge | null> => {
+  try {
+    const response = await api.post(`/badges/${userId}/give/${badgeId}`);
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error("Failed to give badge:", response.statusText);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error giving badge:", error);
+    return null;
+  }
+}

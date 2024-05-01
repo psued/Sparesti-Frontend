@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" @click="closeBadgePopup">
     <div class="background-container">
       <div class="background"></div>
     </div>
@@ -16,14 +16,21 @@
       @close="closePopup"
       :position="popupPosition"
     />
-    <PopupComponent :isVisible="showBadgePopup" :flashingBorder="true" @togglePopup="closeBadgePopup" class="popup">
+    <PopupComponent :isVisible="showBadgePopup" :flashingBorder="true" class="popup">
       <!-- Slot for content -->
       <template #content>
         <h2>Gratulerer, du har mottatt en medalje!</h2>
         <!-- Render the rewarded badge here -->
         <BadgeComponent :badge="rewardedBadge" :owned="true" />
         <!-- Change this to be a ButtonComponent, I dont know why it doesnt work when I use it -->
-        <button @click="closeBadgePopup">Godta Medalje</button>
+        <ButtonComponent class="button" @click="closeBadgePopupAndAwardBadge">
+          <template v-slot:content>
+            <h2>Godta Medalje</h2>
+          </template>
+          <template v-slot:click>
+            <h2>Godta Medalje</h2>
+          </template>
+        </ButtonComponent>
         <div class="confetti-container" v-if="showConfetti"></div>
       </template>
     </PopupComponent>
@@ -36,7 +43,6 @@ import PopupComponent from "@/components/assets/PopupComponent.vue";
 import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 import BadgeComponent from "@/components/badge/BadgeComponent.vue";
 import confetti from 'canvas-confetti';
-import coinImage from "@/assets/gold-coin.png";
 import { Howl } from 'howler';
 import plingSound from "@/assets/pling.wav";
 import { onMounted, computed, ref } from "vue";
@@ -44,13 +50,15 @@ import { getSortedChallengesByUser } from "@/api/challengeHooks";
 import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
 import { type Badge } from "@/types/Badge";
 import { useUserStore } from "@/stores/userStore";
-import { checkAndAwardBadge } from "@/api/badgeHooks";
+import { checkAndAwardBadge, giveUserBadge } from "@/api/badgeHooks";
+import { updateLoginStreak } from "@/api/userHooks";
 import { useRouter } from "vue-router";
 import { useLogin } from "@/api/authenticationHooks";
 import road from "../components/road/RoadTiles.vue";
 
 import checkCircleIcon from "@/assets/check-circle.svg";
 import starCircleIcon from "@/assets/star-circle.svg";
+import { getUserByUsername } from "@/api/userHooks";
 
 const selectedChallenge = ref<Challenge | null>(null);
 const rewardedBadge = ref<Badge | null>(null);
@@ -76,7 +84,7 @@ const openPopup = (challenge: Challenge, top: number, left: number) => {
   console.log(challenge);
 };
 
-const handleBadgeRewarded = (badge: Badge) => {
+const handleBadgeRewarded = async (badge: Badge) => {
   rewardedBadge.value = badge;
   showBadgePopup.value = true;
 };
@@ -87,11 +95,17 @@ const closePopup = () => {
   showConfetti.value = false;
 };
 
-const closeBadgePopup = () => {
+const closeBadgePopupAndAwardBadge = async () => {
+  const user = await getUserByUsername(userStore.getUserName);
+  await giveUserBadge(Number(rewardedBadge.value?.id), user.id);
   rewardedBadge.value = null;
   showBadgePopup.value = false;
   triggerConfetti();
   playPlingSound();
+};
+
+const closeBadgePopup = () => {
+  showBadgePopup.value = false;
 };
 
 const triggerConfetti = () => {
@@ -131,6 +145,7 @@ onMounted(async () => {
   if (!userStore.isLoggedIn()) {
     useLogin();
   } else {
+    updateLoginStreak();
     const badge = await checkAndAwardBadge();
     if (badge) {
       handleBadgeRewarded(badge);
@@ -237,5 +252,13 @@ onMounted(async () => {
   height: fit-content;
   text-align: -webkit-center;
   z-index: 999;
+}
+
+.button {
+  color: white;
+  margin: 2rem auto;
+  cursor: pointer;
+  width: 200px;
+  height: 50px;
 }
 </style>

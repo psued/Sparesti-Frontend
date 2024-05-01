@@ -100,3 +100,13 @@ export const updateAccounts = async (checkingAccountNr: number | null, savingsAc
     return error.response;
   }
 }
+
+export const updateLoginStreak = async (): Promise<any | null> => {
+  try {
+    const res = await api.post('/users/update-login-streak')
+    return res;
+  } catch (error: any) {
+    console.error("Error updating login streak:", error);
+    return error.response;
+  }
+}
