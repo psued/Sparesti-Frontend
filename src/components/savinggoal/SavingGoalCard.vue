@@ -6,7 +6,7 @@
     'red-border': new Date(savingGoal.deadline + 'T00:00:00').getTime() <= new Date(todaysDate + 'T00:00:00').getTime() && savingGoal.savedAmount < savingGoal.targetAmount
   }">
     <div v-if="isEditing" class="editing-area">
-      <input v-model="editableGoal.name" class="editing-input" placeholder="Navn på sparemål" />
+      <input v-model="editableGoal.name" class="editing-input" placeholder="Navn på sparemål" maxlength="100" />
       <input v-model="editableGoal.targetAmount" class="editing-input" type="number" placeholder="Sparemål i kr" />
       <input v-model="editableGoal.deadline" class="editing-input" type="date" placeholder="Frist" :min="minDeadline.toISOString().split('T')[0]" />
       <div class="form-group">
@@ -41,7 +41,7 @@
     </div>
     </div>
     <div v-else>
-      <h2 class="name" :title="savingGoal.name">{{ savingGoal.name }}</h2>
+      <h2 class="name" :title="savingGoal.name" v-tooltip="savingGoal.name">{{ savingGoal.name }}</h2>
       <p><strong>Sparemål:</strong> {{ savingGoal.savedAmount }} / {{ savingGoal.targetAmount }} kr</p>
       <p><strong>Frist:</strong> {{ savingGoal.deadline }}</p>
       <div class="image" v-if="savingGoal.mediaUrl?.length && savingGoal.mediaUrl.length > 4">
@@ -338,6 +338,32 @@ h2 {
   display: flex;
   justify-content: space-between; 
   padding-bottom: 2%;
+}
+
+.name {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  padding-right: 70px;
+}
+
+.name[title] {
+  position: relative;
+}
+
+.name[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 5px;
+  border-radius: 4px;
+  z-index: 999;
+  left: 100%;
+  top: 0;
+  white-space: normal;
 }
 </style>
   
