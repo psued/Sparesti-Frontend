@@ -60,6 +60,8 @@ watchEffect(() => {
 .backdrop {
   position: fixed;
   top: var(--navbarHeight);
+  left: 0;
+  z-index: 1000;
   display: table;
   background: rgba(0,0,0,0.5);
   width: 100%;

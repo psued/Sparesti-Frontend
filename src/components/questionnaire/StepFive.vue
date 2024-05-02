@@ -33,10 +33,11 @@ import FormButton from '@/components/forms/FormButton.vue';
 import { useUserStore } from '@/stores/userStore';
 import { useQuestionnaireStore } from '@/stores/questionnaireStore';
 import { updateUserInfo } from '@/api/userHooks';
+import type { Transaction } from '@/types/Transaction';
 
 const emit = defineEmits(["update-step"]);
 const store = useQuestionnaireStore();
-const transactions = ref([]);
+const transactions = ref<Transaction[]>([]);
 const isLoading = ref(false);
 const error = ref('');
 const selectedCategories = ref<Record<string, boolean>>({});
@@ -49,16 +50,16 @@ onMounted(async () => {
     const data = await getRecentTransactionsSorted(accountNr);
     if (data && typeof data === 'object') {
       transactions.value = Object.entries(data).map(([category, amount], index) => ({
-        id: `${index}`, // Using index as ID since original data doesn't provide one
+        id: `${index}`,
         category,
-        amount: Math.abs(amount)
+        amount: Math.abs(amount as number)
       }));
     } else {
       throw new Error("Ingen transaksjoner funnet");
     }
-  } catch (err) {
-    console.error("Feilet:", err);
-    error.value = err.message || "Greide  ikke å laste inn transaksjoner.";
+  } catch (error: any) {
+    console.error("Feilet:", error);
+    error.value = error.message || "Greide  ikke å laste inn transaksjoner.";
   } finally {
     isLoading.value = false;
   }

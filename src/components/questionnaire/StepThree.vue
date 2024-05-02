@@ -21,7 +21,7 @@
           type="range"
           id="willingness-range"
           v-model="changeWillingness"
-          min="1"
+          min="0"
           max="5"
           class="slider"
         />

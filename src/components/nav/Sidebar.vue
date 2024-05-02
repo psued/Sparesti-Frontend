@@ -38,7 +38,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @click="toggleBar"
         to="/"
       >
-        <text>Home</text>
+        <text>Hjem</text>
       </router-link>
       <router-link
         class="bar-item-desktop"
@@ -46,7 +46,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @click="toggleBar"
         to="/profile"
       >
-        <text>Profile</text>
+        <text>Profil</text>
       </router-link>
       <router-link
         v-if="!isPhone"
@@ -55,7 +55,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @click="toggleBar"
         to="/budgetpage"
       >
-        <text>Budget</text>
+        <text>Budsjett</text>
       </router-link>
       <router-link
         v-if="!isPhone"
@@ -64,7 +64,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @click="toggleBar"
         to="/challenges"
       >
-        <text>Challenges</text>
+        <text>Utfordringer</text>
       </router-link>
       <router-link
         v-if="!isPhone"
@@ -73,7 +73,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @click="toggleBar"
         to="/badges"
       >
-        <text>Badges</text>
+        <text>Medaljer</text>
       </router-link>
       <router-link
         v-if="!isPhone"
@@ -82,7 +82,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @click="toggleBar"
         to="/saving-goal/create"
       >
-        <text>Saving Goal</text>
+        <text>Sparemål</text>
       </router-link>
       <div
         class="bar-item-sign"
@@ -91,7 +91,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @mouseenter="toggleHoverSign"
         @mouseleave="toggleHoverSign"
       >
-        <text>Sign out</text>
+        <text>Logg ut</text>
       </div>
       <router-link
         class="bar-item-desktop"
@@ -99,7 +99,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @click="toggleBar"
         to="/contact"
       >
-        <text>Contact</text>
+        <text>Kontakt</text>
       </router-link>
     </div>
   </div>

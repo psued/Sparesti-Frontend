@@ -3,13 +3,13 @@ export interface MasterChallenge {
   title: string;
   description: string;
   targetAmount: number;
-  savedAmount?: number;
+  usedAmount: number;
   mediaUrl: string | null;
   timeInterval: string;
   difficultyLevel: string;
-  expiryDate?: string;
+  expiryDate: string;
   completed?: boolean;
-  productName?: string;
+  productName: string;
   productCategory?: string;
   reductionPercentage?: number;
 }
@@ -18,7 +18,7 @@ export interface Challenge {
   id: number;
   description: string;
   targetAmount: number;
-  savedAmount: number;
+  usedAmount: number;
   mediaUrl: string | null;
   expiryDate: string;
   timeInterval: string;
@@ -35,6 +35,7 @@ export interface ChallengeCreation {
   timeInterval: string;
   difficultyLevel: string;
   productName?: string;
+  productPrice?: number;
   productCategory?: string;
   reductionPercentage?: number;
 }
