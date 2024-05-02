@@ -55,18 +55,18 @@ const togglePopup = () => {
 
 .balloon-container {
   position: absolute;
-  z-index: 50;
   top: 20%;
   left: 0;
   width: 100%;
   height: 100%;
   pointer-events: auto;
   overflow: visible;
+  z-index: 800;
 }
 
 /* FYI, it is no longer a blimp but a hot air balloon*/
 .balloon {
-  z-index: 99;
+  z-index: 800;
   animation: floatAcross 100s infinite; /* Adjust time as needed */
   width: 20%;
   /* TODO: change width for mobile, or else the blimp is a tiny baby blimp */
@@ -78,7 +78,7 @@ const togglePopup = () => {
 
 .popup-content {
   /* Add any styling for the content */
-  z-index: 99;
+  z-index: 800;
   position: fixed;
   top: 50%;
   left: 50%;

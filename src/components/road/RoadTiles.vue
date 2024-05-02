@@ -267,7 +267,7 @@ onMounted(async () => {
 }
 .road-start{
   position: relative;
-  z-index: 999;
+  z-index: 500;
 }
 
 /* Road Tiles */
@@ -304,7 +304,7 @@ onMounted(async () => {
   font-size: 18px;
   font-weight: bold;
   color: white;
-  z-index: 900;
+  z-index: 501;
 }
 .road-amount-text-left {
   left: 50%;
@@ -339,7 +339,7 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
   overflow: visible;
-  z-index: 900;
+  z-index: 500;
 }
 .start-area-right{
   right: 170px;
