@@ -16,6 +16,8 @@
       <div v-if="goal > 0" class="road-edge-point road-end">
         <div class="road-edge-area" :class="{'node-end': roadComplete}">
           <img v-if="roadComplete" class="walking-end-pig" @click="triggerConfetti" :src="endpig"></img>
+          <img v-else-if="savingGoalImage.length > 4" :src="savingGoalImage" class="saving-goal-image"></img>
+          <p v-else>{{ savingGoalImage }}</p>
         </div>
       </div>
 
@@ -69,6 +71,7 @@ const comleteImg = ref("/animation/gold-coin-spin.gif");
 const roadComplete = ref(false);
 const showConfetti = ref(false);
 const darkMode = useDark();
+const savingGoalImage = ref('');
 
 
 const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
@@ -175,9 +178,10 @@ onMounted(async () => {
   if (savingGoal) {
     goal.value = savingGoal.targetAmount;
     saved.value = savingGoal.savedAmount;
+    savingGoalImage.value = savingGoal.mediaUrl || '';
   } else {
-    goal.value = 200;
-    saved.value = 200;
+    goal.value = 0;
+    saved.value = 0;
   }
   step.value = 100;
   const steps = goal.value / step.value;
@@ -451,6 +455,11 @@ watchEffect(() => {
 }
 .start-area-left{
   left: 170px;
+}
+
+.saving-goal-image {
+  height: 100%;
+  width: 100%;
 }
 
 /* Pig */
