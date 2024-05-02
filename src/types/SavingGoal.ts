@@ -6,7 +6,7 @@ export interface SavingGoalCreation {
 }
 
 export interface SavingGoal {
-  id: string;
+  id: number;
   name: string;
   targetAmount: number;
   savedAmount: number;
