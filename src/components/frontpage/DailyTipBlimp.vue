@@ -1,6 +1,6 @@
 <template>
   <div class="balloon-container">
-    <img src="../../../public/BalloonPig2.png" alt="Pig flying hot air balloon offering advice" class="balloon" @click="showPopup = true"/>
+    <img src="/BalloonPig2.png" alt="Pig flying hot air balloon offering advice" class="balloon" @click="showPopup = true"/>
     <PopupComponent :is-visible="showPopup" @togglePopup="togglePopup">
       <template #content>
         <div class="popup-content">
