@@ -43,9 +43,10 @@
       <span class="close" @click="toggleModal">&times;</span>
       <h3>Legg til en ny utgift</h3>
       <form @submit.prevent="handleNewCategory">
-        <input v-model="newCategory.emoji" placeholder="Emoji (eks. 🍔)" />
-        <input v-model="newCategory.name" placeholder="Kategori navn" />
-        <input v-model.number="newCategory.total" type="Total sum" placeholder="Total Amount" />
+        <h4>Trykk på smilefjeset og velg emoji</h4>
+        <EmojiPickerComponent @pickEmoji="updateEmoji" :emoji-prop="emoji"/>
+        <input class="input-margin" v-model="newCategory.name" placeholder="Kategori navn" />
+        <input class="input-margin" v-model.number="newCategory.total" type="Total sum" placeholder="Total Amount" />
         <button type="submit">Lagre</button>
       </form>
     </div>
@@ -59,10 +60,17 @@ import { useUserStore } from "@/stores/userStore";
 import axios from "axios";
 import {addRowToUserBudget, deleteBudgetRow, getBudgetById, getBudgetByUser} from "@/api/budgetHooks";
 import {useRoute} from "vue-router";
+import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
 
 const userStore = useUserStore();
 
 const deleteMode = ref(false);
+
+const emoji = ref("");
+
+function updateEmoji(newEmoji: string) {
+  emoji.value = newEmoji;
+}
 
 let totalAmount = 0;
 let leftAmount= 0;
@@ -136,7 +144,7 @@ const handleNewCategory = async () => {
       0,
       newCategory.total,
       newCategory.name,
-      newCategory.emoji,
+      emoji.value,
   );
   toggleModal(); // Close modal after adding the category
   newCategory.name = '';
@@ -191,6 +199,11 @@ const ProgressBar = BudgetProgressBar;
 </script>
 
 <style scoped>
+
+.input-margin {
+  margin-top: 10px;
+}
+
 .back-arrow {
   font-size: 24px;
   color: #333;
@@ -343,4 +356,5 @@ const ProgressBar = BudgetProgressBar;
   padding: 5px;
   cursor: pointer;
 }
+
 </style>

@@ -94,3 +94,22 @@ export const deleteBudgetRow = async (budgetId: number, rowId: number): Promise<
     }
 }
 
+export const renewBudget = async (newBudgetName: String, newBudgetStartDate: String, newBudgetExpiryDate: String): Promise<Budget | null> => {
+    try {
+        const response = await api.post(`/budget/budgets/add`, {
+            name: newBudgetName,
+            expiryDate: newBudgetExpiryDate,
+            creationDate: newBudgetStartDate
+        });
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            console.error('Failed to renew budget:', response.statusText);
+            return null;
+        }
+    } catch (error) {
+        console.error('Error renewing budget:', error);
+        return null;
+    }
+}
+
