@@ -43,7 +43,7 @@
   
         <div class="form-group">
           <label for="title">Tittel:</label>
-          <input type="text" id="title" v-model="savingGoal.name" />
+          <input type="text" id="title" v-model="savingGoal.name" maxlength="100"/>
         </div>
   
         <div class="form-group">

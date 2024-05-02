@@ -6,7 +6,11 @@ devices. * The component handles dark mode and theme changes. */
   <!-- Top bar -->
   <div class="top-bar" :class="darkMode ? 'top-bar-dark' : ''">
     <RouterLink class="logo" to="/">
-      <img :src="darkMode ? '/logo_long_dark.png' : '/logo_long.png'" alt="logo" class="logo" />
+      <img
+        :src="darkMode ? '/logo_long_dark.png' : '/logo_long.png'"
+        alt="logo"
+        class="logo"
+      />
     </RouterLink>
   </div>
   <div class="progress-container">

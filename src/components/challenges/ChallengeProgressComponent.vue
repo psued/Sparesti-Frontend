@@ -2,13 +2,15 @@
   <div class="progressDiv">
     <ChallengeProgressBar :completion-percentage="completionPercentage" />
     <div class="challengeCompletionPercentageContainer">
-      <p class="challengeCompletionPercentage">{{Math.floor(completionPercentage)}}%</p>
+      <p v-if="challengeType === 'Spare' || challengeType === 'Budsjett'" class="challengeCompletionPercentage">{{Math.floor(completionPercentage)}}%</p>
+      <p v-if="challengeType === 'Forbruk'" class="challengeCompletionPercentage">{{savedAmount + "/" + targetAmount}}</p>
     </div>
     <div class="challengeEmojiContainer">
       <p class="challengeEmoji">{{mediaUrl}}</p>
     </div>
     <div class="challengeMoneyContainer">
-      <p class="challengeMoney">{{savedAmount}}kr / {{targetAmount}}kr</p>
+      <p v-if="challengeType === 'Budsjett'" class="challengeMoney">{{savedAmount}}kr / {{targetAmount}}kr brukt</p>
+      <p v-if="challengeType === 'Spare'" class="challengeMoney">{{savedAmount}}kr / {{targetAmount}}kr spart</p>
     </div>
   </div>
 </template>
@@ -19,7 +21,8 @@
   const props = defineProps({
     targetAmount: Number,
     savedAmount: Number,
-    mediaUrl: String
+    mediaUrl: String,
+    challengeType: String
   })
 
   let completionPercentage = 0

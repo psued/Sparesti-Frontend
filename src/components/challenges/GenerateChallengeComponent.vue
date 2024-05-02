@@ -46,7 +46,7 @@ import type { MasterChallenge } from '@/types/challengeTypes';
 import SVGButtonComponent from "@/components/assets/SVGButtonComponent.vue";
 import { ref, onMounted } from 'vue';
 import { useUserStore } from '@/stores/userStore';
-import { generateRandomChallenge, createConsumptionChallenge, createPurchaseChallenge, 
+import { generateRandomChallenge, createConsumptionChallenge, createPurchaseChallenge,
   createSavingChallenge, addChallengeToUser } from '@/api/challengeHooks';
 
 const userStore = useUserStore();
@@ -56,6 +56,7 @@ const challengeObject = ref<MasterChallenge>({
   title: "",
   description: "",
   targetAmount: 0,
+  usedAmount: 0,
   mediaUrl: "",
   timeInterval: "",
   difficultyLevel: "",

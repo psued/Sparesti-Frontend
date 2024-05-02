@@ -1,37 +1,45 @@
 <template>
   <div class="balloon-container">
-    <img src="/BalloonPig2.png" alt="Pig flying hot air balloon offering advice" class="balloon" @click="showPopup = true"/>
+    <picture>
+      <img :src="darkMode ? '/BalloonPigDark.png' : '/BalloonPig.png'" alt="Balloon Pig" class="balloon" @click="showPopup = true"/>
+
+    </picture>
     <PopupComponent :is-visible="showPopup" @togglePopup="togglePopup">
       <template #content>
-        <div class="popup-content">
+        <div class="popup-content" :class="{ 'dark-mode': darkMode }">
           <h1 class="saving-tip">{{tip || "No tip available 💀"}}</h1>
         </div>
       </template>
     </PopupComponent>
-
   </div>
 </template>
 
 
 <script setup lang="ts">
-import {ref, onMounted, onUnmounted} from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useDailySavingTip } from '../../utils/useDailySavingTip'
 import PopupComponent from '../assets/PopupComponent.vue'
+import { useDark } from "@vueuse/core";
 
-const { tip, startAutoFetch, stopAutoFetch } = useDailySavingTip()
+// Reactive state to handle dark mode
+const darkMode = useDark();
+
+const { tip, startAutoFetch, stopAutoFetch } = useDailySavingTip();
 const showPopup = ref(false);
 let intervalId: number;
+
 onMounted(() => {
-  intervalId = startAutoFetch(); // Fetch a tip right when the component mounts
+  intervalId = startAutoFetch(); // Fetch a tip when the component mounts
 })
+
 onUnmounted(() => {
   stopAutoFetch(intervalId); // Clear the interval when the component unmounts
 });
+
 const togglePopup = () => {
   showPopup.value = !showPopup.value;  // Toggle the visibility state
 }
 </script>
-
 
 
 <style scoped>
@@ -40,21 +48,21 @@ const togglePopup = () => {
     transform: translateX(0%) translateY(200%);
   }
   20% {
-    transform: translateX(100%) translateY(-60%);
+    transform: translateX(100%) translateY(-39%);
   }
   40% {
-    transform: translateX(200%) translateY(100%);
+    transform: translateX(200%) translateY(80%);
   }
   60% {
-    transform: translateX(300%) translateY(-70%);
+    transform: translateX(300%) translateY(-39%);
   }
   80% {
-    transform: translateX(400%) translateY(100%);
+    transform: translateX(400%) translateY(90%);
   }
 }
 
 .balloon-container {
-  position: absolute;
+  position: fixed;
   top: 20%;
   left: 0;
   width: 100%;
@@ -64,12 +72,19 @@ const togglePopup = () => {
   z-index: 800;
 }
 
-/* FYI, it is no longer a blimp but a hot air balloon*/
+
 .balloon {
   z-index: 800;
-  animation: floatAcross 100s infinite; /* Adjust time as needed */
+  animation: floatAcross 110s infinite; /* Adjust time as needed */
   width: 20%;
   /* TODO: change width for mobile, or else the blimp is a tiny baby blimp */
+}
+
+@media (max-width: 600px) {
+  .balloon {
+    width: 50%; /* Increase the size on mobile */
+    /* animation very janky on mobile */
+  }
 }
 
 .balloon:hover {
@@ -77,7 +92,6 @@ const togglePopup = () => {
 }
 
 .popup-content {
-  /* Add any styling for the content */
   z-index: 800;
   position: fixed;
   top: 50%;
@@ -85,10 +99,16 @@ const togglePopup = () => {
   transform: translate(-50%, -50%);
   background-color: white;
   border-radius: 8px;
+  border: solid 2px #4b644a;
   padding: 20px;
-  width: 300px; /* Adjust the width as needed */
+  width: 350px;
   max-width: 90%;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.popup-content.dark-mode {
+  border: 2px solid #757bfd;
+  background-color: #23244b; /* Dark background for dark mode */
 }
 
 .saving-tip {
