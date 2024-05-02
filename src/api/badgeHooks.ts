@@ -61,12 +61,6 @@ export const getAllUsersWithGivenBadge = async (
 
     if (response.status === 200) {
       return response.data.map((userBadge: UserBadgeResponse) => ({
-        badge: {
-          id: userBadge.badge.id,
-          name: userBadge.badge.name,
-          description: userBadge.badge.description,
-          imageUrl: userBadge.badge.imageUrl,
-        },
         dateEarned: userBadge.dateEarned,
         user: {
           id: userBadge.user.id,
