@@ -61,12 +61,6 @@ export const getAllUsersWithGivenBadge = async (
 
     if (response.status === 200) {
       return response.data.map((userBadge: UserBadgeResponse) => ({
-        badge: {
-          id: userBadge.badge.id,
-          name: userBadge.badge.name,
-          description: userBadge.badge.description,
-          imageUrl: userBadge.badge.imageUrl,
-        },
         dateEarned: userBadge.dateEarned,
         user: {
           id: userBadge.user.id,
@@ -99,3 +93,34 @@ export const getBadgesByUser = async (): Promise<Badge[] | null> => {
     return null;
   }
 };
+
+export const checkAndAwardBadge = async (): Promise<Badge | null> => {
+  try {
+    const response = await api.post(`/badges/check-and-award`);
+    const data = response.data;
+    console.log("Badges awarded:", data);
+    return data;
+  } catch (error) {
+    console.error("Error checking and awarding badges:", error);
+  }
+  return null;
+};
+
+export const giveUserBadge = async (
+  badgeId: number,
+  userId: number,
+): Promise<Badge | null> => {
+  try {
+    const response = await api.post(`/badges/${userId}/give/${badgeId}`);
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.error("Failed to give badge:", response.statusText);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error giving badge:", error);
+    return null;
+  }
+}

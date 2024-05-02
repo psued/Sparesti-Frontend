@@ -7,12 +7,20 @@ devices. * The component handles dark mode and theme changes. */
   <div class="top-bar" :class="darkMode ? 'top-bar-dark' : ''">
     <RouterLink class="logo" to="/">
       <img
-        :src="darkMode ? './logo_long_dark.png' : './logo_long.png'"
+        :src="darkMode ? '/logo_long_dark.png' : '/logo_long.png'"
         alt="logo"
         class="logo"
       />
     </RouterLink>
   </div>
+  <div class="progress-container">
+    <!-- Progress bar -->
+    <p v-if="savingGoalPresent" class="numeric-progress">{{ savedAmount }}kr/{{ targetAmount }}kr</p>
+    <div class="progress-bar">
+      <div class="progress" :style="{ width: progressWidth }"></div>
+    </div>
+  </div>
+
   <!-- Hamburger menu -->
   <div :class="['hamburger', { darkMode: 'hamburger-dark' }]">
     <div class="hamburger-box" @click="toggleSidebar()">
@@ -26,38 +34,8 @@ devices. * The component handles dark mode and theme changes. */
 
   <!-- Sidebar -->
   <Transition name="move">
-    <sidebar
-      :darkMode="darkMode"
-      @theme="handleThemeChange"
-      @bar="toggleSidebar"
-      v-if="isSidebarOpen"
-    />
+    <sidebar :darkMode="darkMode" @theme="handleThemeChange" @bar="toggleSidebar" v-if="isSidebarOpen" />
   </Transition>
-
-  <!-- Phone bar -->
-  <div class="phone-bar" v-if="isPhone" :class="{ 'phone-bar-dark': darkMode }">
-    <RouterLink
-      class="phone-bar-item"
-      :class="{ 'phone-bar-item-dark': darkMode }"
-      to="/"
-    >
-      <i :class="darkMode ? 'icon-home-dark' : 'icon-home'"></i>
-    </RouterLink>
-    <RouterLink
-      class="phone-bar-item"
-      :class="{ 'phone-bar-item-dark': darkMode }"
-      to="/challenges"
-    >
-      <i :class="darkMode ? 'icon-challenges-dark' : 'icon-challenges'"></i>
-    </RouterLink>
-    <RouterLink
-      class="phone-bar-item"
-      :class="{ 'phone-bar-item-dark': darkMode }"
-      to="/budget"
-    >
-      <i :class="darkMode ? 'icon-budget-dark' : 'icon-budget'"></i>
-    </RouterLink>
-  </div>
 
   <!-- Blur screen -->
   <Transition name="fade">
@@ -66,16 +44,53 @@ devices. * The component handles dark mode and theme changes. */
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted,   onUnmounted, ref, defineEmits, defineProps, computed, watch } from "vue";
+import { useDark, useToggle } from "@vueuse/core";
 import { Transition } from "vue";
 import "@/assets/icons.css";
 import sidebar from "../components/nav/Sidebar.vue";
+import { useUserStore } from "@/stores/userStore";
+import { getCurrentSavingGoal, savingGoalListener } from "@/api/savingGoalHooks";
+
+// Progress bar
+const savedAmount = ref(0);
+const targetAmount = ref(1);
+const savingGoalPresent = ref(false);
+const progress = computed(() => {
+  return Math.round((savedAmount.value / targetAmount.value) * 100);
+});
+const progressWidth = computed(() => {
+  return `${progress.value}%`;
+});
+const userStore = useUserStore();
+
+async function fetchSavingProgress() {
+  if (!userStore.isLoggedIn()) {
+    return;
+  }
+  try {
+    const res = await getCurrentSavingGoal();
+    if(!res) {
+      return;
+    }
+    savingGoalPresent.value = true;
+    savedAmount.value = res.savedAmount;
+    targetAmount.value = res.targetAmount;
+  } catch (error) {
+    return;
+  }
+}
+watch(savingGoalListener, () => {
+  fetchSavingProgress();
+});
+
+
 
 // Dark mode preference based on user's system settings
 const prefersDarkMode =
   window.matchMedia &&
   window.matchMedia("(prefers-color-scheme: dark)").matches;
-const darkMode = ref(prefersDarkMode);
+const darkMode = useDark();
 
 // Sidebar and phone bar state
 const isSidebarOpen = ref(false);
@@ -85,6 +100,9 @@ const isPhone = ref(
 
 // Handle window resize event for mobile devices
 onMounted(() => {
+  if (userStore.isLoggedIn()) {
+    fetchSavingProgress();
+  }
   window.matchMedia &&
     window.matchMedia("(max-width: 480px)").addEventListener("change", (e) => {
       if (isSidebarOpen.value) {
@@ -122,12 +140,16 @@ const toggleSidebar = () => {
 };
 
 // Handle theme change event
+const  emit  = defineEmits(["theme"]);
 const handleThemeChange = () => {
   darkMode.value = !darkMode.value;
   if (isSidebarOpen.value) {
     toggleSidebar();
   }
+  emit("theme");
 };
+
+
 </script>
 
 <style scoped>
@@ -159,11 +181,10 @@ const handleThemeChange = () => {
 
 .logo {
   cursor: pointer;
-  z-index: 996;
+  z-index: 900;
   position: relative;
-  top: 5px;
   height: 100px;
-  left: -30px;
+  margin-left: -30px;
 }
 
 .hamburger {
@@ -240,6 +261,42 @@ const handleThemeChange = () => {
 
 .top-close-dark {
   animation: top-close-dark 0.35s forwards;
+}
+
+.progress-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 90px;
+  position: fixed;
+  top: 0;
+}
+
+.progress-bar {
+  height: 20px;
+  width: 70%;
+  background-color: #d75a01;
+  border: 2px solid #000;
+  border-radius: 7px;
+  padding: 1px;
+  box-sizing: border-box;
+}
+
+.progress {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  background-color: #ffc107;
+  border-radius: 5px;
+}
+
+.numeric-progress {
+  position: absolute;
+  -webkit-text-fill-color: #FFFFFF;
+  font-size: 1em;
+  font-weight: bold;
 }
 
 @keyframes top-open-dark {
@@ -503,40 +560,9 @@ const handleThemeChange = () => {
 .fade-leave-from {
   opacity: 1;
 }
-
-.phone-bar {
-  position: fixed;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  background-color: #ecffda;
-  border-top: 2px solid #4b644a;
-  z-index: 996;
-}
-
-.phone-bar-dark {
-  background-color: #23244b;
-  border-top: 2px solid #757bfd;
-}
-
-.phone-bar-item {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.phone-bar-item:hover {
-  background-color: #a6cd94;
-}
-
-.phone-bar-item-dark:hover {
-  background-color: #757bfd;
+@media (max-width: 630px) {
+  .progress-bar {
+    width: 50%;
+  }
 }
 </style>

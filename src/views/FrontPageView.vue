@@ -1,5 +1,6 @@
 <template>
-  <div class="container">
+  <daily-tip-blimp />
+  <div class="container" @click="closeBadgePopup">
     <div class="background-container">
       <div class="background"></div>
     </div>
@@ -16,25 +17,59 @@
       @close="closePopup"
       :position="popupPosition"
     />
+    <PopupComponent :isVisible="showBadgePopup" :flashingBorder="true" class="popup">
+      <!-- Slot for content -->
+      <template #content>
+        <h2>Gratulerer, du har mottatt en medalje!</h2>
+        <!-- Render the rewarded badge here -->
+        <BadgeComponent :badge="rewardedBadge" :owned="true" />
+        <!-- Change this to be a ButtonComponent, I dont know why it doesnt work when I use it -->
+        <ButtonComponent class="button" @click="closeBadgePopupAndAwardBadge">
+          <template v-slot:content>
+            <h2>Godta Medalje</h2>
+          </template>
+          <template v-slot:click>
+            <h2>Godta Medalje</h2>
+          </template>
+        </ButtonComponent>
+        <div class="confetti-container" v-if="showConfetti"></div>
+      </template>
+    </PopupComponent>
   </div>
 </template>
 
 <script setup lang="ts">
 import ChallengeDetailsPopup from "@/components/ChallengeDetailsPopup.vue";
+import PopupComponent from "@/components/assets/PopupComponent.vue";
+import ButtonComponent from "@/components/assets/ButtonComponent.vue";
+import BadgeComponent from "@/components/badge/BadgeComponent.vue";
+import confetti from 'canvas-confetti';
+import { Howl } from 'howler';
+import plingSound from "/pling.wav";
 import { onMounted, computed, ref } from "vue";
 import { getSortedChallengesByUser } from "@/api/challengeHooks";
 import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
+import { type Badge } from "@/types/Badge";
 import { useUserStore } from "@/stores/userStore";
+import { checkAndAwardBadge, giveUserBadge } from "@/api/badgeHooks";
+import { updateLoginStreak } from "@/api/userHooks";
 import { useRouter } from "vue-router";
 import { useLogin } from "@/api/authenticationHooks";
 import road from "../components/road/RoadTiles.vue";
 
-import checkCircleIcon from "@/assets/check-circle.svg";
-import starCircleIcon from "@/assets/star-circle.svg";
+import checkCircleIcon from "/check-circle.svg";
+import starCircleIcon from "/star-circle.svg";
+import DailyTipBlimp from "../components/frontpage/DailyTipBlimp.vue";
+import { getUserByUsername } from "@/api/userHooks";
 
 const selectedChallenge = ref<Challenge | null>(null);
+const rewardedBadge = ref<Badge | null>(null);
 const showPopup = ref(false);
+const showBadgePopup = ref(false);
 const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
+const showConfetti = ref(false);
+const plingAudio = ref<HTMLAudioElement | null>(null);
+const playSound = ref(true);
 
 const selectedChallengeForPopup = computed(
   () => selectedChallenge.value || ({} as Challenge),
@@ -43,34 +78,83 @@ const maxMedia =
   window.matchMedia && window.matchMedia("(min-width: 480px)").matches;
 const userStore = useUserStore();
 
-const openPopup = (challenge: Challenge, top: number, left: number) => {
-  selectedChallenge.value = challenge;
-  showPopup.value = true;
-  popupPosition.value = { top, left };
-  console.log("Popup opened");
-  console.log(challenge);
+const handleBadgeRewarded = async (badge: Badge) => {
+  rewardedBadge.value = badge;
+  showBadgePopup.value = true;
 };
 
 const closePopup = () => {
   selectedChallenge.value = null;
   showPopup.value = false;
+  showConfetti.value = false;
 };
 
-onMounted(() => {
+const closeBadgePopupAndAwardBadge = async () => {
+  const user = await getUserByUsername(userStore.getUserName);
+  await giveUserBadge(Number(rewardedBadge.value?.id), user.id);
+  rewardedBadge.value = null;
+  showBadgePopup.value = false;
+  triggerConfetti();
+  playPlingSound();
+};
+
+const closeBadgePopup = () => {
+  showBadgePopup.value = false;
+};
+
+const triggerConfetti = () => {
+  showConfetti.value = true;
+  
+  let scalar = 2;
+  let coin = confetti.shapeFromText({text: '💰', scalar})
+
+  // Configure custom shape options for confetti
+  const confettiOptions = {
+    particleCount: 100, // Number of confetti particles
+    spread: 70, // Spread of confetti
+    origin: { y: 0.6 }, // Starting position of confetti
+    sizes: [20, 30], // Size of the confetti particles (coins)
+    shapes: [coin], // Shape of the confetti particles (coins)
+    scalar,
+  };
+
+  // Trigger confetti with custom options
+  confetti(confettiOptions);
+  
+  // Optionally, set a timeout to hide the confetti after a certain duration
+  setTimeout(() => {
+    showConfetti.value = false;
+  }, 5000); // 5000 milliseconds (adjust as needed)
+};
+
+const playPlingSound = () => {
+  const sound = new Howl({
+    src: [plingSound],
+    autoplay: true,
+    loop: false,
+  });
+};
+
+onMounted(async () => {
   if (!userStore.isLoggedIn()) {
     useLogin();
+  } else {
+    updateLoginStreak();
+    const badge = await checkAndAwardBadge();
+    if (badge) {
+      handleBadgeRewarded(badge);
+    }
   }
 });
 </script>
 
 <style scoped>
 .container {
-  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  height: 100vh;
+  height: 100%;
+  overflow: hidden;
 }
 
 .background-container {
@@ -80,10 +164,11 @@ onMounted(() => {
   z-index: -1;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .background {
-  background-image: url("src/assets/backgroundpink.png");
+  background-image: url("/backgroundpink.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -148,96 +233,26 @@ onMounted(() => {
   display: block;
 }
 
-.path-container {
-  width: 100%;
-  height: auto;
-  position: relative;
-  justify-content: center;
-  z-index: 2;
-  text-align: center;
-  width: 50vh;
-  filter: none;
-}
-
-#path-image {
-  width: -webkit-fill-available;
-  height: auto;
-}
-
-.progress-container {
-  width: 100%;
-  justify-content: center;
-}
-
-.progress-bar {
-  background-color: #ffffff;
-  border-radius: 5px;
-  height: 25px;
-  width: 130vh;
-  position: relative;
-  margin: 10px;
-}
-
-.progress-bar-fill {
-  background-color: #4caf50;
-  height: 100%;
-  border-radius: 5px;
-}
-
-.checkpoints {
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-
-.checkpoint {
-  background-color: #fff;
-  border: 2px solid #000000;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+.popup {
   position: absolute;
-  z-index: 3;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  max-height: fit-content;
+  overflow-y: auto;
+  padding: 20px;
+  width: 80%;
+  width: fit-content;
+  height: fit-content;
+  text-align: -webkit-center;
+  z-index: 999;
 }
 
-.checkpoint.completed {
-  background-color: #4caf50;
-  border-color: #000000;
-}
-
-.checkpoint.in-progress {
-  background-color: #ffc13b;
-  border-color: #000000;
-}
-
-.checkpoint.finish-line {
-  background: url("/finish-line.jpeg");
-  background-size: 1px;
-  border-color: #000000;
-}
-
-.avatar {
-  position: absolute;
-  width: 50px;
-  /* Adjust width as needed */
-  height: auto;
-  z-index: 4;
-  /* Ensure pig is above the checkpoints */
-  transition: all 2s ease;
-  /* Add smooth transition effect */
-}
-
-.checkpoint-icon {
-  position: absolute;
-}
-
-.check {
-  background-color: rgb(23, 228, 23);
-  border-radius: 50%;
-}
-
-.star {
-  background-color: rgb(255, 192, 55);
-  border-radius: 50%;
+.button {
+  color: white;
+  margin: 2rem auto;
+  cursor: pointer;
+  width: 200px;
+  height: 50px;
 }
 </style>

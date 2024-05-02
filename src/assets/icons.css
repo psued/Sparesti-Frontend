@@ -1,5 +1,5 @@
 .road-start-light {
-  background-image: url(src/assets/svg_icons/road-start-light.svg);
+  background-image: url(/svg_icons/road-start-light.svg);
   display: inline-block;
   width: calc(320px * 1.5);
   min-width: calc(320px * 1.5);
@@ -12,7 +12,7 @@
 }
 
 .road-left-light {
-  background-image: url(src/assets/svg_icons/road-left-light.svg);
+  background-image: url(/svg_icons/road-left-light.svg);
   display: inline-block;
   width: calc(320px * 1.5);
   min-width: calc(320px * 1.5);
@@ -27,7 +27,35 @@
 }
 
 .road-right-light {
-  background-image: url(src/assets/svg_icons/road-right-light.svg);
+  background-image: url(/svg_icons/road-right-light.svg);
+  display: inline-block;
+  width: calc(320px * 1.5);
+  height: calc(120px * 1.5);
+  margin-left: 12.5px;
+  margin-top: -1px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 101;
+}
+
+.road-left-dark {
+  background-image: url(/svg_icons/road-left-dark.svg);
+  display: inline-block;
+  width: calc(320px * 1.5);
+  min-width: calc(320px * 1.5);
+  height: calc(120px * 1.5);
+  min-height: calc(120px * 1.5);
+  margin-left: 24.5px;
+  margin-top: -1px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 101;
+}
+
+.road-right-dark {
+  background-image: url(/svg_icons/road-right-dark.svg);
   display: inline-block;
   width: calc(320px * 1.5);
   height: calc(120px * 1.5);
@@ -40,7 +68,7 @@
 }
 
 .icon-sign-out {
-  background-image: url(@/assets/svg_icons/logout.svg);
+  background-image: url(/svg_icons/logout.svg);
   display: inline-block;
   width: 60px;
   height: 60px;
@@ -50,7 +78,7 @@
   margin-right: 10px;
 }
 .icon-sign-out-dark {
-  background-image: url(@/assets/svg_icons/logout-dark.svg);
+  background-image: url(/svg_icons/logout-dark.svg);
   display: inline-block;
   width: 60px;
   height: 60px;
@@ -61,7 +89,7 @@
 }
 
 .icon-dark-mode {
-  background-image: url(@/assets/svg_icons/moon-dark-mode.svg);
+  background-image: url(/svg_icons/moon-dark-mode.svg);
   display: inline-block;
   width: 65px;
   height: 65px;
@@ -71,7 +99,7 @@
 }
 
 .icon-dark-mode-hover {
-  background-image: url(@/assets/svg_icons/moon-dark-mode-hover.svg);
+  background-image: url(/svg_icons/moon-dark-mode-hover.svg);
   display: inline-block;
   width: 65px;
   height: 65px;
@@ -81,7 +109,7 @@
 }
 
 .icon-light-mode {
-  background-image: url(@/assets/svg_icons/sun-light-mode.svg);
+  background-image: url(/svg_icons/sun-light-mode.svg);
   display: inline-block;
   width: 65px;
   height: 65px;
@@ -91,7 +119,7 @@
 }
 
 .icon-home {
-  background-image: url(@/assets/svg_icons/icon-home.svg);
+  background-image: url(/svg_icons/icon-home.svg);
   display: inline-block;
   width: 35px;
   height: 35px;
@@ -100,7 +128,7 @@
   background-position: center;
 }
 .icon-home-dark {
-  background-image: url(@/assets/svg_icons/icon-home-dark.svg);
+  background-image: url(/svg_icons/icon-home-dark.svg);
   display: inline-block;
   width: 35px;
   height: 35px;
@@ -109,7 +137,7 @@
   background-position: center;
 }
 .icon-challenges {
-  background-image: url(@/assets/svg_icons/icon-challenges.svg);
+  background-image: url(/svg_icons/icon-challenges.svg);
   display: inline-block;
   width: 35px;
   height: 35px;
@@ -118,7 +146,7 @@
   background-position: center;
 }
 .icon-challenges-dark {
-  background-image: url(@/assets/svg_icons/icon-challenges-dark.svg);
+  background-image: url(/svg_icons/icon-challenges-dark.svg);
   display: inline-block;
   width: 35px;
   height: 35px;
@@ -127,7 +155,7 @@
   background-position: center;
 }
 .icon-budget {
-  background-image: url(@/assets/svg_icons/icon-budget.svg);
+  background-image: url(/svg_icons/icon-budget.svg);
   display: inline-block;
   width: 35px;
   height: 35px;
@@ -136,7 +164,7 @@
   background-position: center;
 }
 .icon-budget-dark {
-  background-image: url(@/assets/svg_icons/icon-budget-dark.svg);
+  background-image: url(/svg_icons/icon-budget-dark.svg);
   display: inline-block;
   width: 35px;
   height: 35px;
@@ -145,7 +173,7 @@
   background-position: center;
 }
 .icon-user {
-  background-image: url(@/assets/svg_icons/icon-user.svg);
+  background-image: url(/svg_icons/icon-user.svg);
   display: inline-block;
   width: 20px;
   height: 20px;
@@ -154,7 +182,7 @@
   background-position: center;
 }
 .icon-mail {
-  background-image: url(@/assets/svg_icons/icon-mail.svg);
+  background-image: url(/svg_icons/icon-mail.svg);
   display: inline-block;
   width: 20px;
   height: 20px;
@@ -163,7 +191,7 @@
   background-position: center;
 }
 .icon-phone {
-  background-image: url(@/assets/svg_icons/icon-phone.svg);
+  background-image: url(/svg_icons/icon-phone.svg);
   display: inline-block;
   width: 20px;
   height: 20px;
@@ -172,7 +200,7 @@
   background-position: center;
 }
 .icon-password {
-  background-image: url(@/assets/svg_icons/icon-password.svg);
+  background-image: url(/svg_icons/icon-password.svg);
   display: inline-block;
   width: 20px;
   height: 20px;

@@ -10,24 +10,34 @@
 */
 <template>
   <div class="road-container">
-    <div class="road-box" ref="roadBox">
-      <div v-if="nodes.length > 0" class="road-tile-start">
-        <div class="road-start-area road-end-area" id="node-(-1)">Node -1</div>
-        <div class="road-start road-end"></div>
+    <div class="background-img" :class="darkMode ? 'background-dark' : 'background-light'"></div>
+    <div class="road-box">
+
+      <div v-if="goal > 0" class="road-edge-point road-end">
+        <div class="road-edge-area" :class="{'node-end': roadComplete}">
+          <img v-if="roadComplete" class="walking-end-pig" @click="triggerConfetti" :src="endpig"></img>
+        </div>
       </div>
-      <div @click="movePig(node, nodes, index)"  class="road-tile" v-for="(node, index) in nodes" :key="index">
-        <img class="road-node" :src="((nodes[index+1] && nodes[index+1].moved) || (!nodes[index+1] && node.challenge.completed)) ? comleteImg : node.image" :class="[node.point , { 'completed-node': node.challenge.completed }]"
-          :id="'node-' + index">
-        </img>
-        <div class="start-area" :class="'start-' + node.point">
-          <img v-show="(index > 0 && node.challenge.completed && node.moved === false && nodes[index-1] && nodes[index-1].moved === false && nodes[index+1] && nodes[index+1].moved === true) || (!nodes[index+1] && node.challenge.completed && node.moved === false) " :class="['walking-pig', 'walking-pig-' + index]"  :src="node.pig" ></img>
-          </div>
-        <svg class="road-svg" :class="node.direction">
-        </svg>
+
+      <div class="road-tile" v-for="(road) in roads" :key="road.id">
+        <div class="road-amount-text" :class="`road-amount-text-${road.direction}` + ((road.arrived || road.moved) ? ' text-completed' : '')" >{{ road.amount }}</div>
+        <img class="road-node" 
+          :class="['road-node-' + road.direction , { 'road-completed': road.amount <= saved}]" 
+          :src="road.emoji">
+          <img v-if="(road.arrived || road.moved)" :src="comleteImg" class="road-completed-img" :class="'road-node-' + road.direction"></img>
+      </img>
+        <div v-if="roads[road.id].arrived" 
+          class="start-area-pig" 
+          :class="'start-area-' + road.direction">
+          <img class="walking-pig" :class="'pig-' + road.id" :src="road.pig" ></img>
+        </div>
+        <svg class="road-svg" :class="'road-' + road.direction + (darkMode ? '-dark' : '-light' )"></svg>
       </div>
-      <div v-if="nodes.length > 0" class="road-tile-start">
-        <div class="road-start-area" id="node-0">Node 0</div>
-        <div class="road-start"></div>
+
+      <div class="road-edge-point road-start">
+        <div class="road-edge-area" id="node-start">
+          <img v-if="!startmoved" class="walking-pig walking-pig-start" :src="startpig">{{ saved + " / " + goal}}</img>
+        </div>
       </div>
     </div>
   </div>
@@ -38,116 +48,121 @@
 * @description The script section of the RoadTiles component.
 */
 <script setup lang="ts">
-import { onMounted, computed, ref, type Ref, nextTick} from "vue";
-import { getUserByUsername, getUserInfo } from "@/api/userHooks";
-import { getSortedChallengesByUser } from "@/api/challengeHooks";
+import { onMounted, computed, ref, type Ref, nextTick, watch, watchEffect} from "vue";
+import { getSavingGoals } from "@/api/savingGoalHooks";
 import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
 import { useUserStore } from "@/stores/userStore";
-import { useRouter } from "vue-router";
 import { useLogin } from "@/api/authenticationHooks";
+import { getCurrentSavingGoal } from "@/api/savingGoalHooks";
+import { Howl } from 'howler';
+import plingSound from "/pling.wav";
+import yaySound from "/yay.wav";
+import confetti from 'canvas-confetti';
+import { useDark, useToggle } from "@vueuse/core";
 
-const selectedChallenge = ref<Challenge | null>(null);
+
 const showPopup = ref(false);
-const comleteImg = "https://ahaslides.com/wp-content/uploads/2021/12/Year-End-Review-1-1024x576.png";
+const startpig = ref("/animation/pig-sitting-right.png");
+const endpig = "/animation/dancing-pig.gif";
+const startmoved = ref(false);
+const comleteImg = ref("/animation/gold-coin-spin.gif");
+const roadComplete = ref(false);
+const showConfetti = ref(false);
+const darkMode = useDark();
+
+
 const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
-let totChallenges = 0;
-let roadBox: Ref<HTMLElement | null> = ref(null);
 
+const goal = ref(0);
+const saved = ref(0);
+const step = ref(0);
 
-/**
- * @interface Node
- * @description Represents a node in the road.
- * @property {string} direction - The direction of the node.
- * @property {string} point - The direction of the point of the node.
- * @property {string} name - The name of the node.
- */
-interface Node {
+interface Road {
+  id: number;
+  amount: number,
+  emoji: string;
   direction: string;
-  point: string;
-  image: string;
-  name: string;
   moved: boolean;
   pig: string;
-  challenge: Challenge;
+  arrived: boolean;
 }
-
-/**
- * @constant nodes
- * @description A reactive reference to the array of nodes.
- */
-const nodes = ref<Node[]>([]);
-
-/**
- * @function addNode
- * @description Adds a new node/tile to the road.
- */
-const addNode = (ch: any, index: number) => {
-
-  const direction = nodes.value.length % 2 === 0 ? 'road-right-light' : 'road-left-light';
-  const point = nodes.value.length % 2 === 0 ? 'road-node-right' : 'road-node-left';
-  const image = ch.mediaUrl;
-  const name = `Node ${nodes.value.length + 1}`;
+const roads = ref<Road[]>([]);
+const addRoad = (amount: number) => {
+  const direction = roads.value.length % 2 === 0 ? 'right' : 'left';
   const moved = false;
-  const pig = nodes.value.length % 2 === 0 ? 'src/assets/animation/pig-sitting-left.png' : 'src/assets/animation/pig-sitting-right.png';
+  const pig = '/animation/pig-sitting-' + direction + '.png';
+  const houseNr = Math.floor(Math.random()*8) + 1;
 
-  // Test data
-  if(index === 0 || index === 1 || index === 2){
-    ch.completed = true;
-    if(index === 1 || 2){
-      const moved = false;
-      nodes.value.unshift({ direction, point, image, name, moved, pig, challenge: ch });
-      return;
-    }
-    const moved = true;
-    nodes.value.unshift({ direction, point, image, name, moved, pig, challenge: ch });
-    return;
-  }
-
-
-  nodes.value.unshift({ direction, point, image, name, moved, pig, challenge: ch });
+  roads.value.push({id: roads.value.length, amount, emoji: "/house-" + houseNr + ".png", direction, moved, pig, arrived: false});
 };
 
-async function movePig(node: Node, nodes: Node[], index: number) {
-  if(totChallenges <= index+1 || totChallenges === 0){
-    return;
-  }
-  if(nodes[index+1].challenge.completed && nodes[index+1].moved === false){
-    movePig(nodes[index+1], nodes, index+1)
-  }
-  if(node.moved === false && node.challenge.completed === true && nodes[index-1].moved === false){
-    console.log("Moving pig from " + (index+1) + " to " + index);
 
-    nodes[index+1].pig = `src/assets/animation/pig-walking-${nodes[index+1].point}.gif`;
-    const pig = document.getElementsByClassName('walking-pig-' + (index+1))[0];
-    if(pig){
-      if((index+1) % 2 === 0){
-        pig.classList.add('animation-pig-left');
-      } else {
-        pig.classList.add('animation-pig-right');
-      }
-    } else {
-      console.log("Pig not found");
+function moveStart(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    console.log("Moving pig from start to " + (roads.value[roads.value.length - 1].id));
+    startpig.value = "/animation/pig-walking-" + (roads.value.length%2 === 0 ? 'right' : 'left') + ".gif";
+    const pig = document.getElementsByClassName('walking-pig-start')[0];
+    if(pig) {
+      pig.classList.add('animation-pig-start-' + roads.value[roads.value.length-1].direction);
     }
-  
-    // Wait for the animation to finish
     pig.addEventListener('animationend', () => {
-      nodes[index+1].pig = 'src/assets/animation/pig-sitting.png';
-      nodes[index+1].moved = true;
-    }, { once: true }); // The listener is removed after it has been called once
-  }
+      pig.classList.remove('animation-pig-start-' + roads.value[roads.value.length-1].direction);
+      startmoved.value = true;
+      roads.value[roads.value.length - 1].arrived = true;
+      resolve(); 
+    }, { once: true }); 
+  });
+
+}
+function movePig(road: Road): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (!goal || !road || road.amount > saved.value || roads.value.length === 1) {
+      return;
+    } else if(road.moved === false && road.amount < saved.value){
+      console.log("Moving pig from " + road.id + " to " + (road.id-1));
+
+      road.pig = `/animation/pig-walking-${roads.value[road.id].direction}.gif`;
+      const pig = document.getElementsByClassName('pig-' + (road.id))[0];
+      if(pig){
+        pig.classList.add('animation-pig-' + road.direction);
+      }
+      
+      pig.addEventListener('animationend', () => {
+        road.pig = '/animation/pig-sitting.png';
+        road.arrived = false;
+        road.moved = true;
+        pig.classList.remove('animation-pig-' + road.direction);
+        roads.value[road.id-1].arrived = true;
+        resolve(); 
+      }, { once: true }); 
+    } 
+  });
+}
+function moveEnd(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    console.log("Moving pig from " + roads.value[roads.value.length - 1].id + " to end");
+    roads.value[0].pig = `/animation/pig-walking-${roads.value[0].direction}.gif`;
+    const pig = document.getElementsByClassName('pig-0')[0];
+    if(pig){
+      pig.classList.add('animation-pig-end-' + roads.value[0].direction);
+    }
+    pig.addEventListener('animationend', () => {
+      pig.classList.remove('animation-pig-end-' + roads.value[0].direction);
+      roads.value[0].arrived = false;
+      roads.value[0].moved = true;
+      roadComplete.value = true;
+      resolve(); 
+    }, { once: true }); 
+  });
 }
 
 const userStore = useUserStore();
-
 const openPopup = (challenge: Challenge) => {
-  selectedChallenge.value = challenge;
   showPopup.value = true;
   console.log("Popup opened");
-  console.log(challenge);
-};
 
+};
 const closePopup = () => {
-  selectedChallenge.value = null;
   showPopup.value = false;
 }
 
@@ -155,30 +170,95 @@ onMounted(async () => {
   if (!userStore.isLoggedIn()) {
     useLogin();
   }
+  let savingGoal = await getCurrentSavingGoal();
 
-    const challengesResponse = await getSortedChallengesByUser();
-    console.log(challengesResponse) 
-    if(challengesResponse === null){
-        console.log("No challenges found");
-        return;
-    }
-    challengesResponse.forEach(challenge => {
-        totChallenges += 1;
-        addNode(challenge, challengesResponse.indexOf(challenge));
-    });
+  if (savingGoal) {
+    goal.value = savingGoal.targetAmount;
+    saved.value = savingGoal.savedAmount;
+  } else {
+    goal.value = 200;
+    saved.value = 200;
+  }
+  step.value = 100;
+  const steps = goal.value / step.value;
 
 
-    nextTick(() => {
-      if (roadBox.value) {
-        roadBox.value.scrollTop = roadBox.value.scrollHeight;
-      }
-      for (let i = 0; i <= nodes.value.length; i++) {
-        if (nodes.value[i+1] && nodes.value[i].challenge.completed) {
-          movePig(nodes.value[i], nodes.value, i);
-          break;
+  for(let i = 1; i < steps; i++){
+    const amount = goal.value - (i * step.value);
+    addRoad(amount);
+  }
+  
+  
+  nextTick(async () => {
+    if(roads.value.length <= 0){
+      console.log("No roads");
+    } else {
+    for (let i = roads.value.length; i > 0; i--) {
+      if (roads.value[i] && roads.value[i].amount <= saved.value) {
+        if (i === roads.value.length - 1) {
+          await moveStart();
         }
+        if (roads.value[i - 1].amount <= saved.value) {
+          await movePig(roads.value[i]);
+        }
+      } else if (roads.value.length === 1){
+        await moveStart();
       }
-    });
+    }
+
+    if (goal.value !== 0 && goal.value <= saved.value) {
+        await moveEnd();
+    }
+  }});
+});
+
+const triggerConfetti = () => {
+  showConfetti.value = true;
+  let scalar = 2;
+  let coin = confetti.shapeFromText({text: '💰', scalar})
+
+  // Configure custom shape options for confetti
+  const confettiOptions = {
+    particleCount: 100, // Number of confetti particles
+    spread: 70, // Spread of confetti
+    origin: { y: 0.6 }, // Starting position of confetti
+    sizes: [20, 30], // Size of the confetti particles (coins)
+    shapes: [coin], // Shape of the confetti particles (coins)
+    scalar,
+  };
+  // Trigger confetti with custom options
+  confetti(confettiOptions);
+  
+  // Optionally, set a timeout to hide the confetti after a certain duration
+  setTimeout(() => {
+    showConfetti.value = false;
+  }, 5000); // 5000 milliseconds (adjust as needed)
+};
+
+const playPlingSound = () => {
+  const sound = new Howl({
+    src: [plingSound],
+    autoplay: true,
+    loop: false,
+  });
+};
+const playYaySound = () => {
+  const sound = new Howl({
+    src: [yaySound],
+    autoplay: true,
+    loop: false,
+  });
+};
+watchEffect(() => {
+  roads.value.forEach(road => {
+    if (road.arrived) {
+      playPlingSound();
+    }
+  });
+  if (roadComplete.value) {
+      triggerConfetti();
+      playYaySound();
+    }
 });
 </script>
 
@@ -188,14 +268,251 @@ onMounted(async () => {
 * @description The style section of the RoadTiles component.
 */
 <style scoped>
+#node-start {
+  background-size: 100% 100%;
+  background-color: var(--color-badges-owned);
+  color: var(--color-text);
+  font-weight: bold;
+  font-size: 38px;
+}
 
+#node-end{
+  background-size: 100% 100%;
+  background-color: var(--color-badges-owned);
+  color: var(--color-text);
+  font-weight: bold;
+  background: url("/parking-lot.png");
+  background-size: 100% 100%;
+}
+
+
+/* Complete Container */
+.road-container {
+  position: relative;
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  overflow-x: hidden;
+}
+.road-box {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  min-width: 520px;
+  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  margin-top: 90px;
+  margin-bottom: 140px;
+}
+
+.background-img{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0px;
+  z-index: -1;
+}
+.background-light{
+  background: url("/svg_icons/background-light.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.background-dark{
+  background: url("/svg_icons/background-dark.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Edges of the road. The start and end point */
+.road-edge-point {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+}
+.road-edge-area {
+  position: relative;
+  border-radius: 5px;
+  margin-top: -2px;
+  width: 250px;
+  height: 150px;
+  border: 2px solid var(--color-road-border);
+  background-color: var(--color-road-background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  font: 24px;
+  z-index: -1;
+}
+.road-start{
+  position: relative;
+  z-index: 500;
+}
+.road-end{
+  position: relative;
+  z-index: 500;
+  margin-top: 20px;
+}
+
+/* Road Tiles */
+.road-node {
+  position: absolute;
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  background-size: cover;
+  object-fit: contain;
+  border-radius: 5px;
+  background: var(--color-road-background);
+  border: 2px solid var(--color-road-border);
+
+}
+.road-node-right {
+  margin-top: 2px;
+  height: 137px;
+  width: 94px;
+  right: 65px;
+}
+.road-node-left {
+  height: 130px;
+  width: 91px;
+  left: 64px;
+}
+.road-amount-text {
+  position: absolute;
+  margin-top: 95px;
+  width: 100px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text-color);
+  z-index: 501;
+}
+.road-amount-text-left {
+  left: 50%;
+  transform: translateX(-50%);
+}
+.road-amount-text-right {
+  right: 50%;
+  transform: translateX(50%);
+}
+.text-completed {
+  font-size: 38px;
+  color: gold;
+  margin-top: 80px;
+}
+.road-completed {
+  background-color: var(--color-badges-owned);
+}
+.road-completed-img {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  z-index: 900;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+.road-svg {
+  display: flex;
+  justify-content: center;
+  resize: none;
+}
+
+/* Pig start position */
+.start-area-pig{
+  position: absolute;
+  width: 10px;
+  height: 0px;
+  margin-top: 105px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+  z-index: 500;
+}
+.start-area-right{
+  right: 170px;
+}
+.start-area-left{
+  left: 170px;
+}
+
+/* Pig */
+.walking-pig{
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  color: var(--color-text);
+}
+.walking-end-pig{
+  width: 80px;
+  height: 80px;
+  position: absolute;
+}
+
+/* Pig animation */
+.animation-pig-start-left{
+  animation: pig-walking-start-left 3s ease-in-out;
+}
+.animation-pig-start-right{
+  animation: pig-walking-start-right 3s ease-in-out;
+}
 .animation-pig-left{
   animation: pig-walking-left 3s ease-in-out;
 }
 .animation-pig-right{
   animation: pig-walking-right 3s ease-in-out;
 }
-
+.animation-pig-end-left{
+  animation: pig-walking-end-left 3s ease-in-out;
+}
+.animation-pig-end-right{
+  animation: pig-walking-end-right 3s ease-in-out;
+}
+@keyframes pig-walking-start-right {
+  0% {
+    transform: translateX(-90px) translateY(0px);
+  }
+  30% {
+    transform: translateX(-90px) translateY(-100px);
+  }
+  70% {
+    transform: translateX(85px) translateY(-100px);
+  }
+  100% {
+    transform: translateX(85px) translateY(-145px);
+  }
+}
+@keyframes pig-walking-start-left {
+  0% {
+    transform: translateX(90px) translateY(0px);
+  }
+  30% {
+    transform: translateX(90px) translateY(-100px);
+  }
+  70% {
+    transform: translateX(-85px) translateY(-100px);
+  }
+  100% {
+    transform: translateX(-85px) translateY(-145px);
+  }
+}
 @keyframes pig-walking-left {
   0% {
     transform: translateX(0px) translateY(0px);
@@ -210,7 +527,6 @@ onMounted(async () => {
     transform: translateX(170px) translateY(-180px);
   }
 }
-
 @keyframes pig-walking-right {
   0% {
     transform: translateX(0px) translateY(0px);
@@ -225,148 +541,33 @@ onMounted(async () => {
     transform: translateX(-170px) translateY(-180px);
   }
 }
-.start-area{
-  position: absolute;
-  width: 10px;
-  height: 0px;
-  margin-top: 105px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: visible;
-  z-index: 900;
+@keyframes pig-walking-end-left {
+  0% {
+    transform: translateX(0px) translateY(0px);
+  }
+  30% {
+    transform: translateX(0px) translateY(-140px);
+  }
+  70% {
+    transform: translateX(85px) translateY(-140px);
+  }
+  100% {
+    transform: translateX(85px) translateY(-180px);
+  }
 }
-
-.start-road-node-right{
-  right: 170px;
-}
-.start-road-node-left{
-  left: 170px;
-}
-.walking-pig{
-  width: 40px;
-  height: 40px;
-  position: absolute;
-}
-
-.road-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  height: 100vh;
-  width: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.road-box {
-  padding-top: 90px;
-  padding-bottom: 60px;
-  position: absolute;
-  align-items: center;
-  justify-content: center;
-  bottom: 0;
-  height: 100%;
-  min-width: 520px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  box-shadow: 0px -90px 90px -90px rgba(0, 0, 0, 0.5);
-}
-
-.road-tile-start {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.road-start {
-  position: relative;
-  border: 2px solid #333333;
-  border-radius: 5px;
-  margin-top: -2px;
-  width: 250px;
-  height: 150px;
-  margin-bottom: 50px;
-  background-color: #e5e5e5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: black;
-  font: 24px;
-  z-index: -1;
-}
-
-.road-end {
-  margin-top: 20px;
-  margin-bottom: -1px;
-}
-
-.road-start-area {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 250px;
-  height: 150px;
-  margin-bottom: 50px;
-  border-radius: 5px;
-  background-color: rgba(0, 0, 0, 0.2);
-  font-size: 18px;
-  color: black;
-}
-
-.road-end-area {
-  margin-top: 20px;
-  margin-bottom: 0;
-}
-
-.road-node {
-  position: absolute;
-  border: 3px solid rgba(0,0,0,1);
-  border-radius: 4px;
-  background-color: #f3f3f3;
-  color: black;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
-  background-size: cover;
-  overflow: hidden;
-  object-fit: contain;
-}
-
-.road-node-right {
-  margin-top: 2px;
-  height: 137px;
-  width: 94px;
-  right: 65px;
-}
-
-.road-node-left {
-  margin-top: 1.5px;
-  height: 129px;
-  width: 91px;
-  left: 64px;
-}
-
-.completed-node {
-  border: 2px solid green;
-  background-color: rgba(0, 255, 0, 0.5);
-}
-
-.road-svg {
-  display: flex;
-  justify-content: center;
-  resize: none;
+@keyframes pig-walking-end-right {
+  0% {
+    transform: translateX(0px) translateY(0px);
+  }
+  30% {
+    transform: translateX(0px) translateY(-140px);
+  }
+  70% {
+    transform: translateX(-85px) translateY(-140px);
+  }
+  100% {
+    transform: translateX(-85px) translateY(-180px);
+  }
 }
 
 @media screen and (max-width: 481px) {}

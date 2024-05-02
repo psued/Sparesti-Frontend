@@ -26,6 +26,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
                 ? 'icon-dark-mode'
                 : 'icon-dark-mode-hover',
           ]"
+          @click="toggleTheme"
         />
       </div>
     </div>
@@ -37,7 +38,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @click="toggleBar"
         to="/"
       >
-        <text>Home</text>
+        <text>Hjem</text>
       </router-link>
       <router-link
         class="bar-item-desktop"
@@ -45,7 +46,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @click="toggleBar"
         to="/profile"
       >
-        <text>Profile</text>
+        <text>Profil</text>
       </router-link>
       <router-link
         v-if="!isPhone"
@@ -54,7 +55,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @click="toggleBar"
         to="/budgetpage"
       >
-        <text>Budget</text>
+        <text>Budsjett</text>
       </router-link>
       <router-link
         v-if="!isPhone"
@@ -63,7 +64,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @click="toggleBar"
         to="/challenges"
       >
-        <text>Challenges</text>
+        <text>Utfordringer</text>
       </router-link>
       <router-link
         v-if="!isPhone"
@@ -72,16 +73,16 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @click="toggleBar"
         to="/badges"
       >
-        <text>Badges</text>
+        <text>Medaljer</text>
       </router-link>
       <router-link
         v-if="!isPhone"
         class="bar-item-desktop"
         :class="[{ 'text-dark': darkMode }]"
         @click="toggleBar"
-        to="/savinggoalform"
+        to="/saving-goal/create"
       >
-        <text>Saving Goal</text>
+        <text>Sparemål</text>
       </router-link>
       <div
         class="bar-item-sign"
@@ -90,7 +91,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @mouseenter="toggleHoverSign"
         @mouseleave="toggleHoverSign"
       >
-        <text>Sign out</text>
+        <text>Logg ut</text>
       </div>
       <router-link
         class="bar-item-desktop"
@@ -98,7 +99,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @click="toggleBar"
         to="/contact"
       >
-        <text>Contact</text>
+        <text>Kontakt</text>
       </router-link>
     </div>
   </div>
@@ -109,8 +110,10 @@ import { onMounted, ref, defineEmits, defineProps } from "vue";
 import { oauth2 } from "@/api/axiosConfig";
 import { useApiStore } from "@/stores/apiStore";
 import { useUserStore } from "@/stores/userStore";
+import { useDark, useToggle } from "@vueuse/core";
 
 // Reactive variables
+const darkMode = useDark();
 const isOpen = ref(false);
 const isPhone = ref(false);
 const hoverSign = ref(false);
@@ -145,16 +148,6 @@ const toggleHoverSign = () => {
 const toggleHoverTheme = () => {
   hoverTheme.value = !hoverTheme.value;
 };
-
-// Props with default values
-const props = withDefaults(
-  defineProps<{
-    darkMode: boolean;
-  }>(),
-  {
-    darkMode: false,
-  },
-);
 
 /**
  * Function to logout the user and revoke the access token
@@ -210,7 +203,7 @@ onMounted(() => {
   align-items: center;
   height: 90px;
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: hidden;
   overflow-x: hidden;
 }
 
@@ -258,6 +251,8 @@ onMounted(() => {
   align-items: center;
   height: 100%;
   width: 100%;
+  overflow-y: scroll;
+  min-height: 800px;
 }
 
 /* Styles for the desktop bar items */

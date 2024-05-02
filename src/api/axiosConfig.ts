@@ -2,7 +2,7 @@ import axios from "axios";
 import router from "@/router";
 import { useUserStore } from "@/stores/userStore";
 
-const baseURL = "http://localhost:8080"; // Adjust this to our backend API URL
+const baseURL = import.meta.env.VITE_BACKEND_URL; // Adjust this to our backend API URL
 
 const api = axios.create({
   baseURL: baseURL + "/api",
@@ -28,6 +28,7 @@ api.interceptors.request.use(
         router.push("/login");
       }
       config.headers.Authorization = `Bearer ${token}`;
+
     }
     return config;
   },

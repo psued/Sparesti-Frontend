@@ -14,7 +14,7 @@
       <div class="challenge-progress">
         <div class="progress-label">Progress:</div>
         <div class="progress-info">
-          {{ challenge.savedAmount }} / {{ challenge.targetAmount }}
+          {{ challenge.usedAmount }} / {{ challenge.targetAmount }}
         </div>
       </div>
       <button class="complete-button">Complete</button>
