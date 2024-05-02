@@ -33,10 +33,11 @@ import FormButton from '@/components/forms/FormButton.vue';
 import { useUserStore } from '@/stores/userStore';
 import { useQuestionnaireStore } from '@/stores/questionnaireStore';
 import { updateUserInfo } from '@/api/userHooks';
+import type { Transaction } from '@/types';
 
 const emit = defineEmits(["update-step"]);
 const store = useQuestionnaireStore();
-const transactions = ref([]);
+const transactions = ref<Transaction>([]);
 const isLoading = ref(false);
 const error = ref('');
 const selectedCategories = ref({});
