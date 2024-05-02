@@ -22,7 +22,7 @@ export function useDailySavingTip() {
 
     const startAutoFetch = () => {
         fetchTip(); // Initial fetch
-        const intervalId = setInterval(fetchTip, 900000); // 900000 milliseconds = 15 minutes
+        const intervalId = setInterval(fetchTip, 900000) as unknown as number; // 900000 milliseconds = 15 minutes
         return intervalId;
     };
 
