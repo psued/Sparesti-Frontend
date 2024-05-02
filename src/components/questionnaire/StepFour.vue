@@ -1,13 +1,14 @@
 <template>
   <div class="form-container">
     <h2>Vi trenger Litt mer info</h2>
-    <p>Legg til produkter du vil bruke mindre på</p>
+    <p>Legg til produkter du vil spare på</p>
     <div class="product-list">
       <!-- Product Header -->
       <div class="product-header">
-        <span>Navn</span>
-        <span>Mengde</span>
-        <span>Enhets pris</span>
+        <span class="header-name">Navn</span>
+        <span class="header-amount">Mengde</span>
+        <span class="header-price">Enhets pris</span>
+        <span class="header-action"></span>
       </div>
       <!-- Product Items -->
       <div v-for="(item, index) in products" :key="index" class="product-item">
@@ -19,9 +20,12 @@
     </div>
     <!-- New Product Form -->
     <div class="new-product">
-      <input v-model="newProduct.name" placeholder="Product name" class="new-product-input" />
-      <input v-model.number="newProduct.amount" type="number" placeholder="Amount" class="new-product-input" />
+      <label for="productName" class="form-label">Produktnavn:</label>
+      <input v-model="newProduct.name" placeholder="Produkt" class="new-product-input" />
+      <label for="productAmount" class="form-label">Mengde:</label>
+      <input v-model.number="newProduct.amount" type="number" placeholder="Mengde" class="new-product-input" />
       <div class="frequency-wrapper">
+        <label for="frequencySelect" class="form-label">Hvor ofte?</label>
         <select v-model="newProduct.frequency" class="timeunit-select">
           <option value="daily">Daglig</option>
           <option value="weekly">Ukentlig</option>
@@ -29,7 +33,8 @@
         </select>
       </div>
       <div class="price-wrapper">
-        <input v-model="newProduct.price" placeholder="Unit price" class="price-input" />
+        <label for="productPrice" class="form-label">Pris per enhet?</label>
+        <input v-model="newProduct.price" type="number" placeholder="Enhetspris" class="price-input" />
         <span>kr</span>
       </div>
       <button @click="addProduct" class="add-button">Add</button>
@@ -69,10 +74,10 @@ function addProduct() {
     products.value.push({
       name: newProduct.value.name,
       frequency: newProduct.value.frequency,
-      amount: newProduct.value.amount || 0,
-      price: newProduct.value.price || 0, 
+      amount: newProduct.value.amount,
+      price: newProduct.value.price,
     });
-    newProduct.value = { name: "", frequency: "", amount: 0, price: 0 };
+    newProduct.value = { name: "", frequency: "", amount: 0, price: 0};
   }
 }
 
@@ -93,16 +98,15 @@ const finishQuestionnaire = async () => {
       frequency: product.frequency.toUpperCase(), 
       amount: product.amount, 
       unitPrice: product.price,
-      userInfoId: userStore.userId,
     }))
   };
 
   try {
-    if (userStore.userInfoExists) {
+    if (userStore.getUserInfoExists) {
       await updateUserInfo(userInfo);
     } else {
       await submitUserInfo(userInfo);
-      userStore.userInfoExists = true; 
+      userStore.setUserInfoExists(true);
     }
 
     await updateAccounts(checkingAccountNumber, savingsAccountNumber);
@@ -131,25 +135,18 @@ onMounted(() => {
   padding: 10px;
   margin-bottom: 1rem;
   width: 100%;
-  max-height: calc(50px * 5);
   overflow-y: auto;
   text-align: left; 
 }
 
 .product-header {
   display: flex;
-  justify-content: space-between;
-  text-align: left;
-  padding: 10px;
-  margin-bottom: 10px;
+  align-items: center;
+  padding: 10px 0;
   border-bottom: 2px solid #ccc;
-  position: sticky;
-  z-index: 1;
-  position: sticky;
-  top: 0;
+  margin-bottom: 10px;
 }
 
-/* Individual product items */
 .product-item {
   display: flex;
   justify-content: space-between;
@@ -162,9 +159,22 @@ onMounted(() => {
   border-bottom: none;
 }
 
-.product-item span {
-  flex: 1; 
+.header-name, .item-name {
+  flex: 3;
+}
+
+.header-amount, .item-amount { 
+  flex: 2;
+}
+
+.header-price, .item-price { 
+  flex: 3;
   text-align: center;
+}
+
+.header-action {
+  flex: 1;
+  visibility: hidden;
 }
 
 .product-item button {
@@ -177,16 +187,12 @@ onMounted(() => {
   text-align: center;
 }
 
-.new-product-form {
-  padding: 10px;
-  border-radius: 8px;
-  display: flex;
-}
-
-.new-product-form input,
-.new-product-form select {
-  padding: 10px;
-  margin-bottom: 10px; /* Space between inputs */
+.new-product-input, .price-input, .timeunit-select {
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 10px;
+  width: 25%;
 }
 
 .add-button {
@@ -196,15 +202,6 @@ onMounted(() => {
   cursor: pointer;
   text-align: center;
   margin-top: 10px;
-  
-}
-
-.form-container h2 {
-  margin-bottom: 1rem;
-}
-
-.form-container p {
-  margin-bottom: 2rem;
 }
 
 .button-container {
@@ -213,22 +210,10 @@ onMounted(() => {
   width: 100%;
   margin-top: 30px;
 }
-.product-header span,
-.product-item span {
-  display: inline-block;
-  text-align: center;
-}
 
-.product-header span:nth-child(1),
-.product-item span:nth-child(1) {
-  flex: 1;
-}
-
-.product-header span:nth-child(2),
-.product-item span:nth-child(2),
-.product-header span:nth-child(3),
-.product-item span:nth-child(3) {
-  flex: 2; 
+.form-container h2, .form-container p {
+  margin-bottom: 10px;
 }
 </style>
+
 @/stores/QuestionnaireStore

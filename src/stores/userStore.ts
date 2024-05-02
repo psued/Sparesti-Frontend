@@ -9,6 +9,7 @@ export const useUserStore = defineStore({
     userName: useStorage("userName", "", sessionStorage),
     expireTime: useStorage("timeToLive", 0, sessionStorage),
     userId: useStorage("userId", -1, sessionStorage),
+    userInfoExists: useStorage("userInfoExists", false, sessionStorage)
   }),
   getters: {
     getAccessToken(): string {
@@ -26,6 +27,9 @@ export const useUserStore = defineStore({
     getUserId(): number {
       return this.userId;
     },
+    getUserInfoExists(): boolean {
+      return this.userInfoExists;
+    },
   },
   actions: {
     setAccessToken(accessToken: string) {
@@ -42,6 +46,9 @@ export const useUserStore = defineStore({
     },
     setUserId(userId: number) {
       this.userId = userId;
+    },
+    setUserInfoExists(exists: boolean) {
+      this.userInfoExists = exists;
     },
     tokenIsExpired(): boolean {
       return Date.now() > this.expireTime;
