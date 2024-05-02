@@ -16,6 +16,9 @@
       <h3>Utgifter</h3>
       <div class="add-and-delete-category">
         <button class="add-category-btn" @click="addCategory">
+          <span class="add-category-icon">➕</span> Tildel transaksjon til kategori
+        </button>
+        <button class="add-category-btn" @click="addCategory">
           <span class="add-category-icon">➕</span> Legg til kategori
         </button>
         <button class="delete-category-btn" @click="toggleDeleteMode">
