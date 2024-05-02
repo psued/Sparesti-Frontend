@@ -34,7 +34,7 @@
         <svg class="road-svg" :class="'road-' + road.direction + '-light'">{</svg>
       </div>
 
-      <div v-if="goal > 0" class="road-edge-point road-start">
+      <div class="road-edge-point road-start">
         <div class="road-edge-area" id="node-start">
           <img v-if="!startmoved" class="walking-pig walking-pig-start" :src="startpig">{{ saved + " / " + goal}}</img>
         </div>
@@ -56,6 +56,8 @@ import { getSavingGoals } from "@/api/savingGoalHooks";
 import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
 import { useUserStore } from "@/stores/userStore";
 import { useLogin } from "@/api/authenticationHooks";
+import { getCurrentSavingGoal } from "@/api/savingGoalHooks";
+import type { SavingGoal } from "@/types/SavingGoal";
 
 
 const showPopup = ref(false);
@@ -85,8 +87,10 @@ const addRoad = (amount: number) => {
   const direction = roads.value.length % 2 === 0 ? 'right' : 'left';
   const moved = false;
   const pig = 'src/assets/animation/pig-sitting-' + direction + '.png';
+  const houseNr =Math.floor(Math.random()*4) + 1;
+  console.log(houseNr);
 
-  roads.value.push({id: roads.value.length, amount, emoji: "something", direction, moved, pig, arrived: false});
+  roads.value.push({id: roads.value.length, amount, emoji: "/public/house-" + houseNr + ".png", direction, moved, pig, arrived: false});
 };
 
 
@@ -163,11 +167,14 @@ onMounted(async () => {
   if (!userStore.isLoggedIn()) {
     useLogin();
   }
-  const userid = 1;
-  const savingGoal = await getSavingGoals();
-  if (savingGoal && savingGoal.length > 0) {
-    goal.value = savingGoal[0].goal;
-    saved.value = savingGoal[0].saved;
+  let savingGoal = await getCurrentSavingGoal();
+
+  if (savingGoal) {
+    goal.value = savingGoal.targetAmount;
+    saved.value = savingGoal.savedAmount;
+  } else {
+    goal.value = 0;
+    saved.value = 0;
   }
   step.value = 100;
   const steps = goal.value / step.value;
@@ -196,7 +203,7 @@ onMounted(async () => {
       }
     }
 
-    if (goal.value <= saved.value) {
+    if (goal.value !== 0 && goal.value <= saved.value) {
         await moveEnd();
     }
   }});
@@ -209,6 +216,11 @@ onMounted(async () => {
 * @description The style section of the RoadTiles component.
 */
 <style scoped>
+#node-start {
+  background: url("/public/parking-lot.png");
+  background-size: 100% 100%;
+}
+
 
 /* Complete Container */
 .road-container {
@@ -261,8 +273,6 @@ onMounted(async () => {
 /* Road Tiles */
 .road-node {
   position: absolute;
-  border: 3px solid rgba(0,0,0,1);
-  border-radius: 4px;
   background-color: #f3f3f3;
   color: black;
   display: flex;
