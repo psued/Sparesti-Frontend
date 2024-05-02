@@ -55,7 +55,7 @@ const error = ref(null);
 const emit = defineEmits(["update-step"]);
 
 const products = ref(store.stepFourData.products);
-const newProduct = ref({ name: "", frequency: "daily", amount: 0, price: "" });
+const newProduct = ref({ name: "", frequency: "daily", amount: 0, price: 0 });
 
 const checkingAccount = ref(store.stepTwoData.checkingAccount.replace(/\s/g, ''));
 const savingsAccount = ref(store.stepTwoData.savingsAccount.replace(/\s/g, ''));
@@ -67,11 +67,12 @@ watch(products, (newProducts) => {
 function addProduct() {
   if (newProduct.value.name && newProduct.value.frequency && newProduct.value.price) {
     products.value.push({
-      ...newProduct.value,
-      amount: parseFloat(newProduct.value.amount),
-      price: parseFloat(newProduct.value.price) 
+      name: newProduct.value.name,
+      frequency: newProduct.value.frequency,
+      amount: newProduct.value.amount || 0,
+      price: newProduct.value.price || 0, 
     });
-    newProduct.value = { name: "", frequency: "", amount: number, price: "" };
+    newProduct.value = { name: "", frequency: "", amount: 0, price: 0 };
   }
 }
 
@@ -90,27 +91,23 @@ const finishQuestionnaire = async () => {
     budgetingProducts: products.value.map(product => ({
       name: product.name,
       frequency: product.frequency.toUpperCase(), 
-      amount: parseFloat(product.amount), 
-      unitPrice: parseFloat(product.price),
+      amount: product.amount, 
+      unitPrice: product.price,
+      userInfoId: userStore.userId,
     }))
   };
 
   try {
-    console.log("User info exists:", userStore.userInfoExists);
     if (userStore.userInfoExists) {
-      console.log("Updating user info...");
       await updateUserInfo(userInfo);
-      console.log("User info updated successfully!");
     } else {
-      console.log("Submitting new user info...");
       await submitUserInfo(userInfo);
       userStore.userInfoExists = true; 
-      console.log("User info submitted successfully!");
     }
 
-    await updateAccounts(checkingAccount.value, savingsAccount.value);
+    await updateAccounts(checkingAccountNumber, savingsAccountNumber);
     emit("update-step", 5);
-  } catch (err) {
+  } catch (err: any) {
     console.error("Failed during the process:", err);
     error.value = err.message || "Failed to complete all updates.";
   } finally {

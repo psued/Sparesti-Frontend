@@ -53,7 +53,7 @@ const formErrors = ref({
 const formattedCheckingAccount = computed({
   get: () => formatAccountNumber(checkingAccount.value),
   set: (val) => {
-    val = val.replace(/\s/g, '');
+    val = val.replace(/\s/g, '').replace(/\D/g, '');
     checkingAccount.value = isNaN(parseInt(val)) ? '' : val;
   }
 });
@@ -61,7 +61,7 @@ const formattedCheckingAccount = computed({
 const formattedSavingsAccount = computed({
   get: () => formatAccountNumber(savingsAccount.value),
   set: (val) => {
-    val = val.replace(/\s/g, '');
+    val = val.replace(/\s/g, '').replace(/\D/g, '');
     savingsAccount.value = isNaN(parseInt(val)) ? '' : val;
   }
 });

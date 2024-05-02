@@ -90,8 +90,8 @@ export const useQuestionnaireStore = defineStore("questionnaireStore", {
           (product) => ({
             id: "",
             name: product.name,
-            frequency: product.frequency.toUpperCase(),
-            amount: parseFloat(product.price),
+            frequency: product.frequency,
+            amount: product.price,
             userInfoId: "",
           }),
         ),
