@@ -131,7 +131,7 @@ const timeLeftText = computed(() => {
   }
 });
 
-console.log(props.challengeObject.title + " " + props.challengeObject.expiryDate)
+console.log(props.challengeObject)
 
 </script>
 
