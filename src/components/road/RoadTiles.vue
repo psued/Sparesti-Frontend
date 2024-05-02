@@ -65,7 +65,7 @@ const showPopup = ref(false);
 const startpig = ref("/animation/pig-sitting-right.png");
 const endpig = "/animation/dancing-pig.gif";
 const startmoved = ref(false);
-const comleteImg = ref("src/assets/animation/gold-coin-spin.gif");
+const comleteImg = ref("/animation/gold-coin-spin.gif");
 const roadComplete = ref(false);
 const showConfetti = ref(false);
 const darkMode = useDark();
@@ -177,8 +177,8 @@ onMounted(async () => {
     goal.value = savingGoal.targetAmount;
     saved.value = savingGoal.savedAmount;
   } else {
-    goal.value = 0;
-    saved.value = 0;
+    goal.value = 200;
+    saved.value = 200;
   }
   step.value = 100;
   const steps = goal.value / step.value;
@@ -320,13 +320,13 @@ watchEffect(() => {
   z-index: -1;
 }
 .background-light{
-  background: url("src/assets/svg_icons/background-light.svg");
+  background: url("/svg_icons/background-light.svg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
 }
 .background-dark{
-  background: url("src/assets/svg_icons/background-dark.svg");
+  background: url("/svg_icons/background-dark.svg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
