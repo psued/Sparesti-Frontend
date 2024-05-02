@@ -182,3 +182,87 @@ export const renewBudgetWithCategories = async (
       return null;
     }
   };
+
+export const getBudgetWithNewestExpiryDate = async (): Promise<Budget | null> => {
+    try {
+        const response = await api.get(`/budget/budgets`);
+
+        if (response.status === 200) {
+            if (Array.isArray(response.data)) {
+                // Sort the budgets by expiry date in descending order
+                const sortedBudgets = response.data.sort((a, b) => new Date(b.expiryDate).getTime() - new Date(a.expiryDate).getTime());
+                // Return the first budget in the sorted array, which is the one with the newest expiry date
+                return sortedBudgets[0];
+            } else {
+                console.error("Failed to fetch budgets: response data is not an array");
+                return null;
+            }
+        } else {
+            console.error("Failed to fetch budgets:", response.statusText);
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching budgets:", error);
+        return null;
+    }
+};
+
+export const addBudgetWithRow = async (
+    name: string,
+    creationDate: string,
+    expiryDate: string,
+    budget: Budget
+): Promise<Budget | null> => {
+    console.log({
+        name: name,
+        expiryDate: expiryDate,
+        creationDate: creationDate
+    })
+    // Create a new budget with only the name, creationDate, and expiryDate
+    const createResponse = await api.post(`/budget/budgets/add`, {
+        name: name,
+        expiryDate: expiryDate,
+        creationDate: creationDate
+    });
+
+    await new Promise(f => setTimeout(f, 1000));
+
+    if (createResponse.status !== 201) {
+        throw new Error(`Failed to create budget: ${createResponse.statusText}`);
+    }
+
+    // Retrieve the newly created budget's ID
+    const newBudgetResponse = await api.get(`/budget/budgets/getnew`);
+
+    if (newBudgetResponse.status !== 200) {
+        throw new Error(`Failed to retrieve new budget: ${newBudgetResponse.statusText}`);
+    }
+
+    console.log("Newest budget:")
+    console.log(newBudgetResponse.data)
+
+    const newBudgetId = newBudgetResponse.data.id;
+
+    const rows = Array.isArray(budget.row) ? budget.row : [budget.row];
+
+    // Iterate through the budget.row array to add each row to the new budget
+    for (const row of rows) {
+        console.log("VIKTIG!")
+        console.log(row)
+        const addRowResponse = await api.post(`/budget/budgets/${newBudgetId}/rows/add`, {
+            maxAmount: row.maxAmount,
+            category: row.category,
+            name: "string",
+            usedAmount: row.usedAmount,
+            emoji: row.emoji
+        });
+        if (addRowResponse.status !== 200) {
+            throw new Error(`Failed to add row to budget: ${addRowResponse.statusText}`);
+        }
+    }
+
+    // Return the newly created budget with rows added
+    return await getBudgetById(newBudgetId);
+};
+
+

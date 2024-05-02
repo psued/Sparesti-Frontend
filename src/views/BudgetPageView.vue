@@ -5,7 +5,7 @@
       <div class="modal-content">
         <span class="close" @click="toggleRenewModal">&times;</span>
         <h3>Forny Budsjett</h3>
-        <form @submit.prevent="createBudget">
+        <form @submit.prevent="renewBudgets">
           <input class="input-margin" v-model="newBudget.name" placeholder="Budsjettets navn" />
           <div class="form-group">
             <div>
@@ -83,7 +83,14 @@
 import BudgetPage from "@/components/budget/BudgetPage.vue";
 import {onMounted, ref, computed, reactive} from "vue";
 import { useRoute } from "vue-router";
-import {getBudgetByUser, getBudgetById, getNewestBudget, renewBudget, renewBudgetWithCategories} from "@/api/budgetHooks";
+import {
+  getBudgetByUser,
+  getBudgetById,
+  getNewestBudget,
+  renewBudget,
+  renewBudgetWithCategories,
+  getBudgetWithNewestExpiryDate, addBudgetWithRow
+} from "@/api/budgetHooks";
 import type {Budget} from "@/types/Budget";
 import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
 import { categories } from "@vueuse/core/metadata.mjs";
@@ -137,8 +144,17 @@ const createBudget = () => {
   newBudget.endDate = '';
 };
 
-const renewBudgets = () => {
-  console.log("hællæ");
+const renewBudgets = async () => {
+  const allBudgets = await getBudgetByUser();
+  console.log(allBudgets);
+  if (allBudgets !== null) {
+    const latestExpiryBudget = allBudgets.reduce((latest, current) => {
+      return new Date(latest.expiryDate) > new Date(current.expiryDate) ? latest : current;
+    });
+    await addBudgetWithRow(newBudget.name, newBudget.startDate, newBudget.endDate, latestExpiryBudget);
+  } else {
+    console.error("No newest budget found");
+  }
 };
 
 const calculateTotalBudget = (budget: Budget) => {
