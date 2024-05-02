@@ -7,7 +7,7 @@
           <i class="icon-user"></i>
           <span v-show="!editMode">{{ user.displayName }}</span>
           <input type="text" v-model="editName" v-show="editMode" />
-          <button @click="toggleEditMode">
+          <button @click="toggleEditMode" class="edit-button">
             {{ editMode ? "Lagre" : "Rediger" }}
           </button>
         </span>
@@ -67,7 +67,8 @@ function toggleEditMode(): void {
 
 .user-details .value {
   font-size: 1.5em;
-  display: block;
+  display: flex;
+  align-items: center;
   border-bottom: 1px solid;
   padding-bottom: 0.2em;
 }
@@ -77,6 +78,9 @@ function toggleEditMode(): void {
 }
 .edit-button {
   margin-left: auto;
+  float: right;
+  font-weight: bold;
+  font-size: 0.75em;
 }
 </style>
 @/types/User

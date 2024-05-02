@@ -1,7 +1,13 @@
 <template>
   <div class="header">
-    <router-link to="/saving-goal/create" class="back-arrow">← Tilbake til opprettelse</router-link>
-    <h1 class="title">Sparemål</h1>
+    <ButtonComponent class="button" @click="createSavingGoal()">
+      <template v-slot:content>
+          <h2>Lag nytt sparemål</h2>
+        </template>
+    </ButtonComponent>
+    <div>
+      <h1 class="title">Sparemål</h1>
+    </div>
   </div>
 
   <div class="saving-goals-container">
@@ -17,6 +23,7 @@
   import SavingGoalCard from '@/components/savinggoal/SavingGoalCard.vue';
   import type { SavingGoal } from '@/types/SavingGoal';
   import { useRouter } from 'vue-router';
+  import ButtonComponent from '@/components/assets/ButtonComponent.vue';
 
   const savingGoals = ref<SavingGoal[]>([]);
   const router = useRouter();
@@ -36,14 +43,14 @@
     router.push(`/saving-goal/details/${id}`);
   };
 
+  const createSavingGoal = () => {
+    router.push('/saving-goal/create');
+  };
+
 </script>
 
   <style scoped>
-  @media screen and (max-width: 900px){
-    .header {
-      padding-top: 70px;
-    }
-  }
+
 
   .back-arrow {
     font-size: 24px;
@@ -96,5 +103,28 @@
     width: 100%; 
     display: flex; 
     justify-content: center;
+  }
+
+.button {
+  margin: 1rem auto;
+  cursor: pointer;
+  width: 200px;
+  height: 50px;
+  position: absolute;
+  top: 0;
+  left: 10px;
+}
+@media screen and (max-width: 900px){
+    .header {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .button{
+      position: relative;
+      left: 0;
+    }
   }
 </style>

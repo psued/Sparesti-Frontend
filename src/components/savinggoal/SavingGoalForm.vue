@@ -127,7 +127,7 @@
     try {
       if (await userHasActiveSavingGoal(userEmail)) {
         window.alert("Du har allerede et aktivt sparemål!");
-        router.push(`/saving-goals/user/${userId}`);
+        router.push('/saving-goals');
       } 
       else {
         const newSavingGoal = await createSavingGoal(savingGoalData);
@@ -138,7 +138,7 @@
         await addSavingGoalToUser(userEmail, Number(savingGoalId));
         console.log("Saving goal created:", newSavingGoal);
         alert("Sparemål opprettet!");
-        router.push(`/saving-goals/user/${userId}`);
+        router.push('/saving-goals');
       }
     } catch (error) {
       console.error("Error creating saving goal:", error);
