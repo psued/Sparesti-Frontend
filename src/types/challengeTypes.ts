@@ -1,14 +1,14 @@
 export interface MasterChallenge {
-  id: number;
+  id?: number;
   title: string;
   description: string;
   targetAmount: number;
-  savedAmount: number;
+  savedAmount?: number;
   mediaUrl: string | null;
   timeInterval: string;
   difficultyLevel: string;
-  expiryDate: string;
-  completed: boolean;
+  expiryDate?: string;
+  completed?: boolean;
   productName?: string;
   productCategory?: string;
   reductionPercentage?: number;
