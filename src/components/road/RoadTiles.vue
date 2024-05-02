@@ -52,7 +52,7 @@
 */
 <script setup lang="ts">
 import { onMounted, computed, ref, type Ref, nextTick} from "vue";
-import { getUserByUsername, getUserInfo } from "@/api/userHooks";
+import { getSavingGoals } from "@/api/savingGoalHooks";
 import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
 import { useUserStore } from "@/stores/userStore";
 import { useLogin } from "@/api/authenticationHooks";
@@ -163,9 +163,13 @@ onMounted(async () => {
   if (!userStore.isLoggedIn()) {
     useLogin();
   }
-  goal.value = 1000;
-  saved.value = 800;
-  step.value = 300;
+  const userid = 1;
+  const savingGoal = await getSavingGoals();
+  if (savingGoal && savingGoal.length > 0) {
+    goal.value = savingGoal[0].goal;
+    saved.value = savingGoal[0].saved;
+  }
+  step.value = 100;
   const steps = goal.value / step.value;
 
 
@@ -176,6 +180,9 @@ onMounted(async () => {
   
   
   nextTick(async () => {
+    if(roads.value.length <= 0){
+      console.log("No roads");
+    } else {
     for (let i = roads.value.length; i > 0; i--) {
       if (roads.value[i] && roads.value[i].amount <= saved.value) {
         if (i === roads.value.length - 1) {
@@ -192,7 +199,7 @@ onMounted(async () => {
     if (goal.value <= saved.value) {
         await moveEnd();
     }
-  });
+  }});
 });
 </script>
 

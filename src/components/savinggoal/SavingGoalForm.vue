@@ -179,7 +179,7 @@
   h1 {
     text-align: center;
     margin-bottom: 20px;
-    color: black;
+    color: var(--color-text);
   }
   
   label {
@@ -194,7 +194,8 @@
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    background-color: white;
+    background-color: var(--color-background);
+    border: 2px solid var(--color-border);
     margin-bottom: 5%;
     flex-direction: column;
     align-content: center;
@@ -208,6 +209,7 @@
   label {
     display: block;
     margin-bottom: 5px;
+    color: var(--color-text);
   }
   
   input[type="file"],
@@ -247,15 +249,10 @@
   
   button {
     padding: 10px 20px;
-    color: black;
-    background-color: #8fbf7f;
+    color: var(--color-text);
     border: none;
     border-radius: 4px;
     cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
   }
   </style>
   

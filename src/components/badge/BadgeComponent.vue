@@ -1,6 +1,6 @@
 <template>
   <div
-    class="badge"
+    class="badge" :class="{ 'unowned': !owned, 'badge-owned': owned }"
     @mouseover="showRarity = true"
     @mouseleave="showRarity = false"
   >
@@ -62,6 +62,7 @@ watchEffect(async () => {
   font-size: 1.2rem;
   text-decoration: underline;
   margin: 0;
+  color: var(--color-text);
 }
 
 .badge {
@@ -69,7 +70,7 @@ watchEffect(async () => {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: var(--color-badges-base);
   text-align: center;
   max-width: 175px;
   transition: transform 0.3s ease;
@@ -78,14 +79,23 @@ watchEffect(async () => {
   max-height: fit-content;
 }
 
+.badge-owned {
+  background-color: var(--color-badges-owned);
+}
+
+.badge.badge-owned:hover {
+  background-color: var(--color-badges-owned-hover);
+}
+
 .badge-description {
   overflow-wrap: break-word;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: var(--color-text);
 }
 
 .badge:hover {
-  background-color: #f0f0f0;
+  background-color: var(--color-badges-hover);
   box-shadow: 0 0 5px #ccc;
   transform: scale(1.05);
   cursor: pointer;

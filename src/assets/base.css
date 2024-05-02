@@ -22,13 +22,25 @@
   --vt-c-text-light-1: var(--vt-c-black-soft);
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  --vt-c-text-dark-2: rgba(245, 245, 245, 0.90);
 
   --vt-c-button-base-light: #a6cd94;
   --vt-c-button-hover-light: #4b644a;
 
   --vt-c-button-base-dark: #757bfd;
   --vt-c-button-hover-dark: #313273;
+
+  --vt-c-badges-base-light: #f9f9f9;
+  --vt-c-badges-hover-light: #f2f2f2;
+
+  --vt-c-badges-base-dark: #555555;
+  --vt-c-badges-hover-dark: #888888;
+
+  --vt-c-badges-owned-light: #f9f9f9;
+  --vt-c-badges-owned-hover-light: #f2f2f2;
+
+  --vt-c-badges-owned-dark: #757bfd;
+  --vt-c-badges-owned-hover-dark: #686ede;
 
   --border-color-green: #00cc00;
   --border-color-yellow: #ffff00; 
@@ -51,6 +63,12 @@
 
   --color-button-base: var(--vt-c-button-base-light);
   --color-button-hover: var(--vt-c-button-hover-light);
+
+  --color-badges-base: var(--vt-c-badges-base-light);
+  --color-badges-hover: var(--vt-c-badges-hover-light);
+
+  --color-badges-owned: var(--vt-c-badges-owned-light);
+  --color-badges-owned-hover: var(--vt-c-badges-owned-hover-light);
 }
 
 /* Dark theme */
@@ -67,6 +85,12 @@ body.dark {
 
   --color-button-base: var(--vt-c-button-base-dark);
   --color-button-hover: var(--vt-c-button-hover-dark);
+
+  --color-badges-base: var(--vt-c-badges-base-dark);
+  --color-badges-hover: var(--vt-c-badges-hover-dark);
+
+  --color-badges-owned: var(--vt-c-badges-owned-dark);
+  --color-badges-owned-hover: var(--vt-c-badges-owned-hover-dark);
 }
 
 *,

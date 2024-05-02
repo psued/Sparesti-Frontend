@@ -31,12 +31,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-
+import { useDark } from "@vueuse/core";
     // Dark mode preference based on user's system settings
-    const prefersDarkMode =
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const darkMode = ref(prefersDarkMode);  
+    const darkMode = useDark(); 
 
 
 </script>
