@@ -1,42 +1,66 @@
 <template>
   <div id="createChallengeContainer">
-    <p>Challenge Title</p>
-    <input v-model="challengeTitle" type="text" placeholder="Title" id="challengeTitle"/>
+    <input maxlength="20" v-model="challengeTitle" type="text" placeholder="Tittel" id="challengeTitle"/>
 
-    <p>Challenge Description</p>
-    <textarea v-model="challengeDescription" maxlength="60" id="challengeDescriptionInput" rows="3"></textarea>
+    <div id="test">
+      <div class="challengeContent1">
+        <p class="formText">Beskrivelse</p>
+        <textarea placeholder="Beskrivelse" v-model="challengeDescription" maxlength="60" id="challengeDescriptionInput" rows="3"></textarea>
+      </div>
 
-    <p>Velg en Emoji</p>
-    <EmojiPickerComponent :emoji-prop="emoji" @pickEmoji="pickEmoji"/>
-
-    <p>Velg et tidsintervall</p>
-
-    <RadioButtonsComponent @radioClick="pickTimeInterval" :radioButtons="['Daily', 'Weekly', 'Monthly']"/>
-
-    <p>Hva slags type utfordring vil du gjøre?</p>
-
-    <RadioButtonsComponent @radioClick="setChallengeType" :radioButtons="['Save', 'Buy', 'Consumption']"/>
-
-    <div v-if="challengeType === 'Save'">
-      <p>Sett deg et sparemål</p>
-      <input v-model="targetAmount" type="number" min="0" step="1" placeholder="kr"/>
+      <div class="emojiContainer">
+        <p class="radioText">Emoji</p>
+        <EmojiPickerComponent :emoji-prop="emoji" @pickEmoji="pickEmoji" id="challengeEmojiPicker"/>
+      </div>
     </div>
 
-    <div v-if="challengeType === 'Buy'">
-      <p>Produktnavn</p>
-      <input v-model="productName" type="text" placeholder="Produkt"/>
-      <p>Kjøpsgrense</p>
-      <input v-model="quantityLimit" type="number" min="0" step="1" placeholder="Antall"/>
+    <div class="radioButtonsContainer">
+      <p class="radioText">Hva slags type utfordring vil du gjøre?</p>
+      <RadioButtonsComponent class="radioButtons" @radioClick="setChallengeType" :radioButtons="['Spare', 'Forbruk', 'Budsjett']"/>
     </div>
 
-    <div v-if="challengeType === 'Consumption'">
-      <p>Velg en kategori</p>
-      <input v-model="category" type="number" min="0" step="1" placeholder="Kategori"/>
-      <p>Hvor mye mindre ønsker du å bruke?</p>
-      <input v-model="reductionAmount" type="number" min="0" step="1" placeholder="Antall"/>
+    <div class="radioButtonsContainer" v-if="challengeType === 'Spare' || challengeType === 'Forbruk'">
+      <p class="radioText">Velg et tidsintervall</p>
+      <RadioButtonsComponent class="radioButtons" @radioClick="pickTimeInterval" :radioButtons="['Daily', 'Weekly', 'Monthly']"/>
     </div>
 
+    <div id="optionalsContainer">
 
+      <div class="optionalsInfo" v-if="challengeType === 'Spare'">
+        <div class="optionalsBlock">
+          <p class="formText">Sparemål</p>
+          <input v-model="targetAmount" type="number" min="0" step="1" placeholder="kr"/>
+        </div>
+      </div>
+
+      <div class="optionalsInfo" v-if="challengeType === 'Forbruk'">
+        <div class="optionalsBlock">
+          <p class="formText">Produktnavn</p>
+          <input v-model="productName" type="text" placeholder="Produkt"/>
+        </div>
+        <div class="optionalsBlock">
+          <p class="formText">Kjøpsgrense</p>
+          <input v-model="quantityLimit" type="number" min="0" step="1" placeholder="Antall"/>
+        </div>
+      </div>
+
+      <div class="optionalsInfo" v-if="challengeType === 'Budsjett'">
+        <div class="optionalsBlock">
+          <p class="formText">Kategori</p>
+          <input v-model="category" type="number" min="0" step="1" placeholder="Kategori"/>
+        </div>
+        <div class="optionalsBlock">
+          <p class="formText">Reduksjon</p>
+          <input v-model="reductionAmount" type="number" min="0" step="1" placeholder="Antall"/>
+        </div>
+      </div>
+    </div>
+
+    <ButtonComponent id="finishButton">
+      <template v-slot:content>
+        <p id="finishText">Ferdig</p>
+      </template>
+    </ButtonComponent>
   </div>
 </template>
 
@@ -44,6 +68,7 @@
 import { ref } from "vue";
 import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
 import RadioButtonsComponent from "@/components/assets/RadioButtonsComponent.vue";
+import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 
 const challengeTitle = ref("");
 const challengeDescription = ref("");
@@ -72,14 +97,107 @@ function setChallengeType(type : string) {
 </script>
 
 <style scoped>
-#createChallengeContainer {
-  margin: 0 20px;
+#test {
+  display: flex;
+  flex-direction: row;
+}
+.challengeContent1 {
+  display: flex;
+  text-align: left;
+  flex-direction: column;
+  width: 70%;
   height: 100%;
 }
 
+.emojiContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30%;
+  height: 100%;
+}
+
+#challengeEmojiPicker {
+  width: 45px;
+  height: 45px;
+}
+
+#createChallengeContainer {
+  margin: 15px 20px;
+}
+
 #challengeDescriptionInput {
-  text-align: center;
   resize: none;
-  padding: 0 5px;
+}
+
+.radioButtonsContainer{
+  margin-top: 20px;
+}
+
+#challengeTitle {
+  text-align: center;
+  font-size: 1.5rem;
+  width: 240px;
+  margin-bottom: 1rem;
+}
+input:focus, textarea:focus {
+  outline: none;
+}
+
+input, textarea {
+  background-color: var(--color-background);
+  border: none;
+  border-bottom: solid 1px #729960;
+}
+
+.radioText {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.formText {
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+
+.radioButtons{
+  width: 100%;
+  height: 30px;
+  margin-top: 10px;
+}
+
+#optionalsContainer {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+.optionalsInfo {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+.optionalsBlock {
+  display: flex;
+  flex-direction: column;
+  margin: 0 10px;
+}
+
+#finishButton {
+  position: absolute;
+  width: 100px;
+  height: 30px;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#finishText {
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
 }
 </style>
