@@ -11,13 +11,14 @@
             <h2>Create</h2>
           </template>
         </ButtonComponent>
-        <ButtonComponent class="button" @click="">
+        <ButtonComponent class="button" @click="toggleGenerateChallenge">
           <template v-slot:content>
             <h2>Generate</h2>
           </template>
         </ButtonComponent>
       </div>
       <CreateChallengeComponent v-if="showCreateChallenge"/>
+      <GenerateChallengeComponent v-if="showGenerateChallenge"/>
     </div>
   </div>
 </template>
@@ -28,12 +29,18 @@ import CreateChallengeComponent from "@/components/challenges/CreateChallengeCom
 import {ref} from "vue";
 import ExitButtonComponent from "@/components/assets/ExitButtonComponent.vue";
 import BackButtonComponent from "@/components/assets/BackButtonComponent.vue";
+import GenerateChallengeComponent from "@/components/challenges/GenerateChallengeComponent.vue";
 
 const showCreateChallenge = ref(false);
 const showGenerateChallenge = ref(false);
 
 const toggleCreateChallenge = () => {
   showCreateChallenge.value = true;
+  toggleFreeze()
+}
+
+const toggleGenerateChallenge = () => {
+  showGenerateChallenge.value = true;
   toggleFreeze()
 }
 
@@ -84,8 +91,6 @@ const toggleFreeze = () => {
 
 #contentContainer {
   height: 100%;
-  overflow-y: auto;
-  scrollbar-gutter: stable both-edges;
 }
 
 .button {

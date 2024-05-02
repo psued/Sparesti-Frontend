@@ -1,54 +1,66 @@
 <template>
   <div id="createChallengeContainer">
-    <p>Challenge Title</p>
-    <input v-model="challengeTitle" type="text" placeholder="Title" id="challengeTitle"/>
+    <input maxlength="20" v-model="challengeTitle" type="text" placeholder="Tittel" id="challengeTitle"/>
 
-    <p>Challenge Description</p>
-    <textarea v-model="challengeDescription" maxlength="60" id="challengeDescriptionInput" rows="3"></textarea>
+    <div id="test">
+      <div class="challengeContent1">
+        <p class="formText">Beskrivelse</p>
+        <textarea placeholder="Beskrivelse" v-model="challengeDescription" maxlength="60" id="challengeDescriptionInput" rows="3"></textarea>
+      </div>
 
-    <p>Velg en Emoji</p>
-    <EmojiPickerComponent :emoji-prop="emoji" @pickEmoji="pickEmoji"/>
-
-    <p>Velg et tidsintervall</p>
-
-    <RadioButtonsComponent @radioClick="pickTimeInterval" :radioButtons="['Daily', 'Weekly', 'Monthly']"/>
-
-    <p>Velg vanskelighetsgrad</p>
-
-    <RadioButtonsComponent @radioClick="pickDifficultyLevel" :radioButtons="['Easy', 'Medium', 'Hard']"/>
-
-    <p>Hva slags type utfordring vil du gjøre?</p>
-
-    <RadioButtonsComponent @radioClick="setChallengeType" :radioButtons="['Save', 'Buy', 'Consumption']"/>
-
-    <div v-if="challengeType === 'Save'">
-      <p>Sett deg et sparemål</p>
-      <input v-model="targetAmount" type="number" min="0" step="1" placeholder="kr"/>
+      <div class="emojiContainer">
+        <p class="radioText">Emoji</p>
+        <EmojiPickerComponent :emoji-prop="emoji" @pickEmoji="pickEmoji" id="challengeEmojiPicker"/>
+      </div>
     </div>
 
-    <div v-if="challengeType === 'Buy'">
-      <p>Produktnavn</p>
-      <input v-model="productName" type="text" placeholder="Produkt"/>
-      <p>Kjøpsgrense</p>
-      <input v-model="quantityLimit" type="number" min="0" step="1" placeholder="Antall"/>
+    <div class="radioButtonsContainer">
+      <p class="radioText">Hva slags type utfordring vil du gjøre?</p>
+      <RadioButtonsComponent class="radioButtons" @radioClick="setChallengeType" :radioButtons="['Spare', 'Forbruk', 'Budsjett']"/>
     </div>
 
-    <div v-if="challengeType === 'Consumption'">
-      <p>Velg en kategori</p>
-      <input v-model="category" type="number" min="0" step="1" placeholder="Kategori"/>
-      <p>Hvor mye mindre ønsker du å bruke?</p>
-      <input v-model="reductionAmount" type="number" min="0" step="1" placeholder="Antall"/>
+    <div class="radioButtonsContainer" v-if="challengeType === 'Spare' || challengeType === 'Forbruk'">
+      <p class="radioText">Velg et tidsintervall</p>
+      <RadioButtonsComponent class="radioButtons" @radioClick="pickTimeInterval" :radioButtons="['Daily', 'Weekly', 'Monthly']"/>
     </div>
 
-    <ButtonComponent class="button" @click="createChallenge">
+    <div id="optionalsContainer">
+
+      <div class="optionalsInfo" v-if="challengeType === 'Spare'">
+        <div class="optionalsBlock">
+          <p class="formText">Sparemål</p>
+          <input v-model="targetAmount" type="number" min="0" step="1" placeholder="kr"/>
+        </div>
+      </div>
+
+      <div class="optionalsInfo" v-if="challengeType === 'Forbruk'">
+        <div class="optionalsBlock">
+          <p class="formText">Produktnavn</p>
+          <input v-model="productName" type="text" placeholder="Produkt"/>
+        </div>
+        <div class="optionalsBlock">
+          <p class="formText">Kjøpsgrense</p>
+          <input v-model="quantityLimit" type="number" min="0" step="1" placeholder="Antall"/>
+        </div>
+      </div>
+
+      <div class="optionalsInfo" v-if="challengeType === 'Budsjett'">
+        <div class="optionalsBlock">
+          <p class="formText">Kategori</p>
+          <input v-model="category" type="number" min="0" step="1" placeholder="Kategori"/>
+        </div>
+        <div class="optionalsBlock">
+          <p class="formText">Reduksjon</p>
+          <input v-model="reductionAmount" type="number" min="0" step="1" placeholder="Antall"/>
+        </div>
+      </div>
+    </div>
+
+    <ButtonComponent id="finishButton" @click="createChallenge">
       <template v-slot:content>
-        <h2>Create</h2>
-      </template>
-      <template v-slot:click>
-        <h2>Create</h2>
+        <p id="finishText">Ferdig</p>
       </template>
     </ButtonComponent>
-
   </div>
 </template>
 
@@ -63,7 +75,6 @@ import { type ChallengeCreation } from "@/types/challengeTypes";
 const challengeTitle = ref("");
 const challengeDescription = ref("");
 const timeInterval = ref("");
-const difficultyLevel = ref("");
 const emoji = ref("");
 const challengeType = ref("");
 const targetAmount = ref(0);
@@ -72,6 +83,7 @@ const quantityLimit = ref(0);
 const category = ref("");
 const reductionAmount = ref(0);
 const createdChallenge = ref<ChallengeCreation | null>(null);
+const difficultyLevel = ref("");
 
 function pickEmoji(e: string) {
   emoji.value = e;
@@ -81,17 +93,22 @@ function pickTimeInterval(interval: string) {
   timeInterval.value = interval;
 }
 
-function pickDifficultyLevel(level: string) {
-  difficultyLevel.value = level;
-}
-
 function setChallengeType(type : string) {
   challengeType.value = type;
 }
 
 async function createChallenge() {
+
+  if (timeInterval.value === "Daily") {
+    difficultyLevel.value = "EASY";
+  } else if (timeInterval.value === "Weekly") {
+    difficultyLevel.value = "MEDIUM";
+  } else if (timeInterval.value === "Monthly") {
+    difficultyLevel.value = "HARD";
+  }
+
   try {
-    if (challengeType.value === 'Save') {
+    if (challengeType.value === 'Spare') {
       createdChallenge.value = await createSavingChallenge({
         title: challengeTitle.value,
         description: challengeDescription.value,
@@ -102,7 +119,7 @@ async function createChallenge() {
       });
       addChallengeToUser(Number(createdChallenge.value.id));
       createdChallenge.value = null;
-    } else if (challengeType.value === 'Buy') {
+    } else if (challengeType.value === 'Forbruk') {
       createdChallenge.value = await createPurchaseChallenge({
         title: challengeTitle.value,
         description: challengeDescription.value,
@@ -114,7 +131,7 @@ async function createChallenge() {
       });
       addChallengeToUser(Number(createdChallenge.value.id));
       createdChallenge.value = null;
-    } else if (challengeType.value === 'Consumption') {
+    } else if (challengeType.value === 'Budsjett') {
       createdChallenge.value = await createConsumptionChallenge({
         title: challengeTitle.value,
         description: challengeDescription.value,
@@ -153,26 +170,107 @@ function resetForm() {
 </script>
 
 <style scoped>
+#test {
+  display: flex;
+  flex-direction: row;
+}
+.challengeContent1 {
+  display: flex;
+  text-align: left;
+  flex-direction: column;
+  width: 70%;
+  height: 100%;
+}
+
+.emojiContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30%;
+  height: 100%;
+}
+
+#challengeEmojiPicker {
+  width: 45px;
+  height: 45px;
+}
+
 #createChallengeContainer {
-  margin: 0 20px;
-  height: 90%;
+  margin: 15px 20px;
 }
 
 #challengeDescriptionInput {
-  text-align: center;
   resize: none;
-  padding: 0 5px;
 }
 
-.button {
+.radioButtonsContainer{
+  margin-top: 20px;
+}
+
+#challengeTitle {
+  text-align: center;
+  font-size: 1.5rem;
+  width: 240px;
+  margin-bottom: 1rem;
+}
+input:focus, textarea:focus {
+  outline: none;
+}
+
+input, textarea {
+  background-color: var(--color-background);
+  border: none;
+  border-bottom: solid 1px #729960;
+}
+
+.radioText {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.formText {
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+
+.radioButtons{
+  width: 100%;
+  height: 30px;
+  margin-top: 10px;
+}
+
+#optionalsContainer {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+.optionalsInfo {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+.optionalsBlock {
+  display: flex;
+  flex-direction: column;
+  margin: 0 10px;
+}
+
+#finishButton {
+  position: absolute;
+  width: 100px;
+  height: 30px;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#finishText {
+  font-weight: 700;
+  font-size: 1rem;
   color: white;
-  margin: 2rem auto;
-  cursor: pointer;
-  width: 200px;
-  height: 50px;
-}
-
-p {
-  margin-top: 1rem;
 }
 </style>
