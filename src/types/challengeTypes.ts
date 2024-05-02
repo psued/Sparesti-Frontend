@@ -3,7 +3,7 @@ export interface MasterChallenge {
   title: string;
   description: string;
   targetAmount: number;
-  savedAmount: number;
+  usedAmount: number;
   mediaUrl: string | null;
   timeInterval: string;
   difficultyLevel: string;
@@ -18,7 +18,7 @@ export interface Challenge {
   id: number;
   description: string;
   targetAmount: number;
-  savedAmount: number;
+  usedAmount: number;
   mediaUrl: string | null;
   expiryDate: string;
   timeInterval: string;
