@@ -7,9 +7,9 @@ export interface MasterChallenge {
   mediaUrl: string | null;
   timeInterval: string;
   difficultyLevel: string;
-  expiryDate?: string;
+  expiryDate: string;
   completed?: boolean;
-  productName?: string;
+  productName: string;
   productCategory?: string;
   reductionPercentage?: number;
 }

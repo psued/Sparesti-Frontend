@@ -56,6 +56,7 @@ const challengeObject = ref<MasterChallenge>({
   title: "",
   description: "",
   targetAmount: 0,
+  usedAmount: 0,
   mediaUrl: "",
   timeInterval: "",
   difficultyLevel: "",
