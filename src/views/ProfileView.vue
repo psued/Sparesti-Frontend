@@ -14,7 +14,7 @@
               <img src="/svg_icons/icon-pencil.svg" alt="Pencil Icon" class="icon-pencil-image">
             </i>
           </div>
-          <input type="file" ref="fileInput" @change="handleImageUpload" accept="image/*" style="display:none">
+          <input type="file" ref="fileInput" @change="handleImageUpload" accept="image/*" id="image" style="display:none">
         </label>
         <div class="total-savings-container">
           <TotalSavingsComponent :totalSavings="user.totalSavings" />
@@ -53,9 +53,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useUserStore } from "@/stores/userStore";
-import { getUserInfo, getUserByUsername, updateUserInfo } from "@/api/userHooks";
+import { getUserInfo, getUserByUsername, updateUserInfo, updateProfilePicture } from "@/api/userHooks";
 import { getBadgesByUser } from "@/api/badgeHooks";
 import type { UserBadge } from "@/types/Badge";
+import { uploadImage } from "@/utils/imageUtils";
 import ProfilePicComponent from "@/components/profile/ProfilePicComponent.vue";
 import UserInfoComponent from "@/components/profile/UserInfoComponent.vue";
 import TotalSavingsComponent from "@/components/profile/TotalSavingsComponent.vue";
@@ -84,16 +85,33 @@ const handleImageUpload = async (event: Event) => {
 };
 
 const toggleEditMode = async () => {
-  if (isEditing.value) {
-    try {
+  try {
+    if (isEditing.value) {
+      if (imagePreview.value) {
+        const fileInput = document.getElementById("image") as HTMLInputElement;
+        if (fileInput) {
+          const image = fileInput.files?.[0];
+          if (!image) {
+            console.error("No image selected.");
+            return;
+          }
+          const imageUrl = await uploadImage(image, imagePreview);
+          console.log("Image uploaded successfully." + imageUrl);
+          if (imageUrl) {
+            await updateProfilePicture(imageUrl);
+          }
+          user.value.pictureUrl = imageUrl;
+        }
+      }
       await updateUserInfo(user.value);
       console.log("Profile updated successfully.");
-    } catch (error) {
-      console.error("Failed to update user info:", error);
     }
+    isEditing.value = !isEditing.value;
+  } catch (error) {
+    console.error("Failed to update user info:", error);
   }
-  isEditing.value = !isEditing.value;
 };
+
 
 const fetchAndSetUserInfo = async () => {
 	try {
@@ -112,9 +130,9 @@ const fetchAndSetUserInfo = async () => {
       const userByUsernameResult = await userByUsername;
       userProfilePic.value = userByUsernameResult.profilePictureUrl;
       setUser(userInfo, userProfilePic.value || "");
-      await userByUsername.then((res: { totalSavings: any; }) => {
+      await userByUsername.then((response: { totalSavings: any; }) => {
         if (user.value !== null) {
-          user.value.totalSavings = res.totalSavings;
+          user.value.totalSavings = response.totalSavings;
         } else {
           console.error("Failed to set total savings");
         }

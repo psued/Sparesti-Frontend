@@ -3,10 +3,17 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
-  checkingAccount: number;
-  savingsAccount: number;
   pictureUrl: string;
   badges: any[];
   totalSavings: number;
   birthdate: string;
+}
+
+export interface UserResponse {
+  user : 
+  {
+    id?: number;
+    email: string;
+    profilePictureUrl: string | null;
+  }
 }

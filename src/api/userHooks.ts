@@ -105,3 +105,15 @@ export const updateLoginStreak = async (): Promise<any | null> => {
     return error.response;
   }
 }
+
+export const updateProfilePicture = async (profilePictureUrl: string): Promise<string | null> => {
+  try {
+    const response = await api.post("/users/update", {
+      profilePictureUrl,
+    });
+    return response.data.profilePictureUrl;
+  } catch (error) {
+    console.error("Error updating profile picture:", error);
+    return null;
+  }
+}
