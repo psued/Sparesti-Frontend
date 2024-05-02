@@ -203,7 +203,7 @@ onMounted(() => {
   align-items: center;
   height: 90px;
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: hidden;
   overflow-x: hidden;
 }
 
@@ -251,6 +251,8 @@ onMounted(() => {
   align-items: center;
   height: 100%;
   width: 100%;
+  overflow-y: scroll;
+  min-height: 800px;
 }
 
 /* Styles for the desktop bar items */
