@@ -38,8 +38,7 @@
   
         <div class="form-group" v-if="uploadType === 'emoji'">
           <label for="emoji">Velg en emoji:</label>
-          <Picker :data="emojiIndex" set="twitter" @select="handleEmojiSelect" :fallback="customEmojiFallback" />
-          <div class="emoji" v-if="emoji">{{ emoji }}</div>
+          <EmojiPickerComponent :emoji-prop="emoji" @pickEmoji="pickEmoji"/>
         </div>
   
         <div class="form-group">
@@ -74,6 +73,7 @@
   </template>
   
   <script setup lang="ts">
+  import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
   import { ref, reactive } from "vue";
   import { useRouter } from "vue-router";
   import type { SavingGoalCreation } from "@/types/SavingGoal";
@@ -81,9 +81,6 @@
   import { useUserStore } from "@/stores/userStore";
   import { uploadImage } from "@/utils/imageUtils";
   import type { SavingGoal } from "@/types/SavingGoal";
-  import { Picker, EmojiIndex } from "emoji-mart-vue-fast/src";
-  import data from "emoji-mart-vue-fast/data/all.json";
-  import "emoji-mart-vue-fast/css/emoji-mart.css";
   import { icons } from '@/utils/saving-goal-icons';
   
   interface Icon {
@@ -102,21 +99,17 @@
   const userId = userStore.getUserId;
   const userEmail = userStore.getUserName;
   const createdSavingGoal = ref<SavingGoal | null>(null);
-  
+
   const minDeadline = new Date();
   minDeadline.setDate(minDeadline.getDate() + 1);
   const imagePreview = ref<string | null>(null);
   const selectedIconUrl = ref<string | null>(null);
   const emoji = ref("");
-  let emojiIndex = new EmojiIndex(data);
-
-  const handleEmojiSelect = (selectedEmoji: { native: string; }) => {
-    emoji.value = selectedEmoji.native;
-  };
-
-  const customEmojiFallback = (emoji: { short_names: any[]; }) => {
-    return `:${emoji.short_names[0]}:`;
-  };
+  const router = useRouter();
+  
+  function pickEmoji(e: string) {
+    emoji.value = e;
+  }
   
   function handleImageUpload(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -129,8 +122,6 @@
       reader.readAsDataURL(file);
     }
   }
-  
-  const router = useRouter();
   
   const createSavingsGoal = async (savingGoalData: SavingGoalCreation) => {
     try {
@@ -188,7 +179,7 @@
   h1 {
     text-align: center;
     margin-bottom: 20px;
-    color: black;
+    color: var(--color-text);
   }
   
   label {
@@ -196,14 +187,19 @@
   }
   
   .saving-goal-form {
-    max-width: 600px;
+    display: flex;
+    max-width: fit-content;
     margin: auto;
     margin-top: 2%;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    background-color: white;
+    background-color: var(--color-background);
+    border: 2px solid var(--color-border);
     margin-bottom: 5%;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
   }
   
   .form-group {
@@ -213,6 +209,7 @@
   label {
     display: block;
     margin-bottom: 5px;
+    color: var(--color-text);
   }
   
   input[type="file"],
@@ -227,16 +224,20 @@
   }
   
   .image-preview img {
-    width: 30vh;
+    width: 100px;
     height: auto;
     margin-top: 20px;
     border-radius: 4px;
   }
   
   .icon-preview img {
-    width: 30vh;
-    height: auto;
+    width: 100px;
+    height: 100px;
     margin-top: 20px;
+  }
+
+  .image-preview, .icon-preview {
+    text-align: center;
   }
 
   .emoji {
@@ -248,15 +249,10 @@
   
   button {
     padding: 10px 20px;
-    color: black;
-    background-color: #8fbf7f;
+    color: var(--color-text);
     border: none;
     border-radius: 4px;
     cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
   }
   </style>
   

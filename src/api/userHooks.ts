@@ -46,12 +46,6 @@ export const getUserInfo = async (): Promise<UserInfo | null> => {
     },
   });
   userStore.setUserName(userInfoRes.data.email);
-  // This is temporary until we have a way to extract user id from token
-  const username = userStore.getUserName;
-  api.get(`/users/${username}`).then((response) => {
-    console.log("User id set: " + response.data.id);
-    userStore.setUserId(response.data.id);
-  });
 
   return userInfoRes.data;
 };
@@ -97,6 +91,16 @@ export const updateAccounts = async (checkingAccountNr: number | null, savingsAc
     return res;
   } catch (error: any) {
     console.error("Error updating accounts:", error);
+    return error.response;
+  }
+}
+
+export const updateLoginStreak = async (): Promise<any | null> => {
+  try {
+    const res = await api.post('/users/update-login-streak')
+    return res;
+  } catch (error: any) {
+    console.error("Error updating login streak:", error);
     return error.response;
   }
 }

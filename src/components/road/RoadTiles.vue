@@ -34,7 +34,7 @@
         <svg class="road-svg" :class="'road-' + road.direction + '-light'">{</svg>
       </div>
 
-      <div v-if="goal > 0" class="road-edge-point road-start">
+      <div class="road-edge-point road-start">
         <div class="road-edge-area" id="node-start">
           <img v-if="!startmoved" class="walking-pig walking-pig-start" :src="startpig">{{ saved + " / " + goal}}</img>
         </div>
@@ -52,10 +52,12 @@
 */
 <script setup lang="ts">
 import { onMounted, computed, ref, type Ref, nextTick} from "vue";
-import { getUserByUsername, getUserInfo } from "@/api/userHooks";
+import { getSavingGoals } from "@/api/savingGoalHooks";
 import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
 import { useUserStore } from "@/stores/userStore";
 import { useLogin } from "@/api/authenticationHooks";
+import { getCurrentSavingGoal } from "@/api/savingGoalHooks";
+import type { SavingGoal } from "@/types/SavingGoal";
 
 
 const showPopup = ref(false);
@@ -85,8 +87,10 @@ const addRoad = (amount: number) => {
   const direction = roads.value.length % 2 === 0 ? 'right' : 'left';
   const moved = false;
   const pig = 'src/assets/animation/pig-sitting-' + direction + '.png';
+  const houseNr =Math.floor(Math.random()*4) + 1;
+  console.log(houseNr);
 
-  roads.value.push({id: roads.value.length, amount, emoji: "something", direction, moved, pig, arrived: false});
+  roads.value.push({id: roads.value.length, amount, emoji: "/public/house-" + houseNr + ".png", direction, moved, pig, arrived: false});
 };
 
 
@@ -163,9 +167,16 @@ onMounted(async () => {
   if (!userStore.isLoggedIn()) {
     useLogin();
   }
-  goal.value = 1000;
-  saved.value = 800;
-  step.value = 300;
+  let savingGoal = await getCurrentSavingGoal();
+
+  if (savingGoal) {
+    goal.value = savingGoal.targetAmount;
+    saved.value = savingGoal.savedAmount;
+  } else {
+    goal.value = 0;
+    saved.value = 0;
+  }
+  step.value = 100;
   const steps = goal.value / step.value;
 
 
@@ -176,6 +187,9 @@ onMounted(async () => {
   
   
   nextTick(async () => {
+    if(roads.value.length <= 0){
+      console.log("No roads");
+    } else {
     for (let i = roads.value.length; i > 0; i--) {
       if (roads.value[i] && roads.value[i].amount <= saved.value) {
         if (i === roads.value.length - 1) {
@@ -189,10 +203,10 @@ onMounted(async () => {
       }
     }
 
-    if (goal.value <= saved.value) {
+    if (goal.value !== 0 && goal.value <= saved.value) {
         await moveEnd();
     }
-  });
+  }});
 });
 </script>
 
@@ -202,6 +216,11 @@ onMounted(async () => {
 * @description The style section of the RoadTiles component.
 */
 <style scoped>
+#node-start {
+  background: url("/public/parking-lot.png");
+  background-size: 100% 100%;
+}
+
 
 /* Complete Container */
 .road-container {
@@ -254,8 +273,6 @@ onMounted(async () => {
 /* Road Tiles */
 .road-node {
   position: absolute;
-  border: 3px solid rgba(0,0,0,1);
-  border-radius: 4px;
   background-color: #f3f3f3;
   color: black;
   display: flex;

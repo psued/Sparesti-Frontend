@@ -8,7 +8,7 @@
     <div v-if="isEditing" class="editing-area">
       <input v-model="editableGoal.name" class="editing-input" placeholder="Navn på sparemål" />
       <input v-model="editableGoal.targetAmount" class="editing-input" type="number" placeholder="Sparemål i kr" />
-      <input v-model="editableGoal.deadline" class="editing-input" type="date" placeholder="Frist" />
+      <input v-model="editableGoal.deadline" class="editing-input" type="date" placeholder="Frist" :min="minDeadline.toISOString().split('T')[0]" />
       <div class="form-group">
         <label for="edit-upload-type">Velg opplastingstype:</label>
         <select id="edit-upload-type" v-model="editUploadType">
@@ -19,7 +19,7 @@
       </div>
       <!-- Render appropriate input based on selected upload type -->
       <div v-if="editUploadType === 'image'" class="form-group">
-        <input type="file" @change="handleImageUpload" accept="image/*" />
+        <input type="file" id="image" @change="handleImageUpload" accept="image/*" />
         <div v-if="imagePreview" class="image-preview">
           <img :src="imagePreview" alt="Forhåndsvisning av bilde" />
         </div>
@@ -33,8 +33,7 @@
         </div>
       </div>
       <div v-else-if="editUploadType === 'emoji'" class="form-group">
-        <Picker :data="emojiIndex" set="twitter" @select="handleEmojiSelect" :fallback="customEmojiFallback" />
-        <div class="emoji" v-if="emoji">{{ emoji }}</div>
+        <EmojiPickerComponent :emoji-prop="emoji" @pickEmoji="pickEmoji"/>
       </div>
       <div class = "button-group">
       <button @click="saveChanges" class="editing-button">Save Changes</button>
@@ -59,15 +58,14 @@
 </template>
 
 <script setup lang="ts">
+import EmojiPickerComponent from '@/components/assets/EmojiPickerComponent.vue';
 import { defineProps, defineEmits, ref } from 'vue';
 import type { SavingGoal } from '@/types/SavingGoal';
 import { updateSavingGoal, deleteSavingGoal, deleteSavingGoalFromUser } from '@/api/savingGoalHooks';
 import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'vue-router';
-import { Picker, EmojiIndex } from "emoji-mart-vue-fast/src";
-import data from "emoji-mart-vue-fast/data/all.json";
-import "emoji-mart-vue-fast/css/emoji-mart.css";
 import { icons } from '@/utils/saving-goal-icons';
+import { uploadImage } from "@/utils/imageUtils";
 
 const props = defineProps({
   savingGoal: {
@@ -95,6 +93,9 @@ const userId = userStore.getUserId;
 const router = useRouter();
 const imagePreview = ref<string | null>(null);
 const selectedIconUrl = ref<string | null>(null);
+const minDeadline = new Date();
+minDeadline.setDate(minDeadline.getDate() + 1);
+const emoji = ref('');
 
 // Initialize editUploadType with the default value from props.savingGoal.mediaUrl
 const editUploadType = ref(props.savingGoal.mediaUrl ? 'image' : '');
@@ -104,19 +105,40 @@ const startEditing = () => {
   isEditing.value = true;
 };
 
-const emoji = ref("");
-  let emojiIndex = new EmojiIndex(data);
-
-const handleEmojiSelect = (selectedEmoji: { native: string; }) => {
-  emoji.value = selectedEmoji.native;
-};
-
-const customEmojiFallback = (emoji: { short_names: any[]; }) => {
-  return `:${emoji.short_names[0]}:`;
-};
+function pickEmoji(e: string) {
+  emoji.value = e;
+}
 
 const saveChanges = async () => {
   try {
+
+    if (
+      editableGoal.value.name.trim() === '' ||
+      editableGoal.value.targetAmount < 1 ||
+      editableGoal.value.targetAmount > 1000000 ||
+      editableGoal.value.deadline <= todaysDate
+    ) {
+      alert('Vennligst fyll ut alle feltene riktig og prøv igjen.');
+      return;
+    }
+
+    if (editUploadType.value === 'image') {
+      const fileInput = document.getElementById("image") as HTMLInputElement;
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const imageUrl = await uploadImage(file, imagePreview);
+        if (imageUrl !== null) {
+          editableGoal.value.mediaUrl = imageUrl;
+        } else {
+          editableGoal.value.mediaUrl = "";
+        }
+      }
+    } else if (editUploadType.value === 'icon') {
+      editableGoal.value.mediaUrl = selectedIconUrl.value || '';
+    } else if (editUploadType.value === 'emoji') {
+      editableGoal.value.mediaUrl = emoji.value;
+    }
+
     await updateSavingGoal(Number(props.savingGoal.id), { ...editableGoal.value, mediaUrl: editableGoal.value.mediaUrl || '' });
     emits('updateGoal', editableGoal.value);
     isEditing.value = false;
@@ -237,12 +259,12 @@ function handleImageUpload(event: Event) {
 }
 
 .delete-icon {
-  right: 3%;
+  right: 5%;
   color: red;
 }
 
 .edit-icon {
-  right: 13%; 
+  right: 17.5%; 
   color: green;
 }
 

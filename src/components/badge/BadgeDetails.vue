@@ -95,6 +95,7 @@ const navigateToBadgesPage = () => {
   font-size: 3rem;
   margin-top: 10px;
   margin-bottom: 10px;
+  padding-top: 70px;
 }
 
 .header2 {
@@ -155,7 +156,7 @@ const navigateToBadgesPage = () => {
   font-size: 1.2em;
   border-left: 1px solid #ccc;
   padding-left: 10px;
-  color: black;
+  color: black; 
 }
 
 .badge-info {
