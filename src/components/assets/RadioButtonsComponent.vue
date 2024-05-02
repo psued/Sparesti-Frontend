@@ -56,7 +56,7 @@ function emitAnswer(radioButton: string) {
 }
 
 .timeIntervalButton {
-  width: v-bind("90 / radioButtons.length + '%'");
+  width: v-bind("90 / (radioButtons ? radioButtons.length : 1) + '%'");
   height: 100%;
 }
 

@@ -55,7 +55,7 @@ const challengeObject = ref<MasterChallenge>({
   mediaUrl: "💃🏻",
   timeInterval: "Daily",
   difficultyLevel: "Hard",
-  expiryDate: new Date(),
+  expiryDate: "2022-12-31",
   completed: false
 });
 </script>
