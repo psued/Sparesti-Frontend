@@ -1,4 +1,5 @@
 <template>
+  <daily-tip-blimp />
   <div class="container" @click="closeBadgePopup">
     <div class="background-container">
       <div class="background"></div>
@@ -58,6 +59,7 @@ import road from "../components/road/RoadTiles.vue";
 
 import checkCircleIcon from "/check-circle.svg";
 import starCircleIcon from "/star-circle.svg";
+import DailyTipBlimp from "../components/frontpage/DailyTipBlimp.vue";
 import { getUserByUsername } from "@/api/userHooks";
 
 const selectedChallenge = ref<Challenge | null>(null);
