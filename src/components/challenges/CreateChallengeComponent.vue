@@ -29,7 +29,7 @@
       <div class="optionalsInfo" v-if="challengeType === 'Spare'">
         <div class="optionalsBlock">
           <p class="formText">Sparemål</p>
-          <input v-model="targetAmount" type="number" min="0" step="1" placeholder="kr"/>
+          <input v-model="targetAmount" type="number" min="1" step="1" placeholder="kr"/>
         </div>
       </div>
 
@@ -40,7 +40,11 @@
         </div>
         <div class="optionalsBlock">
           <p class="formText">Kjøpsgrense</p>
-          <input v-model="quantityLimit" type="number" min="0" step="1" placeholder="Antall"/>
+          <input v-model="quantityLimit" type="number" min="1" step="1" placeholder="Antall"/>
+        </div>
+        <div class="optionalsBlock">
+          <p class="formText">Produkt pris</p>
+          <input v-model="productPrice" type="number" min="1" step="1" placeholder="Produkt pris (i kr)"/>
         </div>
       </div>
 
@@ -51,7 +55,7 @@
         </div>
         <div class="optionalsBlock">
           <p class="formText">Reduksjon</p>
-          <input v-model="reductionAmount" type="number" min="0" step="1" placeholder="Antall"/>
+          <input v-model="reductionAmount" type="number" min="1" step="1" placeholder="Antall"/>
         </div>
       </div>
     </div>
@@ -79,6 +83,7 @@ const emoji = ref("");
 const challengeType = ref("");
 const targetAmount = ref(0);
 const productName = ref("");
+const productPrice = ref(0);
 const quantityLimit = ref(0);
 const category = ref("");
 const reductionAmount = ref(0);
@@ -127,6 +132,7 @@ async function createChallenge() {
         difficultyLevel: difficultyLevel.value.toUpperCase(),
         mediaUrl: emoji.value,
         productName: productName.value,
+        productPrice: productPrice.value,
         targetAmount: quantityLimit.value
       });
       addChallengeToUser(Number(createdChallenge.value.id));
@@ -250,7 +256,7 @@ input, textarea {
 .optionalsInfo {
   margin-top: 20px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .optionalsBlock {
