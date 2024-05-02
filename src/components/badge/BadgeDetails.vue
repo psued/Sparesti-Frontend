@@ -95,6 +95,7 @@ const navigateToBadgesPage = () => {
   font-size: 3rem;
   margin-top: 10px;
   margin-bottom: 10px;
+  padding-top: 70px;
 }
 
 .header2 {
