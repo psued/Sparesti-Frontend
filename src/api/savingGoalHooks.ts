@@ -155,7 +155,3 @@ export const getCurrentSavingGoal = async () : Promise<SavingGoal | null> => {
     return null;
   }
 }
-
-export const addSavedAmount = async () => {
-  notify();
-}
