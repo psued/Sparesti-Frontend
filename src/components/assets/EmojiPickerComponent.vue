@@ -67,15 +67,9 @@ useClickOutside(
 </script>
 
 <style scoped>
-#emojiPickerContainer {
-  width: max-content;
-  margin: auto;
-}
-
 .emojiButton {
-  width: 100px;
-  height: 100px;
-  margin: auto;
+  width: 100%;
+  height: 100%;
 }
 
 #emojiPicker {
@@ -88,7 +82,7 @@ useClickOutside(
 
 .emojiButton p {
   position: absolute;
-  font-size: 60px;
+  font-size: 200%;
   left: 50%;
   top: calc(50%);
   transform: translateX(-50%) translateY(-50%);
