@@ -155,7 +155,7 @@ const navigateToBadgesPage = () => {
   font-size: 1.2em;
   border-left: 1px solid #ccc;
   padding-left: 10px;
-  color: black;
+  color: black; 
 }
 
 .badge-info {

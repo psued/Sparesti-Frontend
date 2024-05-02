@@ -2,7 +2,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <div class="layout">
     <div id="nav">
-      <NAV />
+      <NAV @theme="handleThemeChange" />
     </div>
 
     <div id="content">
@@ -21,12 +21,15 @@ import NAV from "./views/Nav_View.vue";
 import { onMounted, ref } from "vue";
 import FOOTER from "./views/Footer_View.vue";
 
+
+
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
-function toggleTheme() {
+const  emit  = defineEmits();
+const handleThemeChange = () => {
   toggleDark();
   document.body.classList.toggle("dark", isDark.value);
-}
+};
 document.body.classList.toggle("dark", isDark.value);
 
 const isPhone = ref(false);

@@ -26,6 +26,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
                 ? 'icon-dark-mode'
                 : 'icon-dark-mode-hover',
           ]"
+          @click="toggleTheme"
         />
       </div>
     </div>
@@ -109,8 +110,10 @@ import { onMounted, ref, defineEmits, defineProps } from "vue";
 import { oauth2 } from "@/api/axiosConfig";
 import { useApiStore } from "@/stores/apiStore";
 import { useUserStore } from "@/stores/userStore";
+import { useDark, useToggle } from "@vueuse/core";
 
 // Reactive variables
+const darkMode = useDark();
 const isOpen = ref(false);
 const isPhone = ref(false);
 const hoverSign = ref(false);
@@ -145,16 +148,6 @@ const toggleHoverSign = () => {
 const toggleHoverTheme = () => {
   hoverTheme.value = !hoverTheme.value;
 };
-
-// Props with default values
-const props = withDefaults(
-  defineProps<{
-    darkMode: boolean;
-  }>(),
-  {
-    darkMode: false,
-  },
-);
 
 /**
  * Function to logout the user and revoke the access token
@@ -210,7 +203,7 @@ onMounted(() => {
   align-items: center;
   height: 90px;
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: hidden;
   overflow-x: hidden;
 }
 
@@ -258,6 +251,8 @@ onMounted(() => {
   align-items: center;
   height: 100%;
   width: 100%;
+  overflow-y: scroll;
+  min-height: 800px;
 }
 
 /* Styles for the desktop bar items */
