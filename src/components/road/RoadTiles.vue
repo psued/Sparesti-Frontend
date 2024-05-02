@@ -62,7 +62,7 @@ const showPopup = ref(false);
 const startpig = ref("src/assets/animation/pig-sitting-right.png");
 const endpig = "src/assets/animation/dancing-pig.gif";
 const startmoved = ref(false);
-const comleteImg = "src/assets/star-circle.svg";
+const comleteImg = ref("src/assets/animation/gold-coin-spin.gif");
 const roadComplete = ref(false);
 
 const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
@@ -165,10 +165,12 @@ onMounted(async () => {
   }
   const userid = 1;
   const savingGoal = await getSavingGoals();
-  if (savingGoal && savingGoal.length > 0) {
-    goal.value = savingGoal[0].goal;
-    saved.value = savingGoal[0].saved;
-  }
+  // if (savingGoal && savingGoal.length > 0) {
+  //   goal.value = savingGoal[0].goal;
+  //   saved.value = savingGoal[0].saved;
+  // }
+  goal.value = 300;
+  saved.value = 200;
   step.value = 100;
   const steps = goal.value / step.value;
 
