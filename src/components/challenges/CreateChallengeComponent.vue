@@ -56,16 +56,7 @@
       </div>
     </div>
 
-    <ButtonComponent class="button" @click="createChallenge">
-      <template v-slot:content>
-        <h2>Create</h2>
-      </template>
-      <template v-slot:click>
-        <h2>Create</h2>
-      </template>
-    </ButtonComponent>
-
-    <ButtonComponent id="finishButton">
+    <ButtonComponent id="finishButton" @click="createChallenge">
       <template v-slot:content>
         <p id="finishText">Ferdig</p>
       </template>
@@ -80,7 +71,6 @@ import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
 import RadioButtonsComponent from "@/components/assets/RadioButtonsComponent.vue";
 import { createSavingChallenge, createPurchaseChallenge, createConsumptionChallenge, addChallengeToUser } from "@/api/challengeHooks";
 import { type ChallengeCreation } from "@/types/challengeTypes";
-import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 
 const challengeTitle = ref("");
 const challengeDescription = ref("");
@@ -93,6 +83,7 @@ const quantityLimit = ref(0);
 const category = ref("");
 const reductionAmount = ref(0);
 const createdChallenge = ref<ChallengeCreation | null>(null);
+const difficultyLevel = ref("");
 
 function pickEmoji(e: string) {
   emoji.value = e;
@@ -107,8 +98,17 @@ function setChallengeType(type : string) {
 }
 
 async function createChallenge() {
+
+  if (timeInterval.value === "Daily") {
+    difficultyLevel.value = "EASY";
+  } else if (timeInterval.value === "Weekly") {
+    difficultyLevel.value = "MEDIUM";
+  } else if (timeInterval.value === "Monthly") {
+    difficultyLevel.value = "HARD";
+  }
+
   try {
-    if (challengeType.value === 'Save') {
+    if (challengeType.value === 'Spare') {
       createdChallenge.value = await createSavingChallenge({
         title: challengeTitle.value,
         description: challengeDescription.value,
@@ -119,7 +119,7 @@ async function createChallenge() {
       });
       addChallengeToUser(Number(createdChallenge.value.id));
       createdChallenge.value = null;
-    } else if (challengeType.value === 'Buy') {
+    } else if (challengeType.value === 'Forbruk') {
       createdChallenge.value = await createPurchaseChallenge({
         title: challengeTitle.value,
         description: challengeDescription.value,
@@ -131,7 +131,7 @@ async function createChallenge() {
       });
       addChallengeToUser(Number(createdChallenge.value.id));
       createdChallenge.value = null;
-    } else if (challengeType.value === 'Consumption') {
+    } else if (challengeType.value === 'Budsjett') {
       createdChallenge.value = await createConsumptionChallenge({
         title: challengeTitle.value,
         description: challengeDescription.value,
