@@ -72,7 +72,7 @@ const selectedBudgettingLocations = computed(() => {
 async function finishUpdate() {
   const userInfo = {
     ...userStore.userInfo,
-    budgetingLocations: selectedBudgetingLocations.value
+    budgetingLocations: selectedBudgettingLocations.value
   };
   const result = await updateUserInfo(userInfo);
   if (result) {

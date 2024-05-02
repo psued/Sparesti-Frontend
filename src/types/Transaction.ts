@@ -1,0 +1,5 @@
+interface Transaction {
+  id: string;
+  category: string;
+  amount: number;
+}

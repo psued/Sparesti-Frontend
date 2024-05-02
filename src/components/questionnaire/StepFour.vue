@@ -55,7 +55,7 @@ const error = ref(null);
 const emit = defineEmits(["update-step"]);
 
 const products = ref(store.stepFourData.products);
-const newProduct = ref({ name: "", frequency: "daily",amount: 0, price: "" });
+const newProduct = ref({ name: "", frequency: "daily", amount: 0, price: "" });
 
 const checkingAccount = ref(store.stepTwoData.checkingAccount.replace(/\s/g, ''));
 const savingsAccount = ref(store.stepTwoData.savingsAccount.replace(/\s/g, ''));
@@ -70,11 +70,11 @@ function addProduct() {
       ...newProduct.value,
       price: parseFloat(newProduct.value.price) 
     });
-    newProduct.value = { name: "", frequency: "", price: "" };
+    newProduct.value = { name: "", frequency: "", amount: number, price: "" };
   }
 }
 
-function removeProduct(index) {
+function removeProduct(index: any) {
   products.value.splice(index, 1);
 }
 

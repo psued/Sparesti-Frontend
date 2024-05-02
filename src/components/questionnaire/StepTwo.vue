@@ -66,7 +66,7 @@ const formattedSavingsAccount = computed({
   }
 });
 
-function formatAccountNumber(number) {
+function formatAccountNumber(number: any) {
   const digits = number.replace(/\D/g, '').substring(0, 11); 
   if (digits.length <= 4) {
     return digits;

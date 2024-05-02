@@ -63,9 +63,14 @@ const userBadges = ref<UserBadge[]>([]);
 const userStore = useUserStore();
 const isEditing = ref(false);
 
+
 const triggerFileUpload = () => {
   toggleEditMode();
   console.log("Triggering file upload...");
+};
+
+const handleProfilePictureChange = async (event: Event) => {
+  console.log("Handling profile picture change...");
 };
 
 const toggleEditMode = async () => {
