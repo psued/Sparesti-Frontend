@@ -19,7 +19,7 @@
     </div>
 
     <div id="challengeButtonsContainer">
-      <SVGButtonComponent class="challengeButton" id="acceptChallengeButton">
+      <SVGButtonComponent class="challengeButton" id="acceptChallengeButton" @click="acceptChallenge">
         <template v-slot:icon>
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8.5 12.5L10.5 14.5L15.5 9.5" stroke="#F09217" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -27,7 +27,7 @@
           </svg>
         </template>
       </SVGButtonComponent>
-      <SVGButtonComponent class="challengeButton" id="regenerateChallengeButton">
+      <SVGButtonComponent class="challengeButton" id="regenerateChallengeButton" @click="generateNewChallenge">
         <template v-slot:icon>
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M7.37756 11.6296H6.62756H7.37756ZM7.37756 12.5556L6.81609 13.0528C6.95137 13.2056 7.14306 13.2966 7.34695 13.3049C7.55084 13.3133 7.74932 13.2382 7.89662 13.0969L7.37756 12.5556ZM9.51905 11.5414C9.81805 11.2547 9.82804 10.7799 9.54137 10.4809C9.2547 10.182 8.77994 10.172 8.48095 10.4586L9.51905 11.5414ZM6.56148 10.5028C6.28686 10.1927 5.81286 10.1639 5.50277 10.4385C5.19267 10.7131 5.16391 11.1871 5.43852 11.4972L6.56148 10.5028ZM14.9317 9.0093C15.213 9.31337 15.6875 9.33184 15.9915 9.05055C16.2956 8.76927 16.3141 8.29476 16.0328 7.9907L14.9317 9.0093ZM12.0437 6.25C9.05802 6.25 6.62756 8.653 6.62756 11.6296H8.12756C8.12756 9.49251 9.87531 7.75 12.0437 7.75V6.25ZM6.62756 11.6296L6.62756 12.5556H8.12756L8.12756 11.6296H6.62756ZM7.89662 13.0969L9.51905 11.5414L8.48095 10.4586L6.85851 12.0142L7.89662 13.0969ZM7.93904 12.0583L6.56148 10.5028L5.43852 11.4972L6.81609 13.0528L7.93904 12.0583ZM16.0328 7.9907C15.0431 6.9209 13.6212 6.25 12.0437 6.25V7.75C13.1879 7.75 14.2154 8.23504 14.9317 9.0093L16.0328 7.9907Z" fill="#F09217"/>
@@ -44,20 +44,55 @@
 <script setup lang="ts">
 import type { MasterChallenge } from '@/types/challengeTypes';
 import SVGButtonComponent from "@/components/assets/SVGButtonComponent.vue";
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useUserStore } from '@/stores/userStore';
+import { generateRandomChallenge, createConsumptionChallenge, createPurchaseChallenge, 
+  createSavingChallenge, addChallengeToUser } from '@/api/challengeHooks';
+
+const userStore = useUserStore();
+const userEmail = userStore.getUserName;
 
 const challengeObject = ref<MasterChallenge>({
-  title: "Default Title",
-  id: 1,
-  description: "make a sentence that is a challenge to read and understand",
-  targetAmount: 250,
-  savedAmount: 0,
-  mediaUrl: "💃🏻",
-  timeInterval: "Daily",
-  difficultyLevel: "Hard",
-  expiryDate: "2022-12-31",
-  completed: false
+  title: "",
+  description: "",
+  targetAmount: 0,
+  mediaUrl: "",
+  timeInterval: "",
+  difficultyLevel: "",
+  expiryDate: "",
+  productName: "",
+  productCategory: "",
+  reductionPercentage: 0,
 });
+
+onMounted(async () => {
+  challengeObject.value = await generateRandomChallenge(userEmail);
+  console.log(challengeObject.value);
+});
+
+const generateNewChallenge = async () => {
+  challengeObject.value = await generateRandomChallenge(userEmail);
+  console.log(challengeObject.value);
+};
+
+const acceptChallenge = async () => {
+  if (challengeObject.value.productName == undefined && challengeObject.value.reductionPercentage == undefined ) {
+    await createSavingChallenge(challengeObject.value)
+    .then((response) => {
+      addChallengeToUser(Number(response.id));
+    });
+  } else if (challengeObject.value.productName != undefined) {
+    createPurchaseChallenge(challengeObject.value)
+    .then((response) => {
+      addChallengeToUser(Number(response.id));
+    });
+  } else {
+    await createConsumptionChallenge(challengeObject.value)
+    .then((response) => {
+      addChallengeToUser(Number(response.id));
+    });
+  }
+};
 </script>
 
 <style scoped>
@@ -119,6 +154,7 @@ const challengeObject = ref<MasterChallenge>({
   margin: 10px;
   color: #4D4D4D;
   font-weight: 500;
+  overflow-wrap: anywhere;
 }
 
 .challengeText {

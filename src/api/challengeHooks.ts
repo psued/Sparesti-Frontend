@@ -92,3 +92,17 @@ export const addChallengeToUser = async (
     throw new Error(`Error adding challenge to user: ${error}`);
   }
 }
+
+export const generateRandomChallenge = async (userEmail: string): Promise<MasterChallenge> => {
+  try {
+    const response = await api.get(`/challenges/suggest-ai-challenge?userEmail=${encodeURIComponent(userEmail)}`);
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Failed to generate random challenge");
+    }
+  } catch (error) {
+    throw new Error(`Error generating random challenge: ${error}`);
+  }
+}
