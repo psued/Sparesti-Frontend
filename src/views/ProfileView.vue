@@ -6,13 +6,16 @@
         <button class="togglebutton" @click="toggleEditMode">{{ isEditing ? 'Save Changes' : 'Edit Profile' }}</button>
       </div>
       <section class="top-part-profile">
-        <div class="profile-pic-container">
-          <ProfilePicComponent :userProfilePic="user.pictureUrl" />
-          <div class="overlay" @click="triggerFileUpload">
-            <i class="icon-pencil"></i>
+        <label class="profile-pic-container">
+          <ProfilePicComponent :userProfilePic="imagePreview" v-if="imagePreview" />
+          <ProfilePicComponent :userProfilePic="user.pictureUrl" v-else />
+          <div class="overlay">
+            <i class="icon-pencil">
+              <img src="/svg_icons/icon-pencil.svg" alt="Pencil Icon" class="icon-pencil-image">
+            </i>
           </div>
-          <input type="file" ref="fileInput" @change="handleProfilePictureChange" style="display:none">
-        </div>
+          <input type="file" ref="fileInput" @change="handleImageUpload" accept="image/*" id="image" style="display:none">
+        </label>
         <div class="total-savings-container">
           <TotalSavingsComponent :totalSavings="user.totalSavings" />
         </div>
@@ -48,11 +51,12 @@
 
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted } from "vue";
 import { useUserStore } from "@/stores/userStore";
-import { getUserInfo, getUserByUsername, updateUserInfo } from "@/api/userHooks";
+import { getUserInfo, getUserByUsername, updateUserInfo, updateProfilePicture } from "@/api/userHooks";
 import { getBadgesByUser } from "@/api/badgeHooks";
 import type { UserBadge } from "@/types/Badge";
+import { uploadImage } from "@/utils/imageUtils";
 import ProfilePicComponent from "@/components/profile/ProfilePicComponent.vue";
 import UserInfoComponent from "@/components/profile/UserInfoComponent.vue";
 import TotalSavingsComponent from "@/components/profile/TotalSavingsComponent.vue";
@@ -62,28 +66,52 @@ const user = ref<any | null>(null);
 const userBadges = ref<UserBadge[]>([]);
 const userStore = useUserStore();
 const isEditing = ref(false);
+const imagePreview = ref<string | null>(null);
+const userProfilePic = ref<string | null>(null);
 
-
-const triggerFileUpload = () => {
-  toggleEditMode();
-  console.log("Triggering file upload...");
-};
-
-const handleProfilePictureChange = async (event: Event) => {
-  console.log("Handling profile picture change...");
+const handleImageUpload = async (event: Event) => {
+  if (!isEditing.value) {
+    toggleEditMode();
+  }
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imagePreview.value = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
 };
 
 const toggleEditMode = async () => {
-  if (isEditing.value) {
-    try {
+  try {
+    if (isEditing.value) {
+      if (imagePreview.value) {
+        const fileInput = document.getElementById("image") as HTMLInputElement;
+        if (fileInput) {
+          const image = fileInput.files?.[0];
+          if (!image) {
+            console.error("No image selected.");
+            return;
+          }
+          const imageUrl = await uploadImage(image, imagePreview);
+          console.log("Image uploaded successfully." + imageUrl);
+          if (imageUrl) {
+            await updateProfilePicture(imageUrl);
+          }
+          user.value.pictureUrl = imageUrl;
+        }
+      }
       await updateUserInfo(user.value);
       console.log("Profile updated successfully.");
-    } catch (error) {
-      console.error("Failed to update user info:", error);
     }
+    isEditing.value = !isEditing.value;
+  } catch (error) {
+    console.error("Failed to update user info:", error);
   }
-  isEditing.value = !isEditing.value;
 };
+
 
 const fetchAndSetUserInfo = async () => {
 	try {
@@ -96,13 +124,15 @@ const fetchAndSetUserInfo = async () => {
 	}
 
   try {
-    const userByUsername = getUserByUsername(userStore.getUserName);
+    const userByUsername = await getUserByUsername(userStore.getUserName);
     const userInfo = await getUserInfo();
     if (userInfo) {
-      setUser(userInfo);
-      await userByUsername.then((res) => {
+      const userByUsernameResult = await userByUsername;
+      userProfilePic.value = userByUsernameResult.profilePictureUrl;
+      setUser(userInfo, userProfilePic.value || "");
+      await userByUsername.then((response: { totalSavings: any; }) => {
         if (user.value !== null) {
-          user.value.totalSavings = res.totalSavings;
+          user.value.totalSavings = response.totalSavings;
         } else {
           console.error("Failed to set total savings");
         }
@@ -115,14 +145,14 @@ const fetchAndSetUserInfo = async () => {
   }
 };
 
-const setUser = (userInfo: any) => {
+const setUser = (userInfo: any, profilePictureUrl: string) => {
   user.value = {
     id: userInfo.id,
     displayName: userInfo.preferred_username || 'N/A',
     firstName: userInfo.given_name || 'N/A',
     lastName: userInfo.family_name || 'N/A',
     email: userInfo.email || 'no-email@example.com',
-    pictureUrl: userInfo.picture || '/default-profile-pic.png',
+    pictureUrl: profilePictureUrl || '/default-profile-pic.png',
     userBadges: [],
     totalSavings: 0,
     birthdate: userInfo.birthdate || "Unknown birthdate",
@@ -176,6 +206,19 @@ onMounted(fetchAndSetUserInfo);
   opacity: 1;
 }
 
+.icon-pencil {
+  position: absolute;
+  /* Adjust the position of the icon as needed */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.icon-pencil-image {
+  height: 50px;
+  width: 50px;
+}
+
 /* Ensure top-part-profile is always flex row */
 .top-part-profile {
   display: flex;
@@ -186,7 +229,7 @@ onMounted(fetchAndSetUserInfo);
 }
 
 /* Desktop view */
-@media (min-width: 769px) {
+@media (min-width: 881px) {
   .header-badges {
     padding-bottom: 2rem;
     font-size: 1.5rem;
@@ -241,15 +284,20 @@ onMounted(fetchAndSetUserInfo);
 }
 
 /* Mobile view */
-@media (max-width: 768px) {
+@media (max-width: 880px) {
   .profile-page-container {
     grid-template-columns: 1fr;
     justify-content: center;
+    padding: 20px;
   }
 
   .profile-pic-container, .total-savings-container {
     width: 150px;
     height: 150px;
   }
+}
+
+input[type="file"] {
+  display: none;
 }
 </style>
