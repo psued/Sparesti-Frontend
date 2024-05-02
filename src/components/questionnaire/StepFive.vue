@@ -33,25 +33,25 @@ import FormButton from '@/components/forms/FormButton.vue';
 import { useUserStore } from '@/stores/userStore';
 import { useQuestionnaireStore } from '@/stores/questionnaireStore';
 import { updateUserInfo } from '@/api/userHooks';
-import type { Transaction } from '@/types';
 
 const emit = defineEmits(["update-step"]);
 const store = useQuestionnaireStore();
-const transactions = ref<Transaction>([]);
+const transactions = ref([]);
 const isLoading = ref(false);
 const error = ref('');
-const selectedCategories = ref({});
+const selectedCategories = ref<Record<string, boolean>>({});
 const userStore = useUserStore();
 
 onMounted(async () => {
+  isLoading.value = true;
   try {
     const accountNr = Number(store.stepTwoData.checkingAccount);
     const data = await getRecentTransactionsSorted(accountNr);
-    if (data && typeof data === 'object' && Object.keys(data).length > 0) {
-      transactions.value = Object.keys(data).map(category => ({
-        id: category,
-        category: category,
-        amount: Math.abs(data[category])
+    if (data && typeof data === 'object') {
+      transactions.value = Object.entries(data).map(([category, amount], index) => ({
+        id: `${index}`, // Using index as ID since original data doesn't provide one
+        category,
+        amount: Math.abs(amount)
       }));
     } else {
       throw new Error("Ingen transaksjoner funnet");
@@ -68,11 +68,10 @@ const selectedBudgettingLocations = computed(() => {
   return Object.entries(selectedCategories.value)
     .filter(([_, isSelected]) => isSelected)
     .map(([category, _]) => category);
-})
+});
 
 async function finishUpdate() {
   const userInfo = {
-    ...userStore.userInfo,
     budgetingLocations: selectedBudgettingLocations.value
   };
   const result = await updateUserInfo(userInfo);

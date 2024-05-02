@@ -68,6 +68,7 @@ function addProduct() {
   if (newProduct.value.name && newProduct.value.frequency && newProduct.value.price) {
     products.value.push({
       ...newProduct.value,
+      amount: parseFloat(newProduct.value.amount),
       price: parseFloat(newProduct.value.price) 
     });
     newProduct.value = { name: "", frequency: "", amount: number, price: "" };
