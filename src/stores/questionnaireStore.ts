@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { useStorage } from "@vueuse/core";
 import type { QuestionnaireData } from "@/types/QuestionnaireData";
-import { submitUserInfo } from "@/api/userHooks";
 
 export const useQuestionnaireStore = defineStore("questionnaireStore", {
   state: () => ({
@@ -83,6 +82,8 @@ export const useQuestionnaireStore = defineStore("questionnaireStore", {
         dateOfBirth: this.questionnaireData.stepOne.birthdate,
         occupationStatus:
           this.questionnaireData.stepOne.occupationStatus.toUpperCase(),
+        checkingAccount: this.questionnaireData.stepTwo.checkingAccount.replace(/\s+/g, ''),
+        savingsAccount: this.questionnaireData.stepTwo.savingsAccount.replace(/\s+/g, ''),
         motivation: this.questionnaireData.stepThree.changeWillingness,
         income: this.questionnaireData.stepThree.annualIncome,
         budgetingProducts: this.questionnaireData.stepFour.products.map(

@@ -1,29 +1,42 @@
 <template>
   <div class="form-container">
-    <h2 class="header">Let's get you started 2...</h2>
+    <h2 class="header">Bankinformasjon</h2>
+    <p>Vi vil trenge bankinformasjonen for dette</p>
     <div class="account-form">
-      <label>Brukskonto:</label>
+      <label for="checkingAccountInput">Brukskonto:</label>
       <input
+        id="checkingAccountInput"
         class="account-input"
-        v-model="checkingAccount"
-        placeholder="xxxx xxxx xxxx xxxx"
+        :value="formattedCheckingAccount"
+        @input="formattedCheckingAccount = ($event.target as HTMLInputElement).value"
+        placeholder="xxxx xx xxxxx"
+        maxlength="13"
         required
       />
-      <label>Sparekonto:</label>
+      <div class="input-gap"></div>
+      <label for="savingsAccountInput">Sparekonto:</label>
       <input
+        id="savingsAccountInput"
         class="account-input"
-        v-model="savingsAccount"
-        placeholder="xxxx xxxx xxxx xxxx"
+        :value="formattedSavingsAccount"
+        @input="formattedSavingsAccount = ($event.target as HTMLInputElement).value"
+        placeholder="xxxx xx xxxxx"
+        maxlength="13"
         required
       />
     </div>
-    <FormButton type="submit" @click="goToNextStep">Next</FormButton>
+    <div class="button-container">
+      <FormButton type="button" @click="goBack">Back</FormButton>
+      <FormButton type="submit" @click="goToNextStep">Next</FormButton>
+    </div>
   </div>
 </template>
 
+
 <script setup lang="ts">
-import { ref, defineEmits, onMounted } from "vue";
+import { ref, defineEmits, onMounted, computed } from "vue";
 import { useQuestionnaireStore } from "@/stores/questionnaireStore";
+import { updateAccounts } from "@/api/userHooks";
 import FormButton from "@/components/forms/FormButton.vue";
 
 const emit = defineEmits(["update-step"]);
@@ -37,16 +50,47 @@ const formErrors = ref({
   savingsAccount: "",
 });
 
+const formattedCheckingAccount = computed({
+  get: () => formatAccountNumber(checkingAccount.value),
+  set: (val) => {
+    val = val.replace(/\s/g, '');
+    checkingAccount.value = isNaN(parseInt(val)) ? '' : val;
+  }
+});
+
+const formattedSavingsAccount = computed({
+  get: () => formatAccountNumber(savingsAccount.value),
+  set: (val) => {
+    val = val.replace(/\s/g, '');
+    savingsAccount.value = isNaN(parseInt(val)) ? '' : val;
+  }
+});
+
+function formatAccountNumber(number: any) {
+  const digits = number.replace(/\D/g, '').substring(0, 11); 
+  if (digits.length <= 4) {
+    return digits;
+  } else if (digits.length <= 6) {
+    return `${digits.slice(0, 4)} ${digits.slice(4)}`;
+  } else {
+    return `${digits.slice(0, 4)} ${digits.slice(4, 6)} ${digits.slice(6)}`;
+  }
+}
+
 function goToNextStep() {
   if (isFormValid()) {
     store.updateStepTwoData({
-      checkingAccount: checkingAccount.value,
-      savingsAccount: savingsAccount.value,
+      checkingAccount: checkingAccount.value.replace(/\s/g, ''),
+      savingsAccount: savingsAccount.value.replace(/\s/g, ''),
     });
     emit("update-step", 3);
   } else {
     alert("Please fill in all fields before proceeding.");
   }
+}
+
+function goBack() {
+  emit("update-step", 1);
 }
 
 function isFormValid() {
@@ -68,6 +112,7 @@ function isFormValid() {
   return isValid;
 }
 
+
 onMounted(() => {
   checkingAccount.value = store.stepTwoData.checkingAccount;
   savingsAccount.value = store.stepTwoData.savingsAccount;
@@ -75,23 +120,35 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 .account-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 35px;
 }
 
 .account-input {
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 0;
   width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
+}
+
+.form-button {
+  width: 100%; 
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 50px;
+}
+
+.input-gap {
+  margin-bottom: 15px;
 }
 </style>
 @/stores/QuestionnaireStore
