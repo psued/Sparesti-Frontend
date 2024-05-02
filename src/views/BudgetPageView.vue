@@ -1,6 +1,38 @@
 <template>
   <div>
-    <button v-if="allBudgetsExpired" @click="renewBudgets">Forny Budsjett</button>
+    <button v-if="allBudgetsExpired" @click="toggleRenewModal">Forny Budsjett</button>
+    <div v-if="showRenewModal" class="modal" @click.self="showRenewModal = false">
+      <div class="modal-content">
+        <span class="close" @click="toggleRenewModal">&times;</span>
+        <h3>Forny Budsjett</h3>
+        <form @submit.prevent="createBudget">
+          <input class="input-margin" v-model="newBudget.name" placeholder="Budsjettets navn" />
+          <div class="form-group">
+            <div>
+              <label for="deadline">Startdato:</label>
+            </div>
+            <input
+                type="date"
+                id="deadline"
+                v-model="newBudget.startDate"
+            />
+            <div class="form-group">
+              <div>
+                <label for="deadline">Deadline:</label>
+              </div>
+              <input
+                  type="date"
+                  id="deadline"
+                  v-model="newBudget.endDate"
+                  :min="newBudget.startDate"
+              />
+            </div>
+          </div>
+          <p v-if="invalidFormat" class="invalid"> Vennligst fyll ut alle feltene</p>
+          <button type="submit">Lagre</button>
+        </form>
+      </div>
+    </div>
     <button v-if="noBudgets" @click="toggleModal">Lag et budsjett</button>
     <div v-if="showModal" class="modal" @click.self="showModal = false">
       <div class="modal-content">
@@ -49,7 +81,7 @@
 <script setup lang = "ts" >
 import BudgetPage from "@/components/budget/BudgetPage.vue";
 import {onMounted, ref, computed, reactive} from "vue";
-import {getBudgetByUser, renewBudget} from "@/api/budgetHooks";
+import {getBudgetByUser, getNewestBudget, renewBudget} from "@/api/budgetHooks";
 import type {Budget} from "@/types/Budget";
 import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
 
@@ -66,12 +98,20 @@ onMounted(async () => {
 const invalidFormat = ref(false);
 
 const showModal = ref(false);
+const showRenewModal = ref(false);
 const newBudget = reactive({ name: "", startDate: "", endDate: "" });
 
 
-const toggleModal = () => {
+const toggleModal = async () => {
+  const newestBudget = await getNewestBudget();
+  console.log(newestBudget);
   showModal.value = !showModal.value;
 };
+
+const toggleRenewModal = () => {
+  showRenewModal.value = !showRenewModal.value;
+};
+
 
 const allBudgetsExpired = computed(() => {
   return budgetData.value.length > 0 && budgetData.value.every(budget => calculateDaysLeft(budget) <= 0);
