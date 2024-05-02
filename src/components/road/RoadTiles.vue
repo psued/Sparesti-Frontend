@@ -55,8 +55,8 @@ import { useUserStore } from "@/stores/userStore";
 import { useLogin } from "@/api/authenticationHooks";
 import { getCurrentSavingGoal } from "@/api/savingGoalHooks";
 import { Howl } from 'howler';
-import plingSound from "@/assets/pling.wav";
-import yaySound from "@/assets/yay.wav";
+import plingSound from "/pling.wav";
+import yaySound from "/yay.wav";
 import confetti from 'canvas-confetti';
 import { useDark, useToggle } from "@vueuse/core";
 
