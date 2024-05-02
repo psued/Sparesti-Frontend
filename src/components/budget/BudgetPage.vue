@@ -25,19 +25,16 @@
     },
     budget: {
       type: Number,
-      default: () => Math.floor(Math.random() * 10000),
     },
     totalBudget: {
       type: Number,
-      default: () => 10000,
     },
     remainingBudget: {
       type: Number,
-      default: () => 6969,
     },
-    daysLeft: {
-      type: Number,
-      default: () => Math.floor(Math.random() * 30),
+    endDate: {
+      type: String,
+      required: true,
     },
   });
 
@@ -45,11 +42,20 @@
     return props.name !== null ? props.name : "Månedlig budsjett";
   });
   
-  const ProgressBar = BudgetProgressBar;
+  const daysLeft = computed(() => {
+  const today = new Date();
+  const end = new Date(props.endDate);
+  const msPerDay = 1000 * 60 * 60 * 24;
+  const timeLeft = end.getTime() - today.getTime();
+  const days = Math.ceil(timeLeft / msPerDay);
+    return days > 0 ? days : 0;
+  });
 
   const expiredClass = computed(() => {
-    return props.daysLeft <= 0 ? 'expired' : '';
+    return daysLeft.value <= 0 ? 'expired' : '';
   });
+
+const ProgressBar = BudgetProgressBar;
   </script>
   
   <style scoped>

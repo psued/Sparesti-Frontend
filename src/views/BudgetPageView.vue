@@ -74,6 +74,7 @@
                 :totalBudget="calculateTotalBudget(budget)"
                 :remainingBudget="calculateRemainingBudget(budget)"
                 :daysLeft="calculateDaysLeft(budget)"
+                :endDate="budget.expiryDate"
     />
   </div>
 </template>
@@ -81,9 +82,11 @@
 <script setup lang = "ts" >
 import BudgetPage from "@/components/budget/BudgetPage.vue";
 import {onMounted, ref, computed, reactive} from "vue";
-import {getBudgetByUser, getNewestBudget, renewBudget} from "@/api/budgetHooks";
+import { useRoute } from "vue-router";
+import {getBudgetByUser, getBudgetById, getNewestBudget, renewBudget, renewBudgetWithCategories} from "@/api/budgetHooks";
 import type {Budget} from "@/types/Budget";
 import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
+import { categories } from "@vueuse/core/metadata.mjs";
 
 const budgetData = ref<Budget[]>([]);
 onMounted(async () => {
@@ -151,6 +154,49 @@ const calculateDaysLeft = (budget: Budget) => {
   const currentDate = new Date();
   const differenceInTime = expiryDate.getTime() - currentDate.getTime();
   return Math.ceil(differenceInTime / (1000 * 3600 * 24));
+};
+
+const route = useRoute();
+const budgetDetails = reactive({
+  name: "",
+  startDate: "",
+  endDate: "",
+  categories: [],
+});
+
+const renewCurrentBudget = async () => {
+  if (!budgetDetails.name || !budgetDetails.startDate || !budgetDetails.endDate) {
+    alert("Fyll ut alle feltene!");
+    return;
+  }
+
+  try {
+    const currentBudget = await getBudgetById(Number(route.params.id)); // Get the current budget ID from route
+    if (!currentBudget) {
+      console.error("No current budget found with id:", route.params.id);
+      return;
+    }
+
+    // Use currentBudget.id as the oldBudgetId
+    const renewalResponse = await renewBudgetWithCategories(
+      currentBudget.id, // Pass the current budget ID as oldBudgetId
+      budgetDetails.name,
+      budgetDetails.startDate,
+      budgetDetails.endDate
+    );
+
+    if (!renewalResponse) {
+      console.error("Failed to renew budget due to an API issue");
+      return;
+    }
+
+    console.log("Budget renewed with categories");
+  } catch (error) {
+    console.error("Failed to renew budget:", error);
+    if ((error as any).response) {
+      console.error("API responded with:", (error as any).response.status, (error as any).response.data);
+    }
+  }
 };
 
 </script>

@@ -129,3 +129,56 @@ export const getNewestBudget = async (): Promise<Budget | null> => {
     }
 }
 
+export const renewBudgetWithCategories = async (
+    oldBudgetId: number,
+    newBudgetName: String,
+    newBudgetStartDate: String,
+    newBudgetExpiryDate: String
+  ): Promise<Budget | null> => {
+    try {
+      // First, create a new budget
+      const createResponse = await api.post(`/budget/budgets/add`, {
+        name: newBudgetName,
+        expiryDate: newBudgetExpiryDate,
+        creationDate: newBudgetStartDate
+      });
+  
+      if (createResponse.status !== 200) {
+        console.error('Failed to create new budget:', createResponse.statusText);
+        return null;
+      }
+  
+      // Get the newly created budget IDs
+      const newBudgetId = createResponse.data.id;
+  
+      // Fetch categories from the old budget
+      const oldBudgetResponse = await api.get(`/budget/budgets/${oldBudgetId}`);
+      if (oldBudgetResponse.status !== 200) {
+        console.error('Failed to fetch old budget:', oldBudgetResponse.statusText);
+        return null;
+      }
+  
+      const categories = oldBudgetResponse.data.rows; // Assuming the old budget categories are stored in `rows`
+  
+      // Copy categories to the new budget
+      for (const category of categories) {
+        const addRowResponse = await api.post(`/budget/budgets/${newBudgetId}/rows/add`, {
+          name: category.name,
+          usedAmount: category.usedAmount,
+          maxAmount: category.maxAmount,
+          category: category.category,
+          emoji: category.emoji
+        });
+  
+        if (addRowResponse.status !== 200) {
+          console.error('Failed to add category to new budget:', addRowResponse.statusText);
+          return null;
+        }
+      }
+  
+      return await getBudgetById(newBudgetId); // Return the newly created budget with categories copied over
+    } catch (error) {
+      console.error('Error renewing budget with categories:', error);
+      return null;
+    }
+  };

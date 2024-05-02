@@ -78,15 +78,14 @@ let leftAmount= 0;
 const props = defineProps({
   remainingBudget: {
     type: Number,
-    default: 6969,
   },
   totalBudget: {
     type: Number,
-    default: 10000,
+
   },
 });
 
-type ExpenseCategory = "Kvitteringer" | "Mat" | "Klær" | "Fritid" | "Betting";
+type ExpenseCategory = "";
 
 type Expense = {
   [key: string]: {
@@ -98,13 +97,7 @@ type Expense = {
   };
 };
 
-const expenses: Expense = reactive({
-  Kvitteringer: { left: 2000, total: 4000, emoji: "🧾", id: 98 , selected: false },
-  Mat: { left: 1500, total: 2500, emoji: "🍞", id: 99, selected: false },
-  Klær: { left: 400, total: 1000, emoji: "👕", id: 100, selected: false },
-  Fritid: { left: 2700, total: 3000, emoji: "🍻", id: 101,  selected: false },
-  Betting: { left: 1250, total: 2000, emoji: "🎲", id: 102, selected: false },
-});
+const expenses: Expense = reactive({});
 
 const showModal = ref(false);
 const newCategory = reactive({ name: "", total: 0, emoji: "" });
@@ -167,7 +160,6 @@ const handleNewCategory = async () => {
       leftAmount += usedAmount;
     }
   }
-
 };
 
 onMounted(async () => {
