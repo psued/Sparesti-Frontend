@@ -76,14 +76,6 @@ const maxMedia =
   window.matchMedia && window.matchMedia("(min-width: 480px)").matches;
 const userStore = useUserStore();
 
-const openPopup = (challenge: Challenge, top: number, left: number) => {
-  selectedChallenge.value = challenge;
-  showPopup.value = true;
-  popupPosition.value = { top, left };
-  console.log("Popup opened");
-  console.log(challenge);
-};
-
 const handleBadgeRewarded = async (badge: Badge) => {
   rewardedBadge.value = badge;
   showBadgePopup.value = true;
