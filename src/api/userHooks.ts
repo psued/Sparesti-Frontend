@@ -46,12 +46,6 @@ export const getUserInfo = async (): Promise<UserInfo | null> => {
     },
   });
   userStore.setUserName(userInfoRes.data.email);
-  // This is temporary until we have a way to extract user id from token
-  const username = userStore.getUserName;
-  api.get(`/users/${username}`).then((response) => {
-    console.log("User id set: " + response.data.id);
-    userStore.setUserId(response.data.id);
-  });
 
   return userInfoRes.data;
 };

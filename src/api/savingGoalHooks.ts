@@ -134,3 +134,16 @@ export const userHasActiveSavingGoal = async (userEmail: string) => {
     throw new Error(`Error getting active saving goal: ${error}`);
   }
 }
+
+export const getCurrentSavingGoal = async () : Promise<SavingGoal | null> => {
+  try {
+    const response = await api.get('/savings-goals/current');
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    return null;
+  }
+}
