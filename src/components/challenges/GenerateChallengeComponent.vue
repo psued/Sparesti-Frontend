@@ -51,7 +51,7 @@ const challengeObject = ref<MasterChallenge>({
   id: 1,
   description: "make a sentence that is a challenge to read and understand",
   targetAmount: 250,
-  savedAmount: 0,
+  usedAmount: 0,
   mediaUrl: "💃🏻",
   timeInterval: "Daily",
   difficultyLevel: "Hard",
