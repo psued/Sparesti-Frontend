@@ -61,10 +61,10 @@ import type { SavingGoal } from "@/types/SavingGoal";
 
 
 const showPopup = ref(false);
-const startpig = ref("src/assets/animation/pig-sitting-right.png");
-const endpig = "src/assets/animation/dancing-pig.gif";
+const startpig = ref("/animation/pig-sitting-right.png");
+const endpig = "/animation/dancing-pig.gif";
 const startmoved = ref(false);
-const comleteImg = "src/assets/star-circle.svg";
+const comleteImg = "/star-circle.svg";
 const roadComplete = ref(false);
 
 const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
@@ -86,20 +86,20 @@ const roads = ref<Road[]>([]);
 const addRoad = (amount: number) => {
   const direction = roads.value.length % 2 === 0 ? 'right' : 'left';
   const moved = false;
-  const pig = 'src/assets/animation/pig-sitting-' + direction + '.png';
+  const pig = '/animation/pig-sitting-' + direction + '.png';
   const houseNr = Math.floor(Math.random()*8) + 1;
   console.log(houseNr);
 
-  roads.value.push({id: roads.value.length, amount, emoji: "/public/house-" + houseNr + ".png", direction, moved, pig, arrived: false});
+  roads.value.push({id: roads.value.length, amount, emoji: "/house-" + houseNr + ".png", direction, moved, pig, arrived: false});
 };
 
 
 function moveStart(): Promise<void> {
   return new Promise((resolve, reject) => {
     console.log("Moving pig from start to " + (roads.value[roads.value.length - 1].id));
-    startpig.value = "src/assets/animation/pig-walking-" + (roads.value.length%2 === 0 ? 'right' : 'left') + ".gif";
+    startpig.value = "/animation/pig-walking-" + (roads.value.length%2 === 0 ? 'right' : 'left') + ".gif";
     const pig = document.getElementsByClassName('walking-pig-start')[0];
-    if(pig){
+    if(pig) {
       pig.classList.add('animation-pig-start-' + roads.value[roads.value.length-1].direction);
     }
     pig.addEventListener('animationend', () => {
@@ -118,14 +118,14 @@ function movePig(road: Road): Promise<void> {
     } else if(road.moved === false && road.amount < saved.value){
       console.log("Moving pig from " + road.id + " to " + (road.id-1));
 
-      road.pig = `src/assets/animation/pig-walking-${roads.value[road.id].direction}.gif`;
+      road.pig = `/animation/pig-walking-${roads.value[road.id].direction}.gif`;
       const pig = document.getElementsByClassName('pig-' + (road.id))[0];
       if(pig){
         pig.classList.add('animation-pig-' + road.direction);
       }
       
       pig.addEventListener('animationend', () => {
-        road.pig = 'src/assets/animation/pig-sitting.png';
+        road.pig = '/animation/pig-sitting.png';
         road.arrived = false;
         road.moved = true;
         pig.classList.remove('animation-pig-' + road.direction);
@@ -138,7 +138,7 @@ function movePig(road: Road): Promise<void> {
 function moveEnd(): Promise<void> {
   return new Promise((resolve, reject) => {
     console.log("Moving pig from " + roads.value[roads.value.length - 1].id + " to end");
-    roads.value[0].pig = `src/assets/animation/pig-walking-${roads.value[0].direction}.gif`;
+    roads.value[0].pig = `/animation/pig-walking-${roads.value[0].direction}.gif`;
     const pig = document.getElementsByClassName('pig-0')[0];
     if(pig){
       pig.classList.add('animation-pig-end-' + roads.value[0].direction);
@@ -217,7 +217,7 @@ onMounted(async () => {
 */
 <style scoped>
 #node-start {
-  background: url("/public/parking-lot.png");
+  background: url("/parking-lot.png");
   background-size: 100% 100%;
 }
 
