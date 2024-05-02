@@ -12,7 +12,7 @@
       <!-- Product Items -->
       <div v-for="(item, index) in products" :key="index" class="product-item">
         <span>{{ item.name }}</span>
-        <span>{{ item.frequency }} per {{ item.timeUnit }}</span>
+        <span>{{ item.amount }}</span>
         <span>{{ item.price }}kr</span>
         <button @click="removeProduct(index)">X</button>
       </div>
@@ -20,12 +20,12 @@
     <!-- New Product Form -->
     <div class="new-product">
       <input v-model="newProduct.name" placeholder="Product name" class="new-product-input" />
+      <input v-model.number="newProduct.amount" type="number" placeholder="Amount" class="new-product-input" />
       <div class="frequency-wrapper">
-        <input v-model="newProduct.frequency" placeholder="Frequency" class="frequency-input" />
-        <select v-model="newProduct.timeUnit" class="timeunit-select">
-          <option value="day">Day</option>
-          <option value="week">Week</option>
-          <option value="month">Month</option>
+        <select v-model="newProduct.frequency" class="timeunit-select">
+          <option value="daily">Daglig</option>
+          <option value="weekly">Ukentlig</option>
+          <option value="monthly">Månedlig</option>
         </select>
       </div>
       <div class="price-wrapper">
@@ -36,12 +36,12 @@
     </div>
     <div class="button-container">
       <FormButton type="button" @click="goBack">Tilbake</FormButton>
-      <FormButton type="submit" @click="finishQuestionnaire">Submit informasjon</FormButton>
+      <FormButton type="submit" @click="finishQuestionnaire">Neste</FormButton>
     </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, defineEmits, onMounted, watch } from "vue";
 import { useQuestionnaireStore } from "@/stores/questionnaireStore";
 import { submitUserInfo, updateUserInfo, updateAccounts } from "@/api/userHooks";
@@ -55,7 +55,7 @@ const error = ref(null);
 const emit = defineEmits(["update-step"]);
 
 const products = ref(store.stepFourData.products);
-const newProduct = ref({ name: "", frequency: "", timeUnit: "day", price: "" });
+const newProduct = ref({ name: "", frequency: "daily",amount: 0, price: "" });
 
 const checkingAccount = ref(store.stepTwoData.checkingAccount.replace(/\s/g, ''));
 const savingsAccount = ref(store.stepTwoData.savingsAccount.replace(/\s/g, ''));
@@ -70,7 +70,7 @@ function addProduct() {
       ...newProduct.value,
       price: parseFloat(newProduct.value.price) 
     });
-    newProduct.value = { name: "", frequency: "", timeUnit: "day", price: "" };
+    newProduct.value = { name: "", frequency: "", price: "" };
   }
 }
 
@@ -80,27 +80,34 @@ function removeProduct(index) {
 
 const finishQuestionnaire = async () => {
   isLoading.value = true;
+  const checkingAccountNumber = parseInt(checkingAccount.value, 10);
+  const savingsAccountNumber = parseInt(savingsAccount.value, 10);
   const userInfo = {
     ...store.getAllData(),
-    userId: userStore.getUserId,
     checkingAccount: checkingAccount.value,
-    savingsAccount: savingsAccount.value
+    savingsAccount: savingsAccount.value,
+    budgetingProducts: products.value.map(product => ({
+      name: product.name,
+      frequency: product.frequency.toUpperCase(), 
+      amount: parseFloat(product.amount), 
+      unitPrice: parseFloat(product.price),
+    }))
   };
 
   try {
-    console.log("Submitting questionnaire data:", userInfo);
-
+    console.log("User info exists:", userStore.userInfoExists);
     if (userStore.userInfoExists) {
+      console.log("Updating user info...");
       await updateUserInfo(userInfo);
       console.log("User info updated successfully!");
     } else {
+      console.log("Submitting new user info...");
       await submitUserInfo(userInfo);
       userStore.userInfoExists = true; 
       console.log("User info submitted successfully!");
     }
 
     await updateAccounts(checkingAccount.value, savingsAccount.value);
-    console.log("Account numbers updated successfully!");
     emit("update-step", 5);
   } catch (err) {
     console.error("Failed during the process:", err);

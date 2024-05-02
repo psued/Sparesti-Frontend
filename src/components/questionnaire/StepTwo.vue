@@ -10,6 +10,7 @@
         :value="formattedCheckingAccount"
         @input="formattedCheckingAccount = ($event.target as HTMLInputElement).value"
         placeholder="xxxx xx xxxxx"
+        maxlength="13"
         required
       />
       <div class="input-gap"></div>
@@ -20,6 +21,7 @@
         :value="formattedSavingsAccount"
         @input="formattedSavingsAccount = ($event.target as HTMLInputElement).value"
         placeholder="xxxx xx xxxxx"
+        maxlength="13"
         required
       />
     </div>
@@ -51,14 +53,16 @@ const formErrors = ref({
 const formattedCheckingAccount = computed({
   get: () => formatAccountNumber(checkingAccount.value),
   set: (val) => {
-    checkingAccount.value = val.replace(/\s/g, '');
+    val = val.replace(/\s/g, '');
+    checkingAccount.value = isNaN(parseInt(val)) ? '' : val;
   }
 });
 
 const formattedSavingsAccount = computed({
   get: () => formatAccountNumber(savingsAccount.value),
   set: (val) => {
-    savingsAccount.value = val.replace(/\s/g, '');
+    val = val.replace(/\s/g, '');
+    savingsAccount.value = isNaN(parseInt(val)) ? '' : val;
   }
 });
 
@@ -73,12 +77,11 @@ function formatAccountNumber(number) {
   }
 }
 
-
 function goToNextStep() {
   if (isFormValid()) {
     store.updateStepTwoData({
-      checkingAccount: checkingAccount.value,
-      savingsAccount: savingsAccount.value,
+      checkingAccount: checkingAccount.value.replace(/\s/g, ''),
+      savingsAccount: savingsAccount.value.replace(/\s/g, ''),
     });
     emit("update-step", 3);
   } else {

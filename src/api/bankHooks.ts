@@ -28,7 +28,7 @@ export const getBankAccountTransactions = async (
   }
 };
 
-export const getRecentTransacitonsSorted = async (
+export const getRecentTransactionsSorted = async (
   accountNr: number,
 ): Promise<any | null> => {
   try {
