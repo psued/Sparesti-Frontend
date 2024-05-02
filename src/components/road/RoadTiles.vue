@@ -97,7 +97,7 @@ const addRoad = (amount: number) => {
   const houseNr =Math.floor(Math.random()*5) + 1;
   console.log(houseNr);
 
-  roads.value.push({id: roads.value.length, amount, emoji: "/public/house-" + houseNr + ".png", direction, moved, pig, arrived: false});
+  roads.value.push({id: roads.value.length, amount, emoji: "/house-" + houseNr + ".png", direction, moved, pig, arrived: false});
 };
 
 
@@ -180,8 +180,8 @@ onMounted(async () => {
     goal.value = savingGoal.targetAmount;
     saved.value = savingGoal.savedAmount;
   } else {
-    goal.value = 400;
-    saved.value = 400;
+    goal.value = 1000;
+    saved.value = 1000;
   }
   step.value = 100;
   const steps = goal.value / step.value;
@@ -339,6 +339,7 @@ watchEffect(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  z-index: 900;
 }
 .road-edge-area {
   position: relative;
