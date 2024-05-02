@@ -47,7 +47,7 @@
   --border-color-red: #ff0000;
 }
 
-/* Defualt Light theme */
+/* Default Light theme */
 :root {
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
