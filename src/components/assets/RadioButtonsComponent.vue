@@ -53,17 +53,16 @@ function emitAnswer(radioButton: string) {
 #timeIntervalRadio {
   display: flex;
   justify-content: space-between;
-
 }
 
 .timeIntervalButton {
-  width: 100px;
-  height: 30px;
+  width: v-bind("90 / (radioButtons ? radioButtons.length : 1) + '%'");
+  height: 100%;
 }
 
 .timeIntervalText {
   font-size: 1rem;
   font-weight: bold;
-  color: white;
+  color: #c5760c;
 }
 </style>
