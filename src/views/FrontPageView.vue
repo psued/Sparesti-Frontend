@@ -44,7 +44,7 @@ import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 import BadgeComponent from "@/components/badge/BadgeComponent.vue";
 import confetti from 'canvas-confetti';
 import { Howl } from 'howler';
-import plingSound from "@/assets/pling.wav";
+import plingSound from "/pling.wav";
 import { onMounted, computed, ref } from "vue";
 import { getSortedChallengesByUser } from "@/api/challengeHooks";
 import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
@@ -56,8 +56,8 @@ import { useRouter } from "vue-router";
 import { useLogin } from "@/api/authenticationHooks";
 import road from "../components/road/RoadTiles.vue";
 
-import checkCircleIcon from "@/assets/check-circle.svg";
-import starCircleIcon from "@/assets/star-circle.svg";
+import checkCircleIcon from "/check-circle.svg";
+import starCircleIcon from "/star-circle.svg";
 import { getUserByUsername } from "@/api/userHooks";
 
 const selectedChallenge = ref<Challenge | null>(null);
@@ -174,7 +174,7 @@ onMounted(async () => {
 }
 
 .background {
-  background-image: url("src/assets/backgroundpink.png");
+  background-image: url("/backgroundpink.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
