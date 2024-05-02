@@ -1,7 +1,6 @@
 <template>
-  <div class="blimp-container">
-    <img src="../../assets/BalloonPig.png" alt="Flying Pig Blimp" class="blimp" @click="showPopup = true"/>
-
+  <div class="balloon-container">
+    <img src="../../assets/BalloonPig2.png" alt="Pig flying hot air balloon offering advice" class="balloon" @click="showPopup = true"/>
     <PopupComponent :is-visible="showPopup" @togglePopup="togglePopup">
       <template #content>
         <div class="popup-content">
@@ -15,15 +14,19 @@
 
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import {ref, onMounted, onUnmounted} from 'vue'
 import { useDailySavingTip } from '../../utils/useDailySavingTip'
 import PopupComponent from '../assets/PopupComponent.vue'
 
-const { tip, fetchTip } = useDailySavingTip()
+const { tip, startAutoFetch, stopAutoFetch } = useDailySavingTip()
 const showPopup = ref(false);
+let intervalId: number;
 onMounted(() => {
-  fetchTip(); // Fetch a tip right when the component mounts
+  intervalId = startAutoFetch(); // Fetch a tip right when the component mounts
 })
+onUnmounted(() => {
+  stopAutoFetch(intervalId); // Clear the interval when the component unmounts
+});
 const togglePopup = () => {
   showPopup.value = !showPopup.value;  // Toggle the visibility state
 }
@@ -50,8 +53,9 @@ const togglePopup = () => {
   }
 }
 
-.blimp-container {
-  position: fixed;
+.balloon-container {
+  position: absolute;
+  z-index: 50;
   top: 20%;
   left: 0;
   width: 100%;
@@ -61,23 +65,30 @@ const togglePopup = () => {
 }
 
 /* FYI, it is no longer a blimp but a hot air balloon*/
-.blimp {
+.balloon {
+  z-index: 99;
   animation: floatAcross 100s infinite; /* Adjust time as needed */
   width: 20%;
-  /* Click me indicator */
+  /* TODO: change width for mobile, or else the blimp is a tiny baby blimp */
 }
 
-.blimp:hover {
+.balloon:hover {
   cursor: pointer;
 }
 
 .popup-content {
   /* Add any styling for the content */
-  display: grid;
+  z-index: 99;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background-color: white;
   border-radius: 8px;
-  width: 75%;
-  place-items: center;
+  padding: 20px;
+  width: 300px; /* Adjust the width as needed */
+  max-width: 90%;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
 }
 
 .saving-tip {

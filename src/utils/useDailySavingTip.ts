@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import {api} from "@/api/axiosConfig";
 
+/**
+ * Fetches a savings tip/fact every 15 minutes from the backend's database of tips.
+ */
 export function useDailySavingTip() {
     const tip = ref<string | null>(null);
 
@@ -17,5 +20,17 @@ export function useDailySavingTip() {
         }
     }
 
-    return { tip, fetchTip };
+    const startAutoFetch = () => {
+        fetchTip(); // Initial fetch
+        const intervalId = setInterval(fetchTip, 900000); // 900000 milliseconds = 15 minutes
+        return intervalId;
+    };
+
+    const stopAutoFetch = (intervalId: number) => {
+        clearInterval(intervalId);
+    };
+
+    return { tip, fetchTip, startAutoFetch, stopAutoFetch };
 }
+
+    //return { tip, fetchTip };}
