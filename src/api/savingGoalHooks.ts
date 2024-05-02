@@ -1,5 +1,13 @@
 import { api } from "@/api/axiosConfig";
 import { type SavingGoalCreation, type SavingGoal } from "@/types/SavingGoal";
+import { ref } from "vue";
+
+// This should be toggled when a saving goal has its amount updated.
+export const savingGoalListener = ref(false);
+
+function notify() {
+  savingGoalListener.value = !savingGoalListener.value;
+}
 
 export const createSavingGoal = async (data: SavingGoalCreation): Promise<SavingGoal> => {
   try {
@@ -145,5 +153,17 @@ export const getCurrentSavingGoal = async () : Promise<SavingGoal | null> => {
     }
   } catch (error) {
     return null;
+  }
+}
+
+export const addToSavedAmount = async (savingGoalId: number, amount: number) : Promise<number> => {
+  try {
+    const response = await api.put(`/savings-goals/user/saving_goal/${savingGoalId}/update-saved-amount?savedAmount=${amount}`);
+    if (response.status === 200) {
+      notify(); 
+    }
+    return response.status;
+  } catch (error) {
+    throw error;
   }
 }
