@@ -1,11 +1,12 @@
 export interface Budget {
     id: number;
     row: BudgetRow[];
+    name: string;
     expiryDate: string;
     creationDate: string;
 }
 
-interface BudgetRow {
+export interface BudgetRow {
     id: number;
     name: string;
     usedAmount: number;

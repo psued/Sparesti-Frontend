@@ -16,6 +16,9 @@
       <h3>Utgifter</h3>
       <div class="add-and-delete-category">
         <button class="add-category-btn" @click="addCategory">
+          <span class="add-category-icon">➕</span> Tildel transaksjon til kategori
+        </button>
+        <button class="add-category-btn" @click="addCategory">
           <span class="add-category-icon">➕</span> Legg til kategori
         </button>
         <button class="delete-category-btn" @click="toggleDeleteMode">
@@ -43,9 +46,10 @@
       <span class="close" @click="toggleModal">&times;</span>
       <h3>Legg til en ny utgift</h3>
       <form @submit.prevent="handleNewCategory">
-        <input v-model="newCategory.emoji" placeholder="Emoji (eks. 🍔)" />
-        <input v-model="newCategory.name" placeholder="Kategori navn" />
-        <input v-model.number="newCategory.total" type="Total sum" placeholder="Total Amount" />
+        <h4>Trykk på smilefjeset og velg emoji</h4>
+        <EmojiPickerComponent @pickEmoji="updateEmoji" :emoji-prop="emoji"/>
+        <input class="input-margin" v-model="newCategory.name" placeholder="Kategori navn" />
+        <input class="input-margin" v-model.number="newCategory.total" type="Total sum" placeholder="Total Amount" />
         <button type="submit">Lagre</button>
       </form>
     </div>
@@ -59,10 +63,17 @@ import { useUserStore } from "@/stores/userStore";
 import axios from "axios";
 import {addRowToUserBudget, deleteBudgetRow, getBudgetById, getBudgetByUser} from "@/api/budgetHooks";
 import {useRoute} from "vue-router";
+import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
 
 const userStore = useUserStore();
 
 const deleteMode = ref(false);
+
+const emoji = ref("");
+
+function updateEmoji(newEmoji: string) {
+  emoji.value = newEmoji;
+}
 
 let totalAmount = 0;
 let leftAmount= 0;
@@ -70,15 +81,14 @@ let leftAmount= 0;
 const props = defineProps({
   remainingBudget: {
     type: Number,
-    default: 6969,
   },
   totalBudget: {
     type: Number,
-    default: 10000,
+
   },
 });
 
-type ExpenseCategory = "Kvitteringer" | "Mat" | "Klær" | "Fritid" | "Betting";
+type ExpenseCategory = "";
 
 type Expense = {
   [key: string]: {
@@ -90,13 +100,7 @@ type Expense = {
   };
 };
 
-const expenses: Expense = reactive({
-  Kvitteringer: { left: 2000, total: 4000, emoji: "🧾", id: 98 , selected: false },
-  Mat: { left: 1500, total: 2500, emoji: "🍞", id: 99, selected: false },
-  Klær: { left: 400, total: 1000, emoji: "👕", id: 100, selected: false },
-  Fritid: { left: 2700, total: 3000, emoji: "🍻", id: 101,  selected: false },
-  Betting: { left: 1250, total: 2000, emoji: "🎲", id: 102, selected: false },
-});
+const expenses: Expense = reactive({});
 
 const showModal = ref(false);
 const newCategory = reactive({ name: "", total: 0, emoji: "" });
@@ -136,7 +140,8 @@ const handleNewCategory = async () => {
       0,
       newCategory.total,
       newCategory.name,
-      newCategory.emoji,
+      emoji.value,
+      Number(route.params.id),
   );
   toggleModal(); // Close modal after adding the category
   newCategory.name = '';
@@ -159,7 +164,6 @@ const handleNewCategory = async () => {
       leftAmount += usedAmount;
     }
   }
-
 };
 
 onMounted(async () => {
@@ -191,9 +195,14 @@ const ProgressBar = BudgetProgressBar;
 </script>
 
 <style scoped>
+
+.input-margin {
+  margin-top: 10px;
+}
+
 .back-arrow {
   font-size: 24px;
-  color: #333;
+  color: var(--color-badges-owned);
   text-decoration: none;
   padding-bottom: 10px;
   display: block;
@@ -251,7 +260,7 @@ const ProgressBar = BudgetProgressBar;
   position: relative;
   display: inline-block;
   font-size: 24px;
-  color: #333;
+  color: #ffffff; 
   margin-top: 20px;
   margin-bottom: 10px;
 }
@@ -343,4 +352,5 @@ const ProgressBar = BudgetProgressBar;
   padding: 5px;
   cursor: pointer;
 }
+
 </style>

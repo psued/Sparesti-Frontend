@@ -1,14 +1,17 @@
 <template>
     <div class="saving-goal-details">
       <div class="header-container">
-        <button class="back-button" @click="navigateToSavingGoalsPage">
+        <ButtonComponent class="back-button" @click="navigateToSavingGoalsPage">
           Tilbake til Sparemål
-        </button>
+          </ButtonComponent>
+
         <h1 class="header">Sparemål Detaljer</h1>
-        <button class="add-button" @click="showCollaborateModal" v-if="author">
+
+        <ButtonComponent class="add-button" @click="showCollaborateModal" v-if="author">
           Legg til Brukere
-        </button>
+        </ButtonComponent>
       </div>
+
       <div class="saving-goal-info">
         <SavingGoalCard :savingGoal="savingGoal || undefined" :editable="true" :author="author" />
       </div>
@@ -111,13 +114,14 @@
     padding-bottom: 2%;
   }
 
-   .back-button {
+  .back-button {
     margin-left: 10px;
   }
 
   .add-button {
     margin-right: 10px;
   }
+
 
   @media screen and (max-width: 900px) {
     .header-container {
@@ -226,7 +230,7 @@
   padding: 10px;
   border: 2px solid var(--border-color-green);
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: #eee;
   transition: transform 0.3s ease;
 }
 
@@ -240,7 +244,7 @@
 }
 
 .user-card:hover {
-  background-color: #f0f0f0;
+  background-color: #eee;
   box-shadow: 0 0 5px #ccc;
   transform: scale(1.05);
   cursor: pointer;
@@ -260,7 +264,15 @@
   font-size: 1.2em;
   border-left: 1px solid #ccc;
   padding-left: 10px;
-  color: black;
+  color: #333;
+}
+
+.saving-goal-card {
+  background-color: var(--color-badges-owned);
+}
+
+.saving-goal-card:hover {
+  background-color: var(--color-badges-owned-hover);
 }
 
 .red-border {
@@ -274,4 +286,5 @@
 .green-border {
   border: 2px solid var(--border-color-green);
 }
+
 </style>

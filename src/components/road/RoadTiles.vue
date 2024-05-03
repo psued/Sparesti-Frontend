@@ -19,9 +19,10 @@
     <div class="road-box">
 
       <div v-if="goal > 0" class="road-edge-point road-end">
-        <div class="road-edge-area saving-goal" :class="{'node-end': roadComplete}"  @click="goToSavingGoal()">
+        <text v-if="roadComplete" class="complete-text">Klikk for å fullføre!</text>
+        <div class="road-edge-area saving-goal" :class="{'node-end': roadComplete}"  @click="saved >= goal ? completeSavingGoal() : goToSavingGoal()">
           <img v-if="roadComplete" class="walking-end-pig" @click="triggerConfetti" :src="endpig"></img>
-          <img v-else-if="savingGoalImage.length > 4" :src="savingGoalImage" class="saving-goal-image"></img>
+          <img v-if="savingGoalImage.length > 4" :src="savingGoalImage" class="saving-goal-image"></img>
           <p v-else class="emoji">{{ savingGoalImage }}</p>
         </div>
       </div>
@@ -55,20 +56,17 @@
 * @description The script section of the RoadTiles component.
 */
 <script setup lang="ts">
-import { onMounted, computed, ref, type Ref, nextTick, watch, watchEffect} from "vue";
-import { getSavingGoals } from "@/api/savingGoalHooks";
-import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
+import { onMounted, ref, nextTick, watchEffect, watch } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import { useLogin } from "@/api/authenticationHooks";
-import { getCurrentSavingGoal } from "@/api/savingGoalHooks";
+import { getCurrentSavingGoal, completeCurrentSavingGoal, savingGoalListener, addToSavedAmount } from "@/api/savingGoalHooks";
 import { Howl } from 'howler';
 import plingSound from "/pling.wav";
 import yaySound from "/yay.wav";
 import confetti from 'canvas-confetti';
-import { useDark, useToggle } from "@vueuse/core";
+import { useDark } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import ButtonComponent from "@/components/assets/ButtonComponent.vue";
-
 
 const showPopup = ref(false);
 const startpig = ref("/animation/pig-sitting-right.png");
@@ -76,6 +74,7 @@ const endpig = "/animation/dancing-pig.gif";
 const startmoved = ref(false);
 const comleteImg = ref("/animation/gold-coin-spin.gif");
 const roadComplete = ref(false);
+const roadCompleteSound = ref(false);
 const showConfetti = ref(false);
 const darkMode = useDark();
 const savingGoalImage = ref('');
@@ -95,9 +94,21 @@ function goToSavingGoal() {
   }
 }
 
+async function completeSavingGoal() {
+  try {
+    const res = await completeCurrentSavingGoal();
+    if (res && res === 200) {
+      router.push('/saving-goal/create');
+    }
+  } catch(error) {
+    alert("You have not reached your goal yet!");
+  }
+}
+
 function createSavingGoal() {
   router.push(`/saving-goal/create`);
 }
+
 
 interface Road {
   id: number;
@@ -107,6 +118,7 @@ interface Road {
   moved: boolean;
   pig: string;
   arrived: boolean;
+  soundPlayed?: boolean;
 }
 const roads = ref<Road[]>([]);
 const addRoad = (amount: number) => {
@@ -120,8 +132,7 @@ const addRoad = (amount: number) => {
 
 
 function moveStart(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    console.log("Moving pig from start to " + (roads.value[roads.value.length - 1].id));
+  return new Promise((resolve) => {
     startpig.value = "/animation/pig-walking-" + (roads.value.length%2 === 0 ? 'right' : 'left') + ".gif";
     const pig = document.getElementsByClassName('walking-pig-start')[0];
     if(pig) {
@@ -137,11 +148,10 @@ function moveStart(): Promise<void> {
 
 }
 function movePig(road: Road): Promise<void> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     if (!goal || !road || road.amount > saved.value || roads.value.length === 1) {
       return;
     } else if(road.moved === false && road.amount < saved.value){
-      console.log("Moving pig from " + road.id + " to " + (road.id-1));
 
       road.pig = `/animation/pig-walking-${roads.value[road.id].direction}.gif`;
       const pig = document.getElementsByClassName('pig-' + (road.id))[0];
@@ -161,8 +171,7 @@ function movePig(road: Road): Promise<void> {
   });
 }
 function moveEnd(): Promise<void> {
-  return new Promise((resolve, reject) => {
-    console.log("Moving pig from " + roads.value[roads.value.length - 1].id + " to end");
+  return new Promise((resolve) => {
     roads.value[0].pig = `/animation/pig-walking-${roads.value[0].direction}.gif`;
     const pig = document.getElementsByClassName('pig-0')[0];
     if(pig){
@@ -179,50 +188,61 @@ function moveEnd(): Promise<void> {
 }
 
 const userStore = useUserStore();
-const openPopup = (challenge: Challenge) => {
+const openPopup = () => {
   showPopup.value = true;
-  console.log("Popup opened");
 
 };
 const closePopup = () => {
   showPopup.value = false;
 }
 
+const updateSavingGoal = async () => {
+  try {
+    let savingGoal = await getCurrentSavingGoal();
+    if (savingGoal) {
+      goal.value = savingGoal.targetAmount;
+      saved.value = savingGoal.savedAmount;
+      savingGoalImage.value = savingGoal.mediaUrl || '';
+      savingGoalId.value = savingGoal.id;
+    } else {
+      goal.value = 0;
+      saved.value = 0;
+    }
+  } catch (error) {
+    console.log("No saving goal found");
+  }
+};
+
+watch(savingGoalListener, async () => {
+  await updateSavingGoal();
+}); 
+
 onMounted(async () => {
   if (!userStore.isLoggedIn()) {
     useLogin();
   }
-  let savingGoal = await getCurrentSavingGoal();
-
-  if (savingGoal) {
-    goal.value = savingGoal.targetAmount;
-    saved.value = savingGoal.savedAmount;
-    savingGoalImage.value = savingGoal.mediaUrl || '';
-    savingGoalId.value = savingGoal.id;
-  } else {
-    goal.value = 0;
-    saved.value = 0;
-  }
+  await updateSavingGoal();
+  
   step.value = 100;
-  const steps = goal.value / step.value;
+  const steps = Math.floor(goal.value / step.value);
 
 
-  for(let i = 1; i < steps; i++){
-    const amount = goal.value - (i * step.value);
+  for(let i = steps; i > 0; i--){
+    const amount = (i*100);
     addRoad(amount);
   }
   
   
   nextTick(async () => {
+    try{
     if(roads.value.length <= 0){
-      console.log("No roads");
     } else {
     for (let i = roads.value.length; i >= 0; i--) {
       if (roads.value[i] && roads.value[i].amount <= saved.value) {
         if (i === roads.value.length - 1) {
           await moveStart();
         }
-        if (roads.value[i - 1].amount <= saved.value) {
+        if (roads.value[i-1] && roads.value[i - 1].amount <= saved.value) {
           await movePig(roads.value[i]);
         }
       } 
@@ -231,10 +251,15 @@ onMounted(async () => {
     if (goal.value !== 0 && goal.value <= saved.value) {
         await moveEnd();
     }
-  }});
+  }
+  } catch (error) {
+    throw new Error("No roads found");
+  }
+  });
 });
 
 const triggerConfetti = () => {
+  if(userStore.getMuted) return;
   showConfetti.value = true;
   let scalar = 2;
   let coin = confetti.shapeFromText({text: '💰', scalar})
@@ -258,29 +283,36 @@ const triggerConfetti = () => {
 };
 
 const playPlingSound = () => {
+  if (userStore.getMuted) return;
   const sound = new Howl({
     src: [plingSound],
+    volume: 0.1,
     autoplay: true,
     loop: false,
   });
 };
+
 const playYaySound = () => {
+  if (userStore.getMuted) return;
   const sound = new Howl({
     src: [yaySound],
+    volume: 0.1,
     autoplay: true,
     loop: false,
   });
 };
 watchEffect(() => {
+  if(userStore.getMuted) return;
   roads.value.forEach(road => {
-    if (road.arrived) {
+    if (road.arrived && !road.soundPlayed) {
+      road.soundPlayed = true;
       playPlingSound();
     }
   });
-  if (roadComplete.value) {
-      triggerConfetti();
+  if (roadComplete.value && !roadCompleteSound.value) {
+      roadCompleteSound.value = true;
       playYaySound();
-    }
+  }
 });
 </script>
 
@@ -292,19 +324,20 @@ watchEffect(() => {
 <style scoped>
 #node-start {
   background-size: 100% 100%;
-  background-color: var(--color-badges-owned);
   color: var(--color-text);
   font-weight: bold;
-  font-size: 38px;
+  font-size: 24px;
 }
 
-#node-end{
-  background-size: 100% 100%;
+.node-end{
+  background-size: auto auto;
   background-color: var(--color-badges-owned);
-  color: var(--color-text);
-  font-weight: bold;
-  background: url("/parking-lot.png");
-  background-size: 100% 100%;
+}
+
+.complete-text{
+  position: absolute;
+  top: -30px;
+  font-size: 18px;
 }
 
 
@@ -328,8 +361,8 @@ watchEffect(() => {
   overflow: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  margin-top: 90px;
-  margin-bottom: 140px;
+  padding-top: 45px;
+  padding-bottom: 90px;
 }
 
 .background-img{
@@ -477,7 +510,7 @@ watchEffect(() => {
 
 .saving-goal-image {
   height: 100%;
-  width: 100%;
+  width: auto;
 }
 
 .emoji {
@@ -491,7 +524,7 @@ watchEffect(() => {
 }
 
 .saving-goal:hover {
-  box-shadow: 0 0 20px #ccc;
+  box-shadow: 0 0 20px var(--color-badges-owned);
   transform: scale(1.05);
 }
 
@@ -502,6 +535,7 @@ watchEffect(() => {
   height: 50px;
   position: relative;
   top: 0;
+  z-index: 900;
 }
 /* Pig */
 .walking-pig{

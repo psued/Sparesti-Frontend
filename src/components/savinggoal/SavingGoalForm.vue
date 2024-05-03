@@ -51,7 +51,7 @@
           <input
             type="number"
             id="value"
-            min="1"
+            min="100"
             max="1000000"
             v-model.number="savingGoal.targetAmount" 
           />
@@ -96,7 +96,6 @@
     deadline: new Date().toISOString().split("T")[0],
   });
   const userStore = useUserStore();
-  const userId = userStore.getUserId;
   const userEmail = userStore.getUserName;
   const createdSavingGoal = ref<SavingGoal | null>(null);
 

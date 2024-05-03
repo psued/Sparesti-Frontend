@@ -4,7 +4,7 @@
     <div class="background-container">
       <div class="background"></div>
     </div>
-    <div class="clouds" v-if="maxMedia">
+    <div class="clouds" v-if="maxMedia && !dark">
       <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
       <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
       <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
@@ -17,7 +17,9 @@
       @close="closePopup"
       :position="popupPosition"
     />
-    <PopupComponent :isVisible="showBadgePopup" :flashingBorder="true" class="popup">
+  </div>
+
+  <PopupComponent :isVisible="showBadgePopup" :flashingBorder="true" class="popup">
       <template #content>
         <h2>Gratulerer, du har mottatt en medalje!</h2>
         <BadgeComponent :badge="rewardedBadge" :owned="true" />
@@ -32,7 +34,7 @@
         <div class="confetti-container" v-if="showConfetti"></div>
       </template>
     </PopupComponent>
-  </div>
+
 </template>
 
 <script setup lang="ts">
@@ -53,6 +55,7 @@ import { updateLoginStreak } from "@/api/userHooks";
 import { useRouter } from "vue-router";
 import { useLogin } from "@/api/authenticationHooks";
 import road from "../components/road/RoadTiles.vue";
+import { useDark} from "@vueuse/core";
 
 import checkCircleIcon from "/check-circle.svg";
 import starCircleIcon from "/star-circle.svg";
@@ -67,6 +70,7 @@ const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 const showConfetti = ref(false);
 const plingAudio = ref<HTMLAudioElement | null>(null);
 const playSound = ref(true);
+const dark = useDark();
 
 const selectedChallengeForPopup = computed(
   () => selectedChallenge.value || ({} as Challenge),
@@ -125,6 +129,7 @@ const triggerConfetti = () => {
 };
 
 const playPlingSound = () => {
+  if(userStore.getMuted) return;
   const sound = new Howl({
     src: [plingSound],
     autoplay: true,
@@ -175,13 +180,13 @@ onMounted(async () => {
 
 .cloud {
   z-index: 900;
-  position: absolute;
+  position: fixed;
   width: var(--cloud-width, 130px);
   height: auto;
   animation: floatClouds linear infinite;
   opacity: 0.3;
   display: none;
-  left: -10%;
+  left: -210px;
   height: 70px;
   width: 200px;
   filter: blur(5px);
@@ -189,16 +194,16 @@ onMounted(async () => {
 }
 
 .clouds {
-  z-index: 700;
+  z-index: 800;
 }
 
 @keyframes floatClouds {
   0% {
-    transform: translateX(-100%);
+    transform: translateX(0);
   }
 
   100% {
-    transform: translateX(100vw);
+    transform: translateX(120vw);
   }
 }
 
@@ -212,37 +217,47 @@ onMounted(async () => {
 .cloud:nth-child(2) {
   animation-duration: 60s;
   animation-delay: 5s;
-  top: 30%;
+  top: 40%;
   display: block;
 }
 
 .cloud:nth-child(3) {
   animation-duration: 30s;
   animation-delay: 10s;
-  top: 45%;
+  top: 65%;
   display: block;
 }
 
 .cloud:nth-child(4) {
   animation-duration: 40s;
   animation-delay: 13s;
-  top: 65%;
+  top: 85%;
   display: block;
 }
 
 .popup {
-  position: absolute;
+  position: fixed; /* Keep the popup in a fixed position */
+  top: 50%; /* Position the top edge of the element at the middle of the screen */
+  left: 50%; /* Position the left edge of the element at the middle of the screen */
+  transform: translate(-50%, -50%); /* Shift the element back by half its own width and height to truly center it */
   background-color: white;
   border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-  max-height: fit-content;
-  overflow-y: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   padding: 20px;
-  width: 80%;
-  width: fit-content;
-  height: fit-content;
-  text-align: -webkit-center;
-  z-index: 999;
+  width: 80%; /* Control width */
+  height: fit-content; /* Adjust height as needed */
+  display: flex; /* Enables flexbox */
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center children horizontally */
+  justify-content: center; /* Center children vertically */
+  z-index: 999; /* Ensures the popup stays above other content */
+}
+
+/* Optional: Ensuring width doesn't become too large on bigger screens */
+@media (min-width: 600px) {
+  .popup {
+    width: 400px; /* Maximum width on large screens */
+  }
 }
 
 .button {
