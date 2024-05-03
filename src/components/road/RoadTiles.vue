@@ -19,7 +19,8 @@
     <div class="road-box">
 
       <div v-if="goal > 0" class="road-edge-point road-end">
-        <div class="road-edge-area saving-goal" :class="{'node-end': roadComplete}"  @click="goToSavingGoal()">
+        <text v-if="roadComplete" class="complete-text">Klikk for å fullføre!</text>
+        <div class="road-edge-area saving-goal" :class="{'node-end': roadComplete}"  @click="saved === goal ? completeSavingGoal() : goToSavingGoal()">
           <img v-if="roadComplete" class="walking-end-pig" @click="triggerConfetti" :src="endpig"></img>
           <img v-else-if="savingGoalImage.length > 4" :src="savingGoalImage" class="saving-goal-image"></img>
           <p v-else class="emoji">{{ savingGoalImage }}</p>
@@ -60,7 +61,7 @@ import { getSavingGoals } from "@/api/savingGoalHooks";
 import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
 import { useUserStore } from "@/stores/userStore";
 import { useLogin } from "@/api/authenticationHooks";
-import { getCurrentSavingGoal } from "@/api/savingGoalHooks";
+import { getCurrentSavingGoal, completeCurrentSavingGoal, savingGoalListener, addToSavedAmount } from "@/api/savingGoalHooks";
 import { Howl } from 'howler';
 import plingSound from "/pling.wav";
 import yaySound from "/yay.wav";
@@ -92,6 +93,17 @@ const savingGoalId = ref(-1);
 function goToSavingGoal() {
   if (savingGoalId.value > 0) {
     router.push(`/saving-goal/details/${savingGoalId.value}`);
+  }
+}
+
+async function completeSavingGoal() {
+  try {
+    const res = await completeCurrentSavingGoal();
+    if (res && res === 200) {
+      router.push('/saving-goal/create');
+    }
+  } catch(error) {
+    alert("You have not reached your goal yet!");
   }
 }
 
@@ -188,12 +200,8 @@ const closePopup = () => {
   showPopup.value = false;
 }
 
-onMounted(async () => {
-  if (!userStore.isLoggedIn()) {
-    useLogin();
-  }
+const updateSavingGoal = async () => {
   let savingGoal = await getCurrentSavingGoal();
-
   if (savingGoal) {
     goal.value = savingGoal.targetAmount;
     saved.value = savingGoal.savedAmount;
@@ -203,12 +211,24 @@ onMounted(async () => {
     goal.value = 0;
     saved.value = 0;
   }
+};
+
+watch(savingGoalListener, async () => {
+  await updateSavingGoal();
+}); 
+
+onMounted(async () => {
+  if (!userStore.isLoggedIn()) {
+    useLogin();
+  }
+  await updateSavingGoal();
+  
   step.value = 100;
-  const steps = goal.value / step.value;
+  const steps = Math.floor(goal.value / step.value);
 
 
-  for(let i = 1; i < steps; i++){
-    const amount = goal.value - (i * step.value);
+  for(let i = steps; i > 0; i--){
+    const amount = (i*100);
     addRoad(amount);
   }
   
@@ -222,7 +242,7 @@ onMounted(async () => {
         if (i === roads.value.length - 1) {
           await moveStart();
         }
-        if (roads.value[i - 1].amount <= saved.value) {
+        if (roads.value[i-1] && roads.value[i - 1].amount <= saved.value) {
           await movePig(roads.value[i]);
         }
       } 
@@ -307,6 +327,12 @@ watchEffect(() => {
   background-size: 100% 100%;
 }
 
+.complete-text{
+  position: absolute;
+  top: -30px;
+  font-size: 18px;
+}
+
 
 /* Complete Container */
 .road-container {
@@ -328,8 +354,8 @@ watchEffect(() => {
   overflow: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  margin-top: 90px;
-  margin-bottom: 140px;
+  padding-top: 45px;
+  padding-bottom: 90px;
 }
 
 .background-img{
@@ -502,6 +528,7 @@ watchEffect(() => {
   height: 50px;
   position: relative;
   top: 0;
+  z-index: 900;
 }
 /* Pig */
 .walking-pig{
