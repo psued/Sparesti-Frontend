@@ -208,6 +208,7 @@ async function createChallenge() {
     // Reset the form fields after successful creation
     alert("Challenge created successfully!");
     resetForm();
+    window.location.reload()
   } catch (error) {
     console.error("Error creating challenge:", error);
   }

@@ -10,7 +10,7 @@
     </div>
     <h2 class="challengeTitle">{{challengeObject.title}}</h2>
     <ChallengeProgress :challenge-type="challengeType" :target-amount="challengeObject.targetAmount" :saved-amount="challengeObject.usedAmount" :media-url="challengeObject.mediaUrl || ''" />
-    <p class="challengeText">{{challengeObject.description + challengeType}}</p>
+    <p class="challengeText">{{challengeObject.description}}</p>
 
 
     <div class="completeButtonContainer">
@@ -145,8 +145,6 @@ const failed = computed(() => {
     return props.challengeObject.usedAmount >= props.challengeObject.targetAmount;
   }
 });
-
-console.log("Challenge: "  + props.challengeObject.title + " completed: " +  completed.value + " failed: " + failed.value + " challengeExpired: " + challengeExpired)
 
 const timeLeftText = computed(() => {
   let timeLeft = new Date(props.challengeObject.expiryDate).getTime() - new Date().getTime();

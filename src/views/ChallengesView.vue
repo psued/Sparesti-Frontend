@@ -2,7 +2,7 @@
   <div id="challengesViewDiv">
     <h1 id="challengesTitle">Challenges</h1>
     <div id="challengesDiv">
-      <ChallengeComponent @update="updatePage" class="challenge" v-for="challengeObject in challengeObjects.values()" :key="challengeObject.id" :challenge-object="challengeObject" />
+      <ChallengeComponent class="challenge" v-for="challengeObject in challengeObjects.values()" :key="challengeObject.id" :challenge-object="challengeObject" />
     </div>
     <PopupComponent @togglePopup="toggleIsVisible" :is-visible="isVisible" ref="popup">
       <template v-slot:content>
@@ -48,10 +48,6 @@ function toggleIsVisible() {
   if(!isFrozen){
     isVisible.value = !isVisible.value
   }
-}
-
-function updatePage(){
-  fetchChallengeObjects()
 }
 </script>
 
