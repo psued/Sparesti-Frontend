@@ -16,6 +16,7 @@ import BadgeDetailsView from "@/views/BadgeDetailsView.vue";
 import SavingGoalView from "@/views/SavingGoalView.vue";
 import SavingGoalDetails from "@/components/savinggoal/SavingGoalDetails.vue";
 import SavingGoalCardDetails from "@/components/savinggoal/SavingGoalCardDetails.vue";
+import ContactView from '@/components/contact/Contact.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -110,6 +111,11 @@ const router = createRouter({
           component: CompleteAccountForm,
         },
       ],
+    },
+    {
+      path: "/contact",
+      name: "contact",
+      component: ContactView,
     },
     {
       path: "/token",
