@@ -3,7 +3,6 @@
     <section v-if="user" class="user-info-section">
       <div class="header">
         <h1>{{ user.displayName }}'s Profile</h1>
-        <button class="togglebutton" @click="toggleEditMode">{{ isEditing ? 'Save Changes' : 'Edit Profile' }}</button>
       </div>
       <section class="top-part-profile">
         <label class="profile-pic-container">
@@ -21,30 +20,41 @@
         </div>
       </section>
       <UserInfoComponent :user="user" :isEditing="isEditing" />
+      <section class="edit-section">
+        <ButtonComponent class="edit-profile-button" @click="toggleEditMode">
+          <template v-slot:content>
+            <span class="button-content">
+              {{ isEditing ? 'Lagre Endringer' : 'Rediger profil' }}<i class="icon-pencil-edit"></i>
+            </span>
+          </template>
+        </ButtonComponent>
+        <button to="/settings" class="settings-button">
+          Informasjon & innstillinger 
+          <i class="icon-setting"></i>
+        </button>
+      </section>
     </section>
     <section class="badges-section">
       <div class="header-badges">
         <h1>Alle dine medaljer</h1>
       </div>
-      <div class="badge-container">
-        <router-link
-          v-for="userBadge in userBadges"
-          :key="userBadge.badge.id"
-          :to="{
-            name: 'BadgeDetails',
-            params: { id: userBadge.badge.id },
-            query: { isOwned: 'true' },
-          }"
-          class="badge-link"
-        >
-          <BadgeComponent :badge="userBadge.badge" :owned="true" />
-        </router-link>
+        <div class="badges-list">
+          <router-link
+            v-for="userBadge in userBadges"
+            :key="userBadge.badge.id"
+            :to="{
+              name: 'BadgeDetails',
+              params: { id: userBadge.badge.id },
+              query: { isOwned: 'true' },
+            }"
+            class="badge-link"
+          >
+            <BadgeComponent :badge="userBadge.badge" :owned="true"/>
+          </router-link>
       </div>
     </section>
-    <section class="settings-section">
-      <router-link to="/settings" class="settings-button">
-        Information & Settings
-      </router-link>
+    <section class="settings-button">
+      
     </section>
   </div>
 </template>
@@ -55,12 +65,13 @@ import { ref, onMounted } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import { getUserInfo, getUserByUsername, updateUserInfo, updateProfilePicture } from "@/api/userHooks";
 import { getBadgesByUser } from "@/api/badgeHooks";
-import type { UserBadge } from "@/types/Badge";
+import type { UserBadge, Badge } from "@/types/Badge";
 import { uploadImage } from "@/utils/imageUtils";
 import ProfilePicComponent from "@/components/profile/ProfilePicComponent.vue";
 import UserInfoComponent from "@/components/profile/UserInfoComponent.vue";
 import TotalSavingsComponent from "@/components/profile/TotalSavingsComponent.vue";
 import BadgeComponent from "@/components/badge/BadgeComponent.vue";
+import ButtonComponent from '@/components/assets/ButtonComponent.vue';
 
 const user = ref<any | null>(null);
 const userBadges = ref<UserBadge[]>([]);
@@ -163,18 +174,43 @@ onMounted(fetchAndSetUserInfo);
 </script>
 
 <style scoped>
-/* Base styles for links within the profile */
-.badge-link {
-  text-decoration: none;
-  color: var(--vt-c-black-soft);
-  display: block;
+.badges-list {
+  display: flex; 
+  flex-wrap: wrap; /* Allows the items to wrap to the next line */
+  justify-content: center; /* Centers the badges horizontally */
+  align-items: center; /* Centers the badges vertically */
 }
+
+.edit-section {
+  left: 25%;
+}
+.icon-pencil-edit {
+  background-image: url('/svg_icons/icon-pencil.svg');
+  background-size: cover; 
+  display: block; 
+  width: 20px; 
+  height: 20px;
+  margin-left: 10px;
+}
+.edit-profile-button {
+  width: 200px;
+  height: 40px;
+}
+.button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 
 .badge-link:hover {
   background: none;
 }
 
-/* Styling for the profile picture container */
+.profile-pic-container {
+  border: 2px solid;
+}
+
 .profile-pic-container, .total-savings-container {
   position: relative;
   width: 12vw;
@@ -186,7 +222,6 @@ onMounted(fetchAndSetUserInfo);
   align-items: center;
 }
 
-/* Overlay styling that appears on hover */
 .overlay {
   position: absolute;
   top: 0;
@@ -208,7 +243,6 @@ onMounted(fetchAndSetUserInfo);
 
 .icon-pencil {
   position: absolute;
-  /* Adjust the position of the icon as needed */
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -219,13 +253,18 @@ onMounted(fetchAndSetUserInfo);
   width: 50px;
 }
 
-/* Ensure top-part-profile is always flex row */
 .top-part-profile {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5rem; /* Adjust space between elements */
+  gap: 5rem;
   margin-bottom: 2rem;
+}
+
+.badge-link {
+  height: 225px;
+  padding-bottom: 20px;
+  width: 201px;
 }
 
 /* Desktop view */
@@ -256,7 +295,7 @@ onMounted(fetchAndSetUserInfo);
     padding-right: 2rem;
   }
 
-  .settings-section {
+  .edit-section {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -271,22 +310,12 @@ onMounted(fetchAndSetUserInfo);
     padding: 1rem;
     border-radius: 1rem;
   }
-
-  .badge-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .badge-link {
-    max-height: fit-content;
-  }
 }
 
 /* Mobile view */
 @media (max-width: 880px) {
   .profile-page-container {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr, 1fr;
     justify-content: center;
     padding: 20px;
   }

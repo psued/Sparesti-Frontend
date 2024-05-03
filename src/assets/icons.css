@@ -277,3 +277,12 @@
   background-repeat: no-repeat;
   background-position: center;
 }
+.icon-setting {
+  background-image: url(/svg_icons/icon-setting.svg);
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}

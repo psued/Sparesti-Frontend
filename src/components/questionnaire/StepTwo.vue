@@ -11,8 +11,10 @@
         @input="formattedCheckingAccount = ($event.target as HTMLInputElement).value"
         placeholder="xxxx xx xxxxx"
         maxlength="13"
+        minlength="13"
         required
       />
+      <div v-if="formErrors.checkingAccount" class="error">{{ formErrors.checkingAccount }}</div>
       <div class="input-gap"></div>
       <label for="savingsAccountInput">Sparekonto:</label>
       <input
@@ -22,8 +24,10 @@
         @input="formattedSavingsAccount = ($event.target as HTMLInputElement).value"
         placeholder="xxxx xx xxxxx"
         maxlength="13"
+        minlength="13"
         required
       />
+      <div v-if="formErrors.savingsAccount" class="error">{{ formErrors.savingsAccount }}</div>
     </div>
     <div class="button-container">
       <FormButton type="button" @click="goBack">Back</FormButton>
@@ -66,8 +70,12 @@ const formattedSavingsAccount = computed({
   }
 });
 
-function formatAccountNumber(number: any) {
+function formatAccountNumber(number: string) {
   const digits = number.replace(/\D/g, '').substring(0, 11); 
+  return formatAsBankAccount(digits);
+}
+
+function formatAsBankAccount(digits: string) {
   if (digits.length <= 4) {
     return digits;
   } else if (digits.length <= 6) {
@@ -84,8 +92,6 @@ function goToNextStep() {
       savingsAccount: savingsAccount.value.replace(/\s/g, ''),
     });
     emit("update-step", 3);
-  } else {
-    alert("Please fill in all fields before proceeding.");
   }
 }
 
@@ -94,24 +100,13 @@ function goBack() {
 }
 
 function isFormValid() {
-  formErrors.value = {
-    checkingAccount: "",
-    savingsAccount: "",
-  };
+  const pureChecking = checkingAccount.value.replace(/\s/g, '');
+  const pureSavings = savingsAccount.value.replace(/\s/g, '');
+  formErrors.value.checkingAccount = pureChecking.length === 11 ? "" : "Brukskonto må inneholde nøyaktig 11 sifre.";
+  formErrors.value.savingsAccount = pureSavings.length === 11 ? "" : "Sparekonto må inneholde nøyaktig 11 sifre.";
 
-  let isValid = true;
-  if (!checkingAccount.value) {
-    formErrors.value.checkingAccount = "Checking account is required";
-    isValid = false;
-  }
-  if (!savingsAccount.value) {
-    formErrors.value.savingsAccount = "Savings account is required";
-    isValid = false;
-  }
-
-  return isValid;
+  return !formErrors.value.checkingAccount && !formErrors.value.savingsAccount;
 }
-
 
 onMounted(() => {
   checkingAccount.value = store.stepTwoData.checkingAccount;
@@ -149,6 +144,10 @@ onMounted(() => {
 
 .input-gap {
   margin-bottom: 15px;
+}
+
+.error {
+  color: #E57373;
 }
 </style>
 @/stores/QuestionnaireStore

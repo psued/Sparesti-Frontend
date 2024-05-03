@@ -94,6 +94,5 @@ const completionPercentage = computed(() => {
   left: -20vw;
   z-index: -1;
 }
-
 </style>
 @/stores/QuestionnaireStore
