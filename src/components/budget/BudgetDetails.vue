@@ -92,7 +92,7 @@
 
 <script setup lang="ts">
 import BudgetProgressBar from "./BudgetProgressBar.vue";
-import { ref, reactive, onMounted, computed, watch } from "vue";
+import {ref, reactive, onMounted, computed, watch, Ref, UnwrapRef} from "vue";
 import { useUserStore } from "@/stores/userStore";
 import axios from "axios";
 import {
@@ -107,7 +107,7 @@ import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
 import type {Transaction} from "@/types/Budget";
 
 
-const transactions = ref([]);
+let transactions: Ref<UnwrapRef<any[]>> = ref([]);
 const currentPage = ref(1);
 const transactionsPerPage = ref(5);
 let categories = ref([]);
@@ -224,7 +224,6 @@ const addTransaction = async () => {
 
 let selectedCategories = reactive({});
 let budgetRowIds = reactive({});
-
 
 const saveTransactions = async () => {
   // Explicitly declare the type of the variable to be Transaction[]
