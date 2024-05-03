@@ -78,6 +78,8 @@
 
   --color-road-background: var(--vt-c-roads-background-light);
   --color-road-border: var(--vt-c-roads-border-light);
+  
+  --modal-background: var(--vt-c-white-soft); 
 }
 
 /* Dark theme */
@@ -103,6 +105,8 @@ body.dark {
 
   --color-road-background: var(--vt-c-roads-background-dark);
   --color-road-border: var(--vt-c-roads-border-dark);
+
+  --modal-background: var(--vt-c-black-soft);
 }
 
 *,
@@ -156,4 +160,7 @@ button:hover {
   top: var(--st, 0);
   inline-size: 100%;
   overflow-y:scroll;
+}
+.modal {
+  background-color: var(--color-background-soft);
 }
