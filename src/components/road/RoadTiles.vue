@@ -56,7 +56,7 @@
 * @description The script section of the RoadTiles component.
 */
 <script setup lang="ts">
-import { onMounted, ref, nextTick, watchEffect } from "vue";
+import { onMounted, ref, nextTick, watchEffect, watch } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import { useLogin } from "@/api/authenticationHooks";
 import { getCurrentSavingGoal, completeCurrentSavingGoal, savingGoalListener, addToSavedAmount } from "@/api/savingGoalHooks";
