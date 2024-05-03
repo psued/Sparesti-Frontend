@@ -143,6 +143,7 @@ const playPlingSound = () => {
     src: [plingSound],
     autoplay: true,
     loop: false,
+    volume: 0.1,
   });
 };
 
