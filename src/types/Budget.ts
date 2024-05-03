@@ -14,3 +14,12 @@ export interface BudgetRow {
     category: string;
     emoji: string;
 }
+
+export interface Transaction {
+    id: number;
+    amount: number;
+    description: string;
+    category: string;
+    accountNr: number;
+    date: string;
+}
