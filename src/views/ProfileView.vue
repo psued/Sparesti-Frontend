@@ -83,6 +83,7 @@ const userBadges = ref<UserBadge[]>([]);
 const isEditing = ref(false);
 const imagePreview = ref<string | null>(null);
 const userProfilePic = ref<string | null>(null);
+const totalSavings = ref<number>(0);
 
 const goToSettings = () => {
   router.push('/settings');
@@ -153,18 +154,13 @@ const fetchAndSetUserInfo = async () => {
 
   try {
     const userByUsername = await getUserByUsername();
+    console.log("User by username:", userByUsername)
     const userInfo = await getUserInfo();
     if (userInfo) {
       const userByUsernameResult = await userByUsername;
       userProfilePic.value = userByUsernameResult.profilePictureUrl;
-      setUser(userInfo, userProfilePic.value || "");
-      await userByUsername.then((response: { totalSavings: any; }) => {
-        if (user.value !== null) {
-          user.value.totalSavings = response.totalSavings;
-        } else {
-          console.error("Failed to set total savings");
-        }
-      });
+      totalSavings.value = userByUsernameResult.totalSavings;
+      setUser(userInfo, userProfilePic.value || "", totalSavings.value);
     } else {
       console.error("User info not available");
     }
@@ -173,7 +169,7 @@ const fetchAndSetUserInfo = async () => {
   }
 };
 
-const setUser = (userInfo: any, profilePictureUrl: string) => {
+const setUser = (userInfo: any, profilePictureUrl: string, totalSavings: number) => {
   user.value = {
     id: userInfo.id,
     displayName: userInfo.preferred_username || 'N/A',
@@ -182,7 +178,7 @@ const setUser = (userInfo: any, profilePictureUrl: string) => {
     email: userInfo.email || 'no-email@example.com',
     pictureUrl: profilePictureUrl || '/default-profile-pic.png',
     userBadges: [],
-    totalSavings: 0,
+    totalSavings: totalSavings || 0,
     birthdate: userInfo.birthdate || "Unknown birthdate",
   };
 };
