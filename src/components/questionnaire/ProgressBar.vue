@@ -18,9 +18,9 @@ const progressWidth = computed(() => `${props.completionPercentage}%`);
 
 .progress-bar-container {
   position: absolute;
-  top: -90px;
   width: 100%;
 	height: 10px;
+	top: 0;
 }
 .progress-bar {
 	height: 100%;
