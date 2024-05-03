@@ -141,6 +141,7 @@ const handleNewCategory = async () => {
       newCategory.total,
       newCategory.name,
       emoji.value,
+      Number(route.params.id),
   );
   toggleModal(); // Close modal after adding the category
   newCategory.name = '';

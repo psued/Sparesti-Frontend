@@ -23,13 +23,14 @@ export const addRowToUserBudget = async (
     usedAmount: number,
     maxAmount: number,
     category: string,
-    emoji: string): Promise<Budget | null> => {
+    emoji: string,
+    budgetid: number): Promise<Budget | null> => {
     try {
         // First, get the budget for the user
-        const response = await api.get(`/budget/budgets`);
+        const response = await api.get(`/budget/budgets/${budgetid}`);
 
     if (response.status === 200 && response.data) {
-      const budgetId = response.data[0].id;
+      const budgetId = response.data.id;
       console.log("Budget ID:", budgetId);
 
       const row = {
