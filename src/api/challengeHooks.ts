@@ -106,3 +106,42 @@ export const generateRandomChallenge = async (userEmail: string): Promise<Master
     throw new Error(`Error generating random challenge: ${error}`);
   }
 }
+
+export const addAmountToChallenge = async (
+  challengeType: string,
+  challengeId: number,
+  amount: number
+): Promise<void> => {
+  try {
+    const response = await api.put(
+      `/${challengeType}-challenges/${challengeType}/${challengeId}/add?amount=${amount}`,
+      { amount }
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Failed to add amount to challenge");
+    }
+  } catch (error) {
+    throw new Error(`Error adding amount to challenge: ${error}`);
+  }
+}
+
+export const updateCompletedChallenge = async (
+  challengeId: number
+): Promise<void> => {
+  try {
+    const response = await api.put(
+      `/challenges/users/challenges/${challengeId}`
+    );
+
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error("Failed to update completed challenge");
+    }
+  } catch (error) {
+    throw new Error(`Error updating completed challenge: ${error}`);
+  }
+}

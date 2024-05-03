@@ -8,3 +8,12 @@ export interface User {
   totalSavings: number;
   birthdate: string;
 }
+
+export interface UserResponse {
+  user : 
+  {
+    id?: number;
+    email: string;
+    profilePictureUrl: string | null;
+  }
+}
