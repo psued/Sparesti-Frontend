@@ -16,7 +16,7 @@
     </div>
 
     <div class="input-group">
-      <label for="willingness-range">På en skala fra 1 til 5, hvor villig er du til å endre sparevanene?</label>
+      <label for="willingness-range">På en skala fra 0 til 5, hvor villig er du til å endre sparevanene?</label>
       <div class="slider-container">
         <input
           type="range"
@@ -52,20 +52,6 @@ const formErrors = ref({
   changeWillingness: "",
 });
 
-function goToNextStep() {
-  if (isFormValid()) {
-    store.updateStepThreeData({
-      annualIncome: annualIncome.value,
-      changeWillingness: changeWillingness.value,
-    });
-    emit("update-step", 4);
-  }
-}
-
-function goBack() {
-  emit("update-step", 2);
-}
-
 function isFormValid() {
   formErrors.value.annualIncome = validateAnnualIncome(annualIncome.value);
   formErrors.value.changeWillingness = (changeWillingness.value === undefined || changeWillingness.value === null) ? "Please indicate your willingness to change." : "";
@@ -90,6 +76,20 @@ function validateAnnualIncome(income: any) {
     return "Går du i minus?";
   }
   return "";
+}
+
+function goToNextStep() {
+  if (isFormValid()) {
+    store.updateStepThreeData({
+      annualIncome: annualIncome.value,
+      changeWillingness: changeWillingness.value,
+    });
+    emit("update-step", 4);
+  }
+}
+
+function goBack() {
+  emit("update-step", 2);
 }
 
 onMounted(() => {
@@ -164,5 +164,4 @@ onMounted(() => {
   color: #E57373;
 }
 </style>
-
-@/stores/QuestionnaireStore@/stores/questionnaireStore
+@/stores/QuestionnaireStore

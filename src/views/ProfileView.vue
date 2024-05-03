@@ -138,6 +138,9 @@ const toggleEditMode = async () => {
   }
 };
 
+/**
+ * Fetches the user's badges and user info.
+ */
 const fetchAndSetUserInfo = async () => {
 	try {
 		userBadges.value = (await getBadgesByUser()) as unknown as UserBadge[];

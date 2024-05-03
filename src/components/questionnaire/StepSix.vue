@@ -2,7 +2,7 @@
 	<div class="form-container">
 		<h2>Nå er du helt ferdig!</h2>
 		<div class="form-group">
-			<p>Her er noen utvalgte utfordringer du kan starte på!</p>
+			<p>Du kan begynne å bruke applikasjonen!</p>
 		</div>
 		<div class="button-container">
       <FormButton type="button" @click="goBack">Tilbake</FormButton>
@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, onMounted } from 'vue'; 
+import { defineEmits } from 'vue'; 
 import { useRouter } from 'vue-router';
 import FormButton from '@/components/forms/FormButton.vue';
 
@@ -35,6 +35,5 @@ function finishQuestionnaire() {
   width: 100%;
   margin-top: 30px;
 }
-
 </style>
 

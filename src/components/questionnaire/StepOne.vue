@@ -3,6 +3,7 @@
     <h2 class="form-title">La oss komme i gang...</h2>
     <p>Vennligst skriv inn informasjon om deg selv</p>
     <div class="question-container">
+      <!-- Input fields for user information with validation and error messages -->
       <div class="input-wrapper">
         <label for="firstName">Hva er ditt fornavn?</label>
         <input id="firstName" v-model="firstName" placeholder="First Name" required />
@@ -79,7 +80,7 @@ function goToNextStep() {
 }
 
 /**
- * Checks if the form is valid, and has error messages for different scenarios
+ * Checks if the form is valid, and has error messages for different scenarios.
  */
 function isFormValid() {
   const today = new Date();

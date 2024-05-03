@@ -73,6 +73,10 @@ watch(products, (newProducts) => {
   store.updateStepFourData({ products: newProducts });
 }, { deep: true });
 
+/**
+ * Adds a new product to the list of products.
+ * Validates the input fields before adding the product.
+ */
 function addProduct() {
   formErrors.value = []; 
 
