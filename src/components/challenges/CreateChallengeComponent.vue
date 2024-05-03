@@ -87,7 +87,7 @@ import {
   addChallengeToUser
 } from "@/api/challengeHooks";
 import {type ChallengeCreation} from "@/types/challengeTypes";
-import {BudgetRow} from "@/types/Budget";
+import type {BudgetRow} from "@/types/Budget";
 import {getNewestBudget} from "@/api/budgetHooks";
 
 const challengeTitle = ref("");
@@ -125,11 +125,13 @@ const tempCategory = ref<BudgetRow>({
   emoji: ""
 })
 
-const budgetRows = ref([])
+const budgetRows = ref<BudgetRow[]>([]);
 async function fetchChallengeObjects() {
   const budgetResponse = await getNewestBudget();
-  for(let i = 0; i < budgetResponse.row.length; i++){
-    budgetRows.value.push(budgetResponse.row[i])
+  if(budgetResponse) {
+    for(let i = 0; i < budgetResponse.row.length; i++){
+      budgetRows.value.push(budgetResponse.row[i])
+    }
   }
 }
 
