@@ -201,8 +201,8 @@ onMounted(async () => {
     savingGoalImage.value = savingGoal.mediaUrl || '';
     savingGoalId.value = savingGoal.id;
   } else {
-    goal.value = 0;
-    saved.value = 0;
+    goal.value = 300;
+    saved.value = 200;
   }
   step.value = 100;
   const steps = Math.round(goal.value / step.value);
@@ -509,6 +509,7 @@ watchEffect(() => {
   height: 50px;
   position: relative;
   top: 0;
+  z-index: 900;
 }
 /* Pig */
 .walking-pig{
