@@ -7,14 +7,28 @@
       <section class="top-part-profile">
         <label class="profile-pic-container">
           <!-- Profile Picture -->
-          <ProfilePicComponent :userProfilePic="imagePreview" v-if="imagePreview" />
+          <ProfilePicComponent
+            :userProfilePic="imagePreview"
+            v-if="imagePreview"
+          />
           <ProfilePicComponent :userProfilePic="user.pictureUrl" v-else />
           <div class="overlay">
             <i class="icon-pencil">
-              <img src="/svg_icons/icon-pencil.svg" alt="Pencil Icon" class="icon-pencil-image">
+              <img
+                src="/svg_icons/icon-pencil.svg"
+                alt="Pencil Icon"
+                class="icon-pencil-image"
+              />
             </i>
           </div>
-          <input type="file" ref="fileInput" @change="handleImageUpload" accept="image/*" id="image" style="display:none">
+          <input
+            type="file"
+            ref="fileInput"
+            @change="handleImageUpload"
+            accept="image/*"
+            id="image"
+            style="display: none"
+          />
         </label>
         <!-- Total Savings -->
         <div class="total-savings-container">
@@ -28,7 +42,8 @@
         <ButtonComponent class="edit-profile-button" @click="toggleEditMode">
           <template v-slot:content>
             <span class="button-content">
-              {{ isEditing ? 'Lagre Endringer' : 'Rediger profil' }}<i class="icon-pencil-edit"></i>
+              {{ isEditing ? "Lagre Endringer" : "Rediger profil"
+              }}<i class="icon-pencil-edit"></i>
             </span>
           </template>
         </ButtonComponent>
@@ -63,11 +78,15 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { getUserInfo, getUserByUsername, updateUserInfo, updateProfilePicture } from "@/api/userHooks";
+import {
+  getUserInfo,
+  getUserByUsername,
+  updateUserInfo,
+  updateProfilePicture,
+} from "@/api/userHooks";
 import { getBadgesByUser } from "@/api/badgeHooks";
 import type { UserBadge } from "@/types/Badge";
 import { uploadImage } from "@/utils/imageUtils";
@@ -86,11 +105,11 @@ const userProfilePic = ref<string | null>(null);
 const totalSavings = ref<number>(0);
 
 const goToSettings = () => {
-  router.push('/settings');
+  router.push("/settings");
 };
 
 /**
- * 
+ *
  * @param event The event that triggered the image upload.
  */
 const handleImageUpload = async (event: Event) => {
@@ -141,14 +160,14 @@ const toggleEditMode = async () => {
  * Fetches the user's badges and user info.
  */
 const fetchAndSetUserInfo = async () => {
-	try {
-		userBadges.value = (await getBadgesByUser()) as unknown as UserBadge[];
-		for (let i = 0; i < userBadges.value.length; i++) {
-			userBadges.value[i].badge.description = "";
-		}
-	} catch (error) {
-		console.error("Failed to load badges for user:", error);
-	}
+  try {
+    userBadges.value = (await getBadgesByUser()) as unknown as UserBadge[];
+    for (let i = 0; i < userBadges.value.length; i++) {
+      userBadges.value[i].badge.description = "";
+    }
+  } catch (error) {
+    console.error("Failed to load badges for user:", error);
+  }
 
   try {
     const userByUsername = await getUserByUsername();
@@ -166,14 +185,18 @@ const fetchAndSetUserInfo = async () => {
   }
 };
 
-const setUser = (userInfo: any, profilePictureUrl: string, totalSavings: number) => {
+const setUser = (
+  userInfo: any,
+  profilePictureUrl: string,
+  totalSavings: number,
+) => {
   user.value = {
     id: userInfo.id,
-    displayName: userInfo.preferred_username || 'N/A',
-    firstName: userInfo.given_name || 'N/A',
-    lastName: userInfo.family_name || 'N/A',
-    email: userInfo.email || 'no-email@example.com',
-    pictureUrl: profilePictureUrl || '/default-profile-pic.png',
+    displayName: userInfo.preferred_username || "N/A",
+    firstName: userInfo.given_name || "N/A",
+    lastName: userInfo.family_name || "N/A",
+    email: userInfo.email || "no-email@example.com",
+    pictureUrl: profilePictureUrl || "/default-profile-pic.png",
     userBadges: [],
     totalSavings: totalSavings || 0,
     birthdate: userInfo.birthdate || "Unknown birthdate",
@@ -184,8 +207,8 @@ onMounted(fetchAndSetUserInfo);
 </script>
 
 <style scoped>
-
-.edit-profile-button, .settings-button {
+.edit-profile-button,
+.settings-button {
   width: 200px;
   height: 40px;
 }
@@ -199,7 +222,7 @@ onMounted(fetchAndSetUserInfo);
 }
 
 .icon-setting {
-  background-image: url('/svg_icons/icon-setting.svg');
+  background-image: url("/svg_icons/icon-setting.svg");
   background-size: cover;
   display: block;
   width: 20px;
@@ -208,10 +231,10 @@ onMounted(fetchAndSetUserInfo);
 }
 
 .icon-pencil-edit {
-  background-image: url('/svg_icons/icon-pencil.svg');
-  background-size: cover; 
-  display: block; 
-  width: 20px; 
+  background-image: url("/svg_icons/icon-pencil.svg");
+  background-size: cover;
+  display: block;
+  width: 20px;
   height: 20px;
   margin-left: 10px;
 }
@@ -234,7 +257,8 @@ onMounted(fetchAndSetUserInfo);
   background: none;
 }
 
-.profile-pic-container, .total-savings-container {
+.profile-pic-container,
+.total-savings-container {
   position: relative;
   width: 12vw;
   height: 12vw;
@@ -280,7 +304,7 @@ onMounted(fetchAndSetUserInfo);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5rem; 
+  gap: 5rem;
   margin-bottom: 2rem;
 }
 
@@ -302,7 +326,8 @@ onMounted(fetchAndSetUserInfo);
     padding: 2rem;
   }
 
-  .user-info-section, .badges-section {
+  .user-info-section,
+  .badges-section {
     display: flex;
     flex-direction: column;
   }
@@ -331,7 +356,8 @@ onMounted(fetchAndSetUserInfo);
     padding: 20px;
   }
 
-  .profile-pic-container, .total-savings-container {
+  .profile-pic-container,
+  .total-savings-container {
     width: 150px;
     height: 150px;
   }
@@ -349,7 +375,7 @@ onMounted(fetchAndSetUserInfo);
 
   .badge-link {
     width: calc(50%);
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
     padding-left: 0;
   }
 }

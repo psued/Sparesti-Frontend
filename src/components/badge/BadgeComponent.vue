@@ -1,6 +1,7 @@
 <template>
   <div
-    class="badge" :class="{ 'unowned': !owned, 'badge-owned': owned }"
+    class="badge"
+    :class="{ unowned: !owned, 'badge-owned': owned }"
     @mouseover="showRarity = true"
     @mouseleave="showRarity = false"
   >

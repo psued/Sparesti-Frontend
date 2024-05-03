@@ -5,7 +5,7 @@ devices. * The component handles dark mode and theme changes. */
 <template>
   <!-- Top bar -->
   <div class="top-bar" :class="darkMode ? 'top-bar-dark' : ''">
-    <div v-if="loginStreak != 0 && loginStreak.toString().length < 6"class="login-streak">
+    <div v-if="loginStreak != 0" class="login-streak">
       <span class="fire-emoji">🔥</span> {{ loginStreak }}
     </div>
     <RouterLink class="logo" to="/">
@@ -18,7 +18,9 @@ devices. * The component handles dark mode and theme changes. */
   </div>
   <div class="progress-container">
     <!-- Progress bar -->
-    <p v-if="savingGoalPresent" class="numeric-progress">{{ savedAmount }}kr/{{ targetAmount }}kr</p>
+    <p v-if="savingGoalPresent" class="numeric-progress">
+      {{ savedAmount }}kr/{{ targetAmount }}kr
+    </p>
     <div class="progress-bar">
       <div class="progress" :style="{ width: progressWidth }"></div>
     </div>
@@ -27,17 +29,34 @@ devices. * The component handles dark mode and theme changes. */
   <!-- Hamburger menu -->
   <div :class="['hamburger', { darkMode: 'hamburger-dark' }]">
     <div class="hamburger-box" @click="toggleSidebar()">
-      <span :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"></span>
-      <span :class="['hamburger-line', 'middle', { 'hamburger-line-dark': darkMode }]"></span>
-      <span :class="['hamburger-line', 'bottom', { 'hamburger-line-dark': darkMode }]"></span>
+      <span
+        :class="['hamburger-line', 'top', { 'hamburger-line-dark': darkMode }]"
+      ></span>
+      <span
+        :class="[
+          'hamburger-line',
+          'middle',
+          { 'hamburger-line-dark': darkMode },
+        ]"
+      ></span>
+      <span
+        :class="[
+          'hamburger-line',
+          'bottom',
+          { 'hamburger-line-dark': darkMode },
+        ]"
+      ></span>
     </div>
   </div>
 
-
-
   <!-- Sidebar -->
   <Transition name="move">
-    <sidebar :darkMode="darkMode" @theme="handleThemeChange" @bar="toggleSidebar" v-if="isSidebarOpen" />
+    <sidebar
+      :darkMode="darkMode"
+      @theme="handleThemeChange"
+      @bar="toggleSidebar"
+      v-if="isSidebarOpen"
+    />
   </Transition>
 
   <!-- Blur screen -->
@@ -47,13 +66,16 @@ devices. * The component handles dark mode and theme changes. */
 </template>
 
 <script setup lang="ts">
-import { onMounted,   onUnmounted, ref, defineEmits, defineProps, computed, watch, watchEffect } from "vue";
-import { useDark, useToggle } from "@vueuse/core";
+import { onMounted, ref, defineEmits, computed, watch, watchEffect } from "vue";
+import { useDark } from "@vueuse/core";
 import { Transition } from "vue";
 import "@/assets/icons.css";
 import sidebar from "../components/nav/Sidebar.vue";
 import { useUserStore } from "@/stores/userStore";
-import { getCurrentSavingGoal, savingGoalListener } from "@/api/savingGoalHooks";
+import {
+  getCurrentSavingGoal,
+  savingGoalListener,
+} from "@/api/savingGoalHooks";
 import { getLoginStreak } from "@/api/userHooks";
 
 // Progress bar
@@ -78,12 +100,13 @@ async function fetchSavingProgress() {
   }
   try {
     const res = await getCurrentSavingGoal();
-    if(!res) {
+    if (!res) {
       return;
     }
     savingGoalPresent.value = true;
     targetAmount.value = res.targetAmount;
-    savedAmount.value = res.savedAmount >= res.targetAmount ? res.targetAmount : res.savedAmount;
+    savedAmount.value =
+      res.savedAmount >= res.targetAmount ? res.targetAmount : res.savedAmount;
   } catch (error) {
     return;
   }
@@ -92,12 +115,6 @@ watch(savingGoalListener, () => {
   fetchSavingProgress();
 });
 
-
-
-// Dark mode preference based on user's system settings
-const prefersDarkMode =
-  window.matchMedia &&
-  window.matchMedia("(prefers-color-scheme: dark)").matches;
 const darkMode = useDark();
 
 // Sidebar and phone bar state
@@ -148,7 +165,7 @@ const toggleSidebar = () => {
 };
 
 // Handle theme change event
-const  emit  = defineEmits(["theme"]);
+const emit = defineEmits(["theme"]);
 const handleThemeChange = () => {
   darkMode.value = !darkMode.value;
   if (isSidebarOpen.value) {
@@ -158,28 +175,13 @@ const handleThemeChange = () => {
 };
 
 async function fetchLoginStreak() {
+  loginStreak.value = 0;
   try {
-    loginStreak.value = await getLoginStreak() ?? 0;
+    loginStreak.value = (await getLoginStreak()) ?? 0;
   } catch (error) {
     console.error("Error fetching login streak:", error);
   }
 }
-
-onMounted(async () => {
-  try {
-    fetchLoginStreak();
-    fetchSavingProgress();
-  } catch (error) {
-    console.error('Error fetching login streak:', error);
-  }
-});
-
-computed(async () => {
-  if (userStore.isLoggedIn()) {
-    await fetchSavingProgress();
-    await fetchLoginStreak();
-  }
-});
 
 watchEffect(async () => {
   if (userStore.isLoggedIn()) {
@@ -332,7 +334,7 @@ watchEffect(async () => {
 
 .numeric-progress {
   position: absolute;
-  -webkit-text-fill-color: #2E323E;
+  -webkit-text-fill-color: #2e323e;
   font-size: 1em;
   font-weight: bold;
 }

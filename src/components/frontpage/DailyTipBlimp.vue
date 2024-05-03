@@ -1,27 +1,30 @@
 <template>
   <div class="balloon-container">
     <div class="clickable-balloon-area">
-      <div class="clickable-area" @click="showPopup=true"></div>
+      <div class="clickable-area" @click="showPopup = true"></div>
       <picture>
-        <img :src="darkMode ? '/BalloonPigDark.png' : '/BalloonPig.png'" alt="Balloon Pig" class="balloon"/>
+        <img
+          :src="darkMode ? '/BalloonPigDark.png' : '/BalloonPig.png'"
+          alt="Balloon Pig"
+          class="balloon"
+        />
       </picture>
     </div>
 
     <PopupComponent :is-visible="showPopup" @togglePopup="togglePopup">
       <template #content>
         <div class="popup-content" :class="{ 'dark-mode': darkMode }">
-          <h1 class="saving-tip">{{tip || "No tip available 💀"}}</h1>
+          <h1 class="saving-tip">{{ tip || "No tip available 💀" }}</h1>
         </div>
       </template>
     </PopupComponent>
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { useDailySavingTip } from '../../utils/useDailySavingTip'
-import PopupComponent from '../assets/PopupComponent.vue'
+import { ref, onMounted, onUnmounted } from "vue";
+import { useDailySavingTip } from "../../utils/useDailySavingTip";
+import PopupComponent from "../assets/PopupComponent.vue";
 import { useDark } from "@vueuse/core";
 
 // Reactive state to handle dark mode
@@ -33,21 +36,21 @@ let intervalId: number;
 
 onMounted(() => {
   intervalId = startAutoFetch(); // Fetch a tip when the component mounts
-})
+});
 
 onUnmounted(() => {
   stopAutoFetch(intervalId); // Clear the interval when the component unmounts
 });
 
 const togglePopup = () => {
-  showPopup.value = !showPopup.value;  // Toggle the visibility state
-}
+  showPopup.value = !showPopup.value; // Toggle the visibility state
+};
 </script>
-
 
 <style scoped>
 @keyframes floatAcross {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0%) translateY(200%);
   }
   20% {
@@ -64,7 +67,6 @@ const togglePopup = () => {
   }
 }
 
-
 .clickable-balloon-area {
   z-index: 800;
   animation: floatAcross 110s infinite; /* Adjust time as needed */
@@ -72,8 +74,6 @@ const togglePopup = () => {
   width: 20%;
   /* TODO: change width for mobile, or else the blimp is a tiny baby blimp */
 }
-
-
 
 .balloon-container {
   position: fixed;
@@ -86,7 +86,6 @@ const togglePopup = () => {
   pointer-events: none;
 }
 
-
 .balloon {
   pointer-events: none;
   width: 100%;
@@ -97,9 +96,9 @@ const togglePopup = () => {
   z-index: 801;
   /* Custom clickable square area of png. Perfectly crafted for width of 50%*/
   position: absolute;
-  top: 23%;  /* adjust these values based on the image and the desired clickable area */
+  top: 23%; /* adjust these values based on the image and the desired clickable area */
   left: 28%;
-  width: 38%;  /* size of the clickable area */
+  width: 38%; /* size of the clickable area */
   height: 45%;
   cursor: pointer;
   pointer-events: all;

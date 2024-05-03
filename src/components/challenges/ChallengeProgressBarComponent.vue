@@ -6,11 +6,9 @@
 </template>
 
 <script setup lang="ts">
-  const props = defineProps({
-    completionPercentage : Number
-  })
-
-
+const props = defineProps({
+  completionPercentage: Number,
+});
 </script>
 
 <style scoped>
@@ -18,7 +16,7 @@
   --size: 12rem;
   width: var(--size);
   height: var(--size);
-  viewBox: 0 0 var(--size) var(--size);
+  viewbox: 0 0 var(--size) var(--size);
   --half-size: calc(var(--size) / 2);
   --stroke-width: 0.7rem;
   --radius: calc((var(--size) - var(--stroke-width)) / 2);
@@ -58,7 +56,7 @@
     --progress: 0;
   }
   to {
-    stroke: #F5C116;
+    stroke: #f5c116;
     --progress: v-bind(completionPercentage);
   }
 }

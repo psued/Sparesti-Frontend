@@ -13,27 +13,46 @@
       <!-- Input fields for user information with validation and error messages -->
       <div class="input-wrapper">
         <label for="firstName">Hva er ditt fornavn?</label>
-        <input id="firstName" v-model="firstName" placeholder="First Name" required />
-        <div v-if="formErrors.firstName" class="error">{{ formErrors.firstName }}</div>
+        <input
+          id="firstName"
+          v-model="firstName"
+          placeholder="First Name"
+          required
+        />
+        <div v-if="formErrors.firstName" class="error">
+          {{ formErrors.firstName }}
+        </div>
       </div>
       <div class="input-wrapper">
         <label for="lastName">Hva er ditt etternavn?</label>
-        <input id="lastName" v-model="lastName" placeholder="Last Name" required />
-        <div v-if="formErrors.lastName" class="error">{{ formErrors.lastName }}</div>
+        <input
+          id="lastName"
+          v-model="lastName"
+          placeholder="Last Name"
+          required
+        />
+        <div v-if="formErrors.lastName" class="error">
+          {{ formErrors.lastName }}
+        </div>
       </div>
       <div class="input-wrapper">
         <label for="nickname">Hva kaller vennene dine deg?</label>
-        <input id="nickname" v-model="nickName" placeholder="Nickname" required />
-        <div v-if="formErrors.nickName" class="error">{{ formErrors.nickName }}</div>
+        <input
+          id="nickname"
+          v-model="nickName"
+          placeholder="Nickname"
+          required
+        />
+        <div v-if="formErrors.nickName" class="error">
+          {{ formErrors.nickName }}
+        </div>
       </div>
       <div class="input-wrapper">
         <label for="birthdate">Hvor gammel er du?</label>
-        <input 
-        type="date" 
-        id="birthdate" 
-        v-model="birthdate" 
-        required />
-        <div v-if="formErrors.birthdate" class="error">{{ formErrors.birthdate }}</div>
+        <input type="date" id="birthdate" v-model="birthdate" required />
+        <div v-if="formErrors.birthdate" class="error">
+          {{ formErrors.birthdate }}
+        </div>
       </div>
       <div class="input-wrapper">
         <label for="occupationStatus">Hva er din nåværende yrkesstatus?</label>
@@ -43,13 +62,14 @@
           <option value="employed">Arbeidende</option>
           <option value="unemployed">Arbeidsledig</option>
         </select>
-        <div v-if="formErrors.occupationStatus" class="error">{{ formErrors.occupationStatus }}</div>
+        <div v-if="formErrors.occupationStatus" class="error">
+          {{ formErrors.occupationStatus }}
+        </div>
       </div>
     </div>
     <FormButton type="submit" @click="goToNextStep">Next</FormButton>
   </div>
 </template>
-
 
 <script setup lang="ts">
 import { ref, defineEmits, onMounted } from "vue";
@@ -91,16 +111,23 @@ function goToNextStep() {
  */
 function isFormValid() {
   const today = new Date();
-  const tomorrow = new Date(today.setDate(today.getDate()-1)).toISOString().slice(0, 10);
-  
+  const tomorrow = new Date(today.setDate(today.getDate() - 1))
+    .toISOString()
+    .slice(0, 10);
+
   formErrors.value.firstName = firstName.value ? "" : "Fornavn er påkrevd.";
   formErrors.value.lastName = lastName.value ? "" : "Etternavn er påkrevd.";
   formErrors.value.nickName = nickName.value ? "" : "Kallenavn er påkrevd.";
-  formErrors.value.birthdate = !birthdate.value ? "Fødselsdato er påkrevd." : 
-                              (birthdate.value > tomorrow ? "Fødselsdato kan ikke være i fremtiden." : "");
-  formErrors.value.occupationStatus = occupationStatus.value ? "" : "Yrkesstatus er påkrevd.";
+  formErrors.value.birthdate = !birthdate.value
+    ? "Fødselsdato er påkrevd."
+    : birthdate.value > tomorrow
+      ? "Fødselsdato kan ikke være i fremtiden."
+      : "";
+  formErrors.value.occupationStatus = occupationStatus.value
+    ? ""
+    : "Yrkesstatus er påkrevd.";
 
-  return Object.values(formErrors.value).every(x => x === "");
+  return Object.values(formErrors.value).every((x) => x === "");
 }
 
 onMounted(() => {
@@ -112,7 +139,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
 .form-title {
   text-align: center;
 }
@@ -127,7 +153,7 @@ onMounted(() => {
 .input-wrapper {
   display: flex;
   flex-direction: column;
-  width: 100%; 
+  width: 100%;
   margin-bottom: 20px;
 }
 
@@ -139,7 +165,7 @@ onMounted(() => {
 .input-wrapper input,
 .input-wrapper select {
   border: none;
-  border-radius: 5px; 
+  border-radius: 5px;
   padding: 10px;
   margin: 0;
   width: 100%;
@@ -149,7 +175,10 @@ select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background: url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px top 50%, #fff;
+  background:
+    url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>')
+      no-repeat right 10px top 50%,
+    #fff;
   background-size: 12px;
   cursor: pointer;
 }
@@ -163,6 +192,6 @@ select option[value=""][disabled] {
 }
 
 .error {
-  color: #E57373;
+  color: #e57373;
 }
 </style>

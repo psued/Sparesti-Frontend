@@ -1,14 +1,37 @@
 <template>
-  <div :class="{
-    'saving-goal-card': true,
-    'green-border': savingGoal.completed,
-    'yellow-border': !savingGoal.completed && savingGoal.savedAmount < savingGoal.targetAmount,
-    'red-border': new Date(savingGoal.deadline + 'T00:00:00').getTime() <= new Date(todaysDate + 'T00:00:00').getTime() && savingGoal.savedAmount < savingGoal.targetAmount
-  }">
+  <div
+    :class="{
+      'saving-goal-card': true,
+      'green-border': savingGoal.completed,
+      'yellow-border':
+        !savingGoal.completed &&
+        savingGoal.savedAmount < savingGoal.targetAmount,
+      'red-border':
+        new Date(savingGoal.deadline + 'T00:00:00').getTime() <=
+          new Date(todaysDate + 'T00:00:00').getTime() &&
+        savingGoal.savedAmount < savingGoal.targetAmount,
+    }"
+  >
     <div v-if="isEditing" class="editing-area">
-      <input v-model="editableGoal.name" class="editing-input" placeholder="Navn på sparemål" maxlength="100" />
-      <input v-model="editableGoal.targetAmount" class="editing-input" type="number" placeholder="Sparemål i kr" />
-      <input v-model="editableGoal.deadline" class="editing-input" type="date" placeholder="Frist" :min="minDeadline.toISOString().split('T')[0]" />
+      <input
+        v-model="editableGoal.name"
+        class="editing-input"
+        placeholder="Navn på sparemål"
+        maxlength="100"
+      />
+      <input
+        v-model="editableGoal.targetAmount"
+        class="editing-input"
+        type="number"
+        placeholder="Sparemål i kr"
+      />
+      <input
+        v-model="editableGoal.deadline"
+        class="editing-input"
+        type="date"
+        placeholder="Frist"
+        :min="minDeadline.toISOString().split('T')[0]"
+      />
       <div class="form-group">
         <label for="edit-upload-type">Velg opplastingstype:</label>
         <select id="edit-upload-type" v-model="editUploadType">
@@ -19,74 +42,116 @@
       </div>
       <!-- Render appropriate input based on selected upload type -->
       <div v-if="editUploadType === 'image'" class="form-group">
-        <input type="file" id="image" @change="handleImageUpload" accept="image/*" />
+        <input
+          type="file"
+          id="image"
+          @change="handleImageUpload"
+          accept="image/*"
+        />
         <div v-if="imagePreview" class="image-preview">
           <img :src="imagePreview" alt="Forhåndsvisning av bilde" />
         </div>
       </div>
       <div v-else-if="editUploadType === 'icon'" class="form-group">
         <select v-model="selectedIconUrl">
-          <option v-for="icon in icons" :value="icon.url">{{ icon.name }}</option>
+          <option v-for="icon in icons" :value="icon.url">
+            {{ icon.name }}
+          </option>
         </select>
         <div v-if="selectedIconUrl" class="icon-preview">
           <img :src="selectedIconUrl" alt="Valgt ikon" />
         </div>
       </div>
       <div v-else-if="editUploadType === 'emoji'" class="form-group">
-        <EmojiPickerComponent :emoji-prop="emoji" @pickEmoji="pickEmoji" id="challengeEmojiPicker"/>
+        <EmojiPickerComponent
+          :emoji-prop="emoji"
+          @pickEmoji="pickEmoji"
+          id="challengeEmojiPicker"
+        />
       </div>
-      <div class = "button-group">
-      <button @click="saveChanges" class="editing-button">Save Changes</button>
-      <button @click="isEditing = false" class="editing-button">Cancel</button>
-    </div>
+      <div class="button-group">
+        <button @click="saveChanges" class="editing-button">
+          Save Changes
+        </button>
+        <button @click="isEditing = false" class="editing-button">
+          Cancel
+        </button>
+      </div>
     </div>
     <div v-else>
-      <h2 class="name" :title="savingGoal.name" v-tooltip="savingGoal.name">{{ savingGoal.name }}</h2>
-      <p><strong>Sparemål:</strong> {{ savingGoal.savedAmount }} / {{ savingGoal.targetAmount }} kr</p>
+      <h2 class="name" :title="savingGoal.name" v-tooltip="savingGoal.name">
+        {{ savingGoal.name }}
+      </h2>
+      <p>
+        <strong>Sparemål:</strong> {{ savingGoal.savedAmount }} /
+        {{ savingGoal.targetAmount }} kr
+      </p>
       <p><strong>Frist:</strong> {{ savingGoal.deadline }}</p>
-      <div class="image" v-if="savingGoal.mediaUrl?.length && savingGoal.mediaUrl.length > 4">
-        <img :src="savingGoal.mediaUrl" alt="Media" class="img">
+      <div
+        class="image"
+        v-if="savingGoal.mediaUrl?.length && savingGoal.mediaUrl.length > 4"
+      >
+        <img :src="savingGoal.mediaUrl" alt="Media" class="img" />
       </div>
       <div class="emoji-div" v-else>
         <span class="emoji">{{ savingGoal.mediaUrl }}</span>
       </div>
-      <p v-if="savingGoal.completed && (savingGoal.savedAmount >= savingGoal.targetAmount)" class="completed">Completed</p>
-        <div v-if="editable" class="delete-icon" @click="confirmDelete">✖</div>
-        <div v-if="author" class="edit-icon" @click="startEditing">✎</div>
+      <p
+        v-if="
+          savingGoal.completed &&
+          savingGoal.savedAmount >= savingGoal.targetAmount
+        "
+        class="completed"
+      >
+        Completed
+      </p>
+      <div v-if="editable" class="delete-icon" @click="confirmDelete">✖</div>
+      <div v-if="author" class="edit-icon" @click="startEditing">✎</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import EmojiPickerComponent from '@/components/assets/EmojiPickerComponent.vue';
-import { defineProps, defineEmits, ref } from 'vue';
-import type { SavingGoal } from '@/types/SavingGoal';
-import { updateSavingGoal, deleteSavingGoal, deleteSavingGoalFromUser } from '@/api/savingGoalHooks';
-import { useUserStore } from '@/stores/userStore';
-import { useRouter } from 'vue-router';
-import { icons } from '@/utils/saving-goal-icons';
+import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
+import { defineProps, defineEmits, ref } from "vue";
+import type { SavingGoal } from "@/types/SavingGoal";
+import {
+  updateSavingGoal,
+  deleteSavingGoal,
+  deleteSavingGoalFromUser,
+} from "@/api/savingGoalHooks";
+import { useUserStore } from "@/stores/userStore";
+import { useRouter } from "vue-router";
+import { icons } from "@/utils/saving-goal-icons";
 import { uploadImage } from "@/utils/imageUtils";
 
 const props = defineProps({
   savingGoal: {
     type: Object as () => SavingGoal,
-    default: () => ({ name: '', targetAmount: 0, savedAmount: '0', deadline: '', mediaUrl: '', completed: false })
+    default: () => ({
+      name: "",
+      targetAmount: 0,
+      savedAmount: "0",
+      deadline: "",
+      mediaUrl: "",
+      completed: false,
+    }),
   },
-  author :{
+  author: {
     type: Boolean,
-    default: false
+    default: false,
   },
   editable: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
-const emits = defineEmits(['deleteGoal', 'updateGoal']);
+const emits = defineEmits(["deleteGoal", "updateGoal"]);
 
 const isEditing = ref(false);
 const editableGoal = ref<SavingGoal>(props.savingGoal);
-const todaysDate = new Date().toISOString().split('T')[0];
+const todaysDate = new Date().toISOString().split("T")[0];
 const userStore = useUserStore();
 const userEmail = userStore.getUserName;
 const router = useRouter();
@@ -94,10 +159,10 @@ const imagePreview = ref<string | null>(null);
 const selectedIconUrl = ref<string | null>(null);
 const minDeadline = new Date();
 minDeadline.setDate(minDeadline.getDate() + 1);
-const emoji = ref('');
+const emoji = ref("");
 
 // Initialize editUploadType with the default value from props.savingGoal.mediaUrl
-const editUploadType = ref(props.savingGoal.mediaUrl ? 'image' : '');
+const editUploadType = ref(props.savingGoal.mediaUrl ? "image" : "");
 
 const startEditing = () => {
   editableGoal.value = { ...props.savingGoal };
@@ -110,18 +175,17 @@ function pickEmoji(e: string) {
 
 const saveChanges = async () => {
   try {
-
     if (
-      editableGoal.value.name.trim() === '' ||
+      editableGoal.value.name.trim() === "" ||
       editableGoal.value.targetAmount < 100 ||
       editableGoal.value.targetAmount > 1000000 ||
       editableGoal.value.deadline <= todaysDate
     ) {
-      alert('Sparemål må være over 100 kr, ha et navn og en gyldig frist.');
+      alert("Sparemål må være over 100 kr, ha et navn og en gyldig frist.");
       return;
     }
 
-    if (editUploadType.value === 'image') {
+    if (editUploadType.value === "image") {
       const fileInput = document.getElementById("image") as HTMLInputElement;
       if (fileInput && fileInput.files && fileInput.files[0]) {
         const file = fileInput.files[0];
@@ -132,24 +196,29 @@ const saveChanges = async () => {
           editableGoal.value.mediaUrl = "";
         }
       }
-    } else if (editUploadType.value === 'icon') {
-      editableGoal.value.mediaUrl = selectedIconUrl.value || '';
-    } else if (editUploadType.value === 'emoji') {
+    } else if (editUploadType.value === "icon") {
+      editableGoal.value.mediaUrl = selectedIconUrl.value || "";
+    } else if (editUploadType.value === "emoji") {
       editableGoal.value.mediaUrl = emoji.value;
     }
 
-    await updateSavingGoal(Number(props.savingGoal.id), { ...editableGoal.value, mediaUrl: editableGoal.value.mediaUrl || '' });
-    emits('updateGoal', editableGoal.value);
+    await updateSavingGoal(Number(props.savingGoal.id), {
+      ...editableGoal.value,
+      mediaUrl: editableGoal.value.mediaUrl || "",
+    });
+    emits("updateGoal", editableGoal.value);
     isEditing.value = false;
     window.location.reload();
   } catch (error) {
-    console.error('Error updating saving goal:', error);
+    console.error("Error updating saving goal:", error);
   }
 };
 
 const confirmDelete = async () => {
   try {
-    const confirmDelete = confirm('Er du sikker på at du vil fjerne deg selv fra dette sparemålet?');
+    const confirmDelete = confirm(
+      "Er du sikker på at du vil fjerne deg selv fra dette sparemålet?",
+    );
     if (!confirmDelete) return;
     await deleteSavingGoalFromUser(userEmail, Number(props.savingGoal.id));
     try {
@@ -157,11 +226,11 @@ const confirmDelete = async () => {
     } catch (error) {
       console.log("Can't delete saving goal that has users");
     }
-    emits('deleteGoal', props.savingGoal.id);
+    emits("deleteGoal", props.savingGoal.id);
   } catch (error) {
-    console.error('Error deleting saving goal:', error);
+    console.error("Error deleting saving goal:", error);
   }
-  router.push('/saving-goals');
+  router.push("/saving-goals");
 };
 
 function handleImageUpload(event: Event) {
@@ -176,7 +245,7 @@ function handleImageUpload(event: Event) {
   }
 }
 </script>
-  
+
 <style scoped>
 .saving-goal-card {
   position: relative;
@@ -222,7 +291,8 @@ function handleImageUpload(event: Event) {
   padding-top: 10px;
 }
 
-.icon-preview img, .image-preview img {
+.icon-preview img,
+.image-preview img {
   width: 50%;
   height: 50%;
 }
@@ -251,14 +321,16 @@ function handleImageUpload(event: Event) {
   margin-top: 10px;
 }
 
-.delete-icon, .edit-icon {
+.delete-icon,
+.edit-icon {
   position: absolute;
   top: 10px;
   font-size: 24px;
   transition: transform 0.3s ease;
 }
 
-.delete-icon:hover, .edit-icon:hover {
+.delete-icon:hover,
+.edit-icon:hover {
   transform: scale(1.5);
   cursor: crosshair;
 }
@@ -269,7 +341,7 @@ function handleImageUpload(event: Event) {
 }
 
 .edit-icon {
-  right: 17.5%; 
+  right: 17.5%;
   color: green;
 }
 
@@ -302,7 +374,7 @@ function handleImageUpload(event: Event) {
 }
 
 h2 {
-  padding-right: 70px; 
+  padding-right: 70px;
   overflow-wrap: anywhere;
   overflow: hidden;
   max-height: 70px;
@@ -330,18 +402,18 @@ h2 {
   display: flex;
   justify-content: center;
   margin-top: 10px;
-  width: 60%; 
-  height: auto; 
+  width: 60%;
+  height: auto;
 }
 
 .editing-button {
-  width: 48%; 
-  margin: 5px 1%; 
+  width: 48%;
+  margin: 5px 1%;
 }
 
 .button-group {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   padding-bottom: 2%;
 }
 
@@ -371,4 +443,3 @@ h2 {
   white-space: normal;
 }
 </style>
-  

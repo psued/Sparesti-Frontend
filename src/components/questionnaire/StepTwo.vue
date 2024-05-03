@@ -12,26 +12,34 @@
         id="checkingAccountInput"
         class="account-input"
         :value="formattedCheckingAccount"
-        @input="formattedCheckingAccount = ($event.target as HTMLInputElement).value"
+        @input="
+          formattedCheckingAccount = ($event.target as HTMLInputElement).value
+        "
         placeholder="xxxx xx xxxxx"
         maxlength="13"
         minlength="13"
         required
       />
-      <div v-if="formErrors.checkingAccount" class="error">{{ formErrors.checkingAccount }}</div>
+      <div v-if="formErrors.checkingAccount" class="error">
+        {{ formErrors.checkingAccount }}
+      </div>
       <div class="input-gap"></div>
       <label for="savingsAccountInput">Sparekonto:</label>
       <input
         id="savingsAccountInput"
         class="account-input"
         :value="formattedSavingsAccount"
-        @input="formattedSavingsAccount = ($event.target as HTMLInputElement).value"
+        @input="
+          formattedSavingsAccount = ($event.target as HTMLInputElement).value
+        "
         placeholder="xxxx xx xxxxx"
         maxlength="13"
         minlength="13"
         required
       />
-      <div v-if="formErrors.savingsAccount" class="error">{{ formErrors.savingsAccount }}</div>
+      <div v-if="formErrors.savingsAccount" class="error">
+        {{ formErrors.savingsAccount }}
+      </div>
     </div>
     <div class="button-container">
       <FormButton type="button" @click="goBack">Back</FormButton>
@@ -39,7 +47,6 @@
     </div>
   </div>
 </template>
-
 
 <script setup lang="ts">
 import { ref, defineEmits, onMounted, computed } from "vue";
@@ -60,21 +67,21 @@ const formErrors = ref({
 const formattedCheckingAccount = computed({
   get: () => formatAccountNumber(checkingAccount.value),
   set: (val) => {
-    val = val.replace(/\s/g, '').replace(/\D/g, '');
-    checkingAccount.value = isNaN(parseInt(val)) ? '' : val;
-  }
+    val = val.replace(/\s/g, "").replace(/\D/g, "");
+    checkingAccount.value = isNaN(parseInt(val)) ? "" : val;
+  },
 });
 
 const formattedSavingsAccount = computed({
   get: () => formatAccountNumber(savingsAccount.value),
   set: (val) => {
-    val = val.replace(/\s/g, '').replace(/\D/g, '');
-    savingsAccount.value = isNaN(parseInt(val)) ? '' : val;
-  }
+    val = val.replace(/\s/g, "").replace(/\D/g, "");
+    savingsAccount.value = isNaN(parseInt(val)) ? "" : val;
+  },
 });
 
 function formatAccountNumber(number: string) {
-  const digits = number.replace(/\D/g, '').substring(0, 11); 
+  const digits = number.replace(/\D/g, "").substring(0, 11);
   return formatAsBankAccount(digits);
 }
 
@@ -89,10 +96,16 @@ function formatAsBankAccount(digits: string) {
 }
 
 function isFormValid() {
-  const pureChecking = checkingAccount.value.replace(/\s/g, '');
-  const pureSavings = savingsAccount.value.replace(/\s/g, '');
-  formErrors.value.checkingAccount = pureChecking.length === 11 ? "" : "Brukskonto må inneholde nøyaktig 11 sifre.";
-  formErrors.value.savingsAccount = pureSavings.length === 11 ? "" : "Sparekonto må inneholde nøyaktig 11 sifre.";
+  const pureChecking = checkingAccount.value.replace(/\s/g, "");
+  const pureSavings = savingsAccount.value.replace(/\s/g, "");
+  formErrors.value.checkingAccount =
+    pureChecking.length === 11
+      ? ""
+      : "Brukskonto må inneholde nøyaktig 11 sifre.";
+  formErrors.value.savingsAccount =
+    pureSavings.length === 11
+      ? ""
+      : "Sparekonto må inneholde nøyaktig 11 sifre.";
 
   return !formErrors.value.checkingAccount && !formErrors.value.savingsAccount;
 }
@@ -100,8 +113,8 @@ function isFormValid() {
 function goToNextStep() {
   if (isFormValid()) {
     store.updateStepTwoData({
-      checkingAccount: checkingAccount.value.replace(/\s/g, ''),
-      savingsAccount: savingsAccount.value.replace(/\s/g, ''),
+      checkingAccount: checkingAccount.value.replace(/\s/g, ""),
+      savingsAccount: savingsAccount.value.replace(/\s/g, ""),
     });
     emit("update-step", 3);
   }
@@ -135,7 +148,7 @@ onMounted(() => {
 }
 
 .form-button {
-  width: 100%; 
+  width: 100%;
 }
 
 .button-container {
@@ -150,7 +163,7 @@ onMounted(() => {
 }
 
 .error {
-  color: #E57373;
+  color: #e57373;
 }
 </style>
 @/stores/QuestionnaireStore

@@ -10,10 +10,9 @@ export interface User {
 }
 
 export interface UserResponse {
-  user : 
-  {
+  user: {
     id?: number;
     email: string;
     profilePictureUrl: string | null;
-  }
+  };
 }

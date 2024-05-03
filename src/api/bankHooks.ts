@@ -4,9 +4,7 @@ export const getBankAccountDetails = async (
   accountNr: number,
 ): Promise<any | null> => {
   try {
-    const response = await api.get(
-      `/bank/account/details/${accountNr}`,
-    );
+    const response = await api.get(`/bank/account/details/${accountNr}`);
     return response.data;
   } catch (error) {
     console.error("Error getting bank account details:", error);
@@ -18,9 +16,7 @@ export const getBankAccountTransactions = async (
   accountNr: number,
 ): Promise<any | null> => {
   try {
-    const respons = await api.get(
-      `/bank/account/transactions/${accountNr}`,
-    );
+    const respons = await api.get(`/bank/account/transactions/${accountNr}`);
     return respons.data;
   } catch (error) {
     console.error("Error getting bank account transactions:", error);

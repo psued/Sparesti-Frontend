@@ -5,16 +5,24 @@
   The button has a click animation that moves the foreground circle slightly downwards.
 -->
 <template>
-  <div @mousedown="clicked = true" @mouseup="handleMouseup" @mouseleave="clicked = false" class="buttonContainer">
-    <div class="bgCircle"/>
-    <div :class="[{animation1 : pressed || clicked && !pressed}]" class="fgCircle">
+  <div
+    @mousedown="clicked = true"
+    @mouseup="handleMouseup"
+    @mouseleave="clicked = false"
+    class="buttonContainer"
+  >
+    <div class="bgCircle" />
+    <div
+      :class="[{ animation1: pressed || (clicked && !pressed) }]"
+      class="fgCircle"
+    >
       <slot name="content"></slot>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import { ref } from "vue";
 
 const clicked = ref(false);
 
@@ -27,16 +35,16 @@ function handleMouseup() {
 const props = defineProps({
   backgroundColor: {
     type: String,
-    default: 'var(--color-button-challenges-border)'
+    default: "var(--color-button-challenges-border)",
   },
   foregroundColor: {
     type: String,
-    default: 'var(--color-button-challenges)'
+    default: "var(--color-button-challenges)",
   },
   pressed: {
-    type: Boolean
-  }
-})
+    type: Boolean,
+  },
+});
 </script>
 
 <style scoped>
@@ -49,7 +57,7 @@ const props = defineProps({
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: v-bind('props.backgroundColor');
+  background-color: v-bind("props.backgroundColor");
   border-radius: 30px;
   top: 5px;
   left: 50%;
@@ -61,7 +69,7 @@ const props = defineProps({
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: v-bind('props.foregroundColor');
+  background-color: v-bind("props.foregroundColor");
   border-radius: 30px;
   top: 0;
   left: 50%;
@@ -73,7 +81,6 @@ const props = defineProps({
 .animation1 {
   animation: button-animation1 150ms;
   animation-fill-mode: forwards;
-
 }
 
 @keyframes button-animation1 {

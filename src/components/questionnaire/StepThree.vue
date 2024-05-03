@@ -17,11 +17,16 @@
         required
         class="text-input"
       />
-      <div v-if="formErrors.annualIncome" class="error">{{ formErrors.annualIncome }}</div>
+      <div v-if="formErrors.annualIncome" class="error">
+        {{ formErrors.annualIncome }}
+      </div>
     </div>
 
     <div class="input-group">
-      <label for="willingness-range">På en skala fra 0 til 5, hvor villig er du til å endre sparevanene?</label>
+      <label for="willingness-range"
+        >På en skala fra 0 til 5, hvor villig er du til å endre
+        sparevanene?</label
+      >
       <div class="slider-container">
         <input
           type="range"
@@ -41,7 +46,6 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
 import { ref, defineEmits, onMounted } from "vue";
 import { useQuestionnaireStore } from "@/stores/questionnaireStore";
@@ -59,7 +63,10 @@ const formErrors = ref({
 
 function isFormValid() {
   formErrors.value.annualIncome = validateAnnualIncome(annualIncome.value);
-  formErrors.value.changeWillingness = (changeWillingness.value === undefined || changeWillingness.value === null) ? "Please indicate your willingness to change." : "";
+  formErrors.value.changeWillingness =
+    changeWillingness.value === undefined || changeWillingness.value === null
+      ? "Please indicate your willingness to change."
+      : "";
 
   return !formErrors.value.annualIncome && !formErrors.value.changeWillingness;
 }
@@ -104,8 +111,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
-
 .input-group {
   width: 100%;
   margin-bottom: 20px;
@@ -121,7 +126,7 @@ onMounted(() => {
   padding: 10px;
   border: none;
   border-radius: 5px;
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
 }
 
 .slider-container {
@@ -143,7 +148,7 @@ onMounted(() => {
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background: #F09217;
+  background: #f09217;
   cursor: pointer;
 }
 
@@ -166,7 +171,7 @@ onMounted(() => {
 }
 
 .error {
-  color: #E57373;
+  color: #e57373;
 }
 </style>
 @/stores/QuestionnaireStore

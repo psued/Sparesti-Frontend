@@ -1,41 +1,36 @@
 <template>
-    <footer>
-        
-  <!-- Phone bar -->
-  <div class="phone-bar" :class="{ 'phone-bar-dark': darkMode }">
-    <RouterLink
-      class="phone-bar-item"
-      :class="{ 'phone-bar-item-dark': darkMode }"
-      to="/"
-    >
-      <i :class="darkMode ? 'icon-home-dark' : 'icon-home'"></i>
-    </RouterLink>
-    <RouterLink
-      class="phone-bar-item"
-      :class="{ 'phone-bar-item-dark': darkMode }"
-      to="/challenges"
-    >
-      <i :class="darkMode ? 'icon-challenges-dark' : 'icon-challenges'"></i>
-    </RouterLink>
-    <RouterLink
-      class="phone-bar-item"
-      :class="{ 'phone-bar-item-dark': darkMode }"
-      to="/budget"
-    >
-      <i :class="darkMode ? 'icon-budget-dark' : 'icon-budget'"></i>
-    </RouterLink>
-  </div>
-
-    </footer>
+  <footer>
+    <!-- Phone bar -->
+    <div class="phone-bar" :class="{ 'phone-bar-dark': darkMode }">
+      <RouterLink
+        class="phone-bar-item"
+        :class="{ 'phone-bar-item-dark': darkMode }"
+        to="/"
+      >
+        <i :class="darkMode ? 'icon-home-dark' : 'icon-home'"></i>
+      </RouterLink>
+      <RouterLink
+        class="phone-bar-item"
+        :class="{ 'phone-bar-item-dark': darkMode }"
+        to="/challenges"
+      >
+        <i :class="darkMode ? 'icon-challenges-dark' : 'icon-challenges'"></i>
+      </RouterLink>
+      <RouterLink
+        class="phone-bar-item"
+        :class="{ 'phone-bar-item-dark': darkMode }"
+        to="/budget"
+      >
+        <i :class="darkMode ? 'icon-budget-dark' : 'icon-budget'"></i>
+      </RouterLink>
+    </div>
+  </footer>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useDark } from "@vueuse/core";
-    // Dark mode preference based on user's system settings
-    const darkMode = useDark(); 
-
-
+// Dark mode preference based on user's system settings
+const darkMode = useDark();
 </script>
 
 <style scoped>

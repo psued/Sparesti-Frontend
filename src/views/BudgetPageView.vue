@@ -1,36 +1,46 @@
 <template>
   <div>
     <h1 id="budgetTitle">Budsjett</h1>
-    <button v-if="allBudgetsExpired" @click="toggleRenewModal">Forny Budsjett</button>
-    <div v-if="showRenewModal" class="modal" @click.self="showRenewModal = false">
+    <button v-if="allBudgetsExpired" @click="toggleRenewModal">
+      Forny Budsjett
+    </button>
+    <div
+      v-if="showRenewModal"
+      class="modal"
+      @click.self="showRenewModal = false"
+    >
       <div class="modal-content">
         <span class="close" @click="toggleRenewModal">&times;</span>
         <h3>Forny Budsjett</h3>
         <form @submit.prevent="renewBudgets">
-          <input class="input-margin" v-model="newBudget.name" placeholder="Budsjettets navn" />
+          <input
+            class="input-margin"
+            v-model="newBudget.name"
+            placeholder="Budsjettets navn"
+          />
           <div class="form-group">
             <div>
               <label for="deadline">Startdato:</label>
             </div>
-            <input
-                type="date"
-                id="deadline"
-                v-model="newBudget.startDate"
-            />
+            <input type="date" id="deadline" v-model="newBudget.startDate" />
             <div class="form-group">
               <div>
                 <label for="deadline">Deadline:</label>
               </div>
               <input
-                  type="date"
-                  id="deadline"
-                  v-model="newBudget.endDate"
-                  :min="newBudget.startDate"
+                type="date"
+                id="deadline"
+                v-model="newBudget.endDate"
+                :min="newBudget.startDate"
               />
             </div>
           </div>
-          <p v-if="invalidFormat" class="invalid"> Vennligst fyll ut alle feltene</p>
-          <button type="submit" :disabled="isSubmitting || invalidFormat">Lagre</button>
+          <p v-if="invalidFormat" class="invalid">
+            Vennligst fyll ut alle feltene
+          </p>
+          <button type="submit" :disabled="isSubmitting || invalidFormat">
+            Lagre
+          </button>
         </form>
       </div>
     </div>
@@ -40,49 +50,52 @@
         <span class="close" @click="toggleModal">&times;</span>
         <h3>Lag et nytt budsjett</h3>
         <form @submit.prevent="createBudget">
-          <input class="input-margin" v-model="newBudget.name" placeholder="Budsjettets navn" />
+          <input
+            class="input-margin"
+            v-model="newBudget.name"
+            placeholder="Budsjettets navn"
+          />
           <div class="form-group">
             <div>
               <label for="deadline">Startdato:</label>
             </div>
-            <input
-                type="date"
-                id="deadline"
-                v-model="newBudget.startDate"
-            />
+            <input type="date" id="deadline" v-model="newBudget.startDate" />
             <div class="form-group">
               <div>
                 <label for="deadline">Deadline:</label>
               </div>
               <input
-                  type="date"
-                  id="deadline"
-                  v-model="newBudget.endDate"
-                  :min="newBudget.startDate"
+                type="date"
+                id="deadline"
+                v-model="newBudget.endDate"
+                :min="newBudget.startDate"
               />
             </div>
           </div>
-          <p v-if="invalidFormat" class="invalid"> Vennligst fyll ut alle feltene</p>
+          <p v-if="invalidFormat" class="invalid">
+            Vennligst fyll ut alle feltene
+          </p>
           <button type="submit">Lagre</button>
         </form>
       </div>
     </div>
-    <BudgetPage v-for="(budget, index) in budgetData"
-                :name="budget.name"
-                :key="index"
-                :id="budget.id"
-                :budget="calculateRemainingBudget(budget)"
-                :totalBudget="calculateTotalBudget(budget)"
-                :remainingBudget="calculateRemainingBudget(budget)"
-                :daysLeft="calculateDaysLeft(budget)"
-                :endDate="budget.expiryDate"
+    <BudgetPage
+      v-for="(budget, index) in budgetData"
+      :name="budget.name"
+      :key="index"
+      :id="budget.id"
+      :budget="calculateRemainingBudget(budget)"
+      :totalBudget="calculateTotalBudget(budget)"
+      :remainingBudget="calculateRemainingBudget(budget)"
+      :daysLeft="calculateDaysLeft(budget)"
+      :endDate="budget.expiryDate"
     />
   </div>
 </template>
 
-<script setup lang = "ts" >
+<script setup lang="ts">
 import BudgetPage from "@/components/budget/BudgetPage.vue";
-import {onMounted, ref, computed, reactive} from "vue";
+import { onMounted, ref, computed, reactive } from "vue";
 import { useRoute } from "vue-router";
 import {
   getBudgetByUser,
@@ -90,18 +103,19 @@ import {
   getNewestBudget,
   renewBudget,
   renewBudgetWithCategories,
-  getBudgetWithNewestExpiryDate, addBudgetWithRow
+  addBudgetWithRow,
 } from "@/api/budgetHooks";
-import type {Budget} from "@/types/Budget";
-import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
-import { categories } from "@vueuse/core/metadata.mjs";
+import type { Budget } from "@/types/Budget";
 
 const budgetData = ref<Budget[]>([]);
 onMounted(async () => {
   const expensesResponse = await getBudgetByUser();
   if (expensesResponse) {
     budgetData.value = expensesResponse;
-    budgetData.value.sort((a, b) => new Date(b.expiryDate).getTime() - new Date(a.expiryDate).getTime());
+    budgetData.value.sort(
+      (a, b) =>
+        new Date(b.expiryDate).getTime() - new Date(a.expiryDate).getTime(),
+    );
   }
 });
 
@@ -110,7 +124,6 @@ const invalidFormat = ref(false);
 const showModal = ref(false);
 const showRenewModal = ref(false);
 const newBudget = reactive({ name: "", startDate: "", endDate: "" });
-
 
 const toggleModal = async () => {
   const newestBudget = await getNewestBudget();
@@ -121,9 +134,11 @@ const toggleRenewModal = () => {
   showRenewModal.value = !showRenewModal.value;
 };
 
-
 const allBudgetsExpired = computed(() => {
-  return budgetData.value.length > 0 && budgetData.value.every(budget => calculateDaysLeft(budget) <= 0);
+  return (
+    budgetData.value.length > 0 &&
+    budgetData.value.every((budget) => calculateDaysLeft(budget) <= 0)
+  );
 });
 
 const noBudgets = computed(() => {
@@ -131,22 +146,30 @@ const noBudgets = computed(() => {
 });
 
 const createBudget = () => {
-  if (newBudget.name === '' || newBudget.startDate === '' || newBudget.endDate === '') {
+  if (
+    newBudget.name === "" ||
+    newBudget.startDate === "" ||
+    newBudget.endDate === ""
+  ) {
     invalidFormat.value = true;
     return;
-  } 
+  }
   renewBudget(newBudget.name, newBudget.startDate, newBudget.endDate);
   toggleModal(); // Close modal after adding the category
   window.location.reload(); // Refresh the page to reflect changes
-  newBudget.name = '';
-  newBudget.startDate = '';
-  newBudget.endDate = '';
+  newBudget.name = "";
+  newBudget.startDate = "";
+  newBudget.endDate = "";
 };
 
 const isSubmitting = ref(false);
 
 const renewBudgets = async () => {
-  if (newBudget.name.trim() === '' || newBudget.startDate.trim() === '' || newBudget.endDate.trim() === '') {
+  if (
+    newBudget.name.trim() === "" ||
+    newBudget.startDate.trim() === "" ||
+    newBudget.endDate.trim() === ""
+  ) {
     invalidFormat.value = true;
     return;
   }
@@ -159,9 +182,16 @@ const renewBudgets = async () => {
     const allBudgets = await getBudgetByUser();
     if (allBudgets !== null) {
       const latestExpiryBudget = allBudgets.reduce((latest, current) => {
-        return new Date(latest.expiryDate) > new Date(current.expiryDate) ? latest : current;
+        return new Date(latest.expiryDate) > new Date(current.expiryDate)
+          ? latest
+          : current;
       });
-      await addBudgetWithRow(newBudget.name, newBudget.startDate, newBudget.endDate, latestExpiryBudget);
+      await addBudgetWithRow(
+        newBudget.name,
+        newBudget.startDate,
+        newBudget.endDate,
+        latestExpiryBudget,
+      );
       toggleRenewModal();
       window.location.reload();
     } else {
@@ -199,7 +229,11 @@ const budgetDetails = reactive({
 });
 
 const renewCurrentBudget = async () => {
-  if (!budgetDetails.name || !budgetDetails.startDate || !budgetDetails.endDate) {
+  if (
+    !budgetDetails.name ||
+    !budgetDetails.startDate ||
+    !budgetDetails.endDate
+  ) {
     alert("Fyll ut alle feltene!");
     return;
   }
@@ -216,18 +250,21 @@ const renewCurrentBudget = async () => {
       currentBudget.id, // Pass the current budget ID as oldBudgetId
       budgetDetails.name,
       budgetDetails.startDate,
-      budgetDetails.endDate
+      budgetDetails.endDate,
     );
 
     if (!renewalResponse) {
       console.error("Failed to renew budget due to an API issue");
       return;
     }
-
   } catch (error) {
     console.error("Failed to renew budget:", error);
     if ((error as any).response) {
-      console.error("API responded with:", (error as any).response.status, (error as any).response.data);
+      console.error(
+        "API responded with:",
+        (error as any).response.status,
+        (error as any).response.data,
+      );
     }
   }
 };
@@ -267,4 +304,3 @@ button:active {
   color: red;
 }
 </style>
-
