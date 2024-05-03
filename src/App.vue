@@ -1,85 +1,87 @@
-<script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+  <div class="layout">
+    <div id="nav" v-if="!isSetup">
+      <NAV @theme="handleThemeChange" />
     </div>
-  </header>
 
-  <RouterView />
+    <div id="content" :style="contentStyle">
+      <RouterView />
+    </div>
+
+    <FOOTER v-if="isPhone" id="footer-box" />
+  </div>
 </template>
 
+<script setup lang="ts">
+import { useDark, useToggle } from "@vueuse/core";
+import { RouterView, useRoute } from "vue-router";
+import NAV from "./views/Nav_View.vue";
+import { onMounted, ref, computed } from "vue";
+import FOOTER from "./views/Footer_View.vue";
+
+const route = useRoute();
+const isSetup = computed(() => route.name === "setup");
+const contentStyle = computed(() => {
+  return {
+    paddingTop: isSetup.value ? "90px" : "0px", // Keep 90px space when setup, none otherwise
+    top: isSetup.value ? "0px" : "90px", // Add top only when nav is present
+  };
+});
+const isDark = useDark();
+const toggleDark = useToggle(isDark);
+const emit = defineEmits();
+const handleThemeChange = () => {
+  toggleDark();
+  document.body.classList.toggle("dark", isDark.value);
+};
+document.body.classList.toggle("dark", isDark.value);
+
+const isPhone = ref(false);
+let mql;
+
+onMounted(() => {
+  mql = window.matchMedia("(max-width: 480px)");
+  isPhone.value = mql.matches;
+
+  mql.addEventListener("change", (e) => {
+    isPhone.value = e.matches;
+  });
+});
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+.layout {
+  display: flex;
+  flex-direction: column;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
+#nav {
+  position: fixed;
+  top: 0;
   width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
+  z-index: 1000;
 }
 
-nav a.router-link-exact-active {
-  color: var(--color-text);
+#content {
+  position: relative;
+  top: 90px;
+  overflow-y: hidden;
 }
 
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+#footer-box {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
+@media screen and (max-width: 480px) {
+  #content {
+    padding-bottom: 60px;
   }
 }
 </style>

@@ -1,0 +1,20 @@
+image: node:20.11.0
+
+
+stages:
+  - typecheck
+  - build
+
+typecheck_job:
+  stage: typecheck
+  script:
+    - echo "Running type checks..."
+    - npm install
+    - npm run type-check
+    
+build_job:
+  stage: build
+  script:
+    - echo "Building the project..."
+    - npm install
+    - npm run build
