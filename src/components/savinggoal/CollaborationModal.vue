@@ -64,7 +64,7 @@ const addToSavingGoal = async () => {
     alert('Invalid username')
     username.value = ''
   }
-  const user = await getUserByUsername(username.value)
+  const user = await getUserByUsername()
   if (!user) {
     alert('User not found')
     username.value = ''

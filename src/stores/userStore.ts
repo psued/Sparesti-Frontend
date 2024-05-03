@@ -11,6 +11,7 @@ export const useUserStore = defineStore({
     userId: useStorage("userId", -1, sessionStorage),
     userInfoExists: useStorage("userInfoExists", false, sessionStorage),
     muted: useStorage("muted", false, localStorage),
+    loginStreak: useStorage("loginStreak", 0, sessionStorage),
   }),
   getters: {
     getAccessToken(): string {
@@ -34,6 +35,9 @@ export const useUserStore = defineStore({
     getMuted(): boolean {
       return this.muted;
     },
+    getLoginStreak(): number {
+      return this.loginStreak;
+    },
   },
   actions: {
     setAccessToken(accessToken: string) {
@@ -56,6 +60,9 @@ export const useUserStore = defineStore({
     },
     toggleMuted() {
       this.muted = !this.muted;
+    },
+    setLoginStreak(streak: number) {
+      this.loginStreak = streak;
     },
     tokenIsExpired(): boolean {
       return Date.now() > this.expireTime;

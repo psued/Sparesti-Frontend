@@ -12,6 +12,7 @@ devices. * The component handles dark mode and theme changes. */
         class="logo"
       />
     </RouterLink>
+    <p>Hei</p>
   </div>
   <div class="progress-container">
     <!-- Progress bar -->
@@ -175,6 +176,7 @@ const handleThemeChange = () => {
   border-bottom: 1px solid #4b644a;
   z-index: 988;
   overflow: hidden;
+  align-items: center;
 }
 
 .top-bar-dark {

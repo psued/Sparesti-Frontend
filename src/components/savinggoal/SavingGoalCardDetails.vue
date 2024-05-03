@@ -74,7 +74,7 @@
   onMounted(async () => {
     savingGoal.value = await getSavingGoalById(savingGoalId);
     usersWithSavingGoal.value = await getUsersBySavingGoal(savingGoalId);
-    const user = await getUserByUsername(userStore.getUserName);
+    const user = await getUserByUsername();
     userId.value = user.id;
     isAuthor();
   });
