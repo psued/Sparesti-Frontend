@@ -94,3 +94,18 @@ export const deleteBudgetRow = async (budgetId: number, rowId: number): Promise<
     }
 }
 
+export const getNewestBudget = async (): Promise<Budget | null> => {
+    try {
+        const response = await api.get(`/budget/budgets/getnew`);
+
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            console.error('Failed to fetch newest budget:', response.statusText);
+            return null;
+        }
+    } catch (error) {
+        console.error('Error fetching newest budget:', error);
+        return null;
+    }
+}
