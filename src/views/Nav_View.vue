@@ -5,6 +5,9 @@ devices. * The component handles dark mode and theme changes. */
 <template>
   <!-- Top bar -->
   <div class="top-bar" :class="darkMode ? 'top-bar-dark' : ''">
+    <div v-if="loginStreak != 0 && loginStreak.toString().length < 6"class="login-streak">
+      <span class="fire-emoji">🔥</span> {{ loginStreak }}
+    </div>
     <RouterLink class="logo" to="/">
       <img
         :src="darkMode ? '/logo_long_dark.png' : '/logo_long.png'"
@@ -51,6 +54,7 @@ import "@/assets/icons.css";
 import sidebar from "../components/nav/Sidebar.vue";
 import { useUserStore } from "@/stores/userStore";
 import { getCurrentSavingGoal, savingGoalListener } from "@/api/savingGoalHooks";
+import { getLoginStreak } from "@/api/userHooks";
 
 // Progress bar
 const savedAmount = ref(0);
@@ -63,6 +67,7 @@ const progressWidth = computed(() => {
   return `${progress.value}%`;
 });
 const userStore = useUserStore();
+const loginStreak = ref(1);
 
 async function fetchSavingProgress() {
   if (!userStore.isLoggedIn()) {
@@ -149,7 +154,29 @@ const handleThemeChange = () => {
   emit("theme");
 };
 
+async function fetchLoginStreak() {
+  try {
+    loginStreak.value = await getLoginStreak() ?? 0;
+  } catch (error) {
+    console.error("Error fetching login streak:", error);
+  }
+}
 
+onMounted(async () => {
+  try {
+    await fetchLoginStreak();
+    await fetchSavingProgress();
+  } catch (error) {
+    console.error('Error fetching login streak:', error);
+  }
+});
+
+computed(() => {
+  if (userStore.isLoggedIn()) {
+    fetchSavingProgress();
+    fetchLoginStreak();
+  }
+});
 </script>
 
 <style scoped>
@@ -564,5 +591,15 @@ const handleThemeChange = () => {
   .progress-bar {
     width: 50%;
   }
+}
+
+.login-streak {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 8px;
+  color: var(--color-text);
+  border-radius: 4px;
+  font-weight: bold;
 }
 </style>
