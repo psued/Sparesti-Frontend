@@ -104,6 +104,7 @@ import {
 } from "@/api/budgetHooks";
 import {useRoute} from "vue-router";
 import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
+import type {Transaction} from "@/types/Budget";
 
 
 const transactions = ref([]);
@@ -226,19 +227,23 @@ let budgetRowIds = reactive({});
 
 
 const saveTransactions = async () => {
-  // Filter out transactions that still have "Select a category" selected
-  const transactionsToSave = currentTransactions.value.filter(transaction => selectedCategories[transaction.id] && selectedCategories[transaction.id] !== "Select a category");
+  // Explicitly declare the type of the variable to be Transaction[]
+  let transactionsToSave: Transaction[] = currentTransactions.value.filter(transaction => selectedCategories[transaction.id] && selectedCategories[transaction.id] !== "Select a category");
 
   // Iterate over the remaining transactions and call addTransactionToBudgetRow for each one
   for (const transaction of transactionsToSave) {
-    const category = selectedCategories[transaction.id];
+    // Provide a more specific type for the key
+    let category: string = selectedCategories[transaction.id];
     let budgetRowId;
 
     // Iterate through the expenses object to find the expense with the same category name
     for (const expenseCategory in expenses) {
       if (expenseCategory === category) {
-        budgetRowId = expenses[expenseCategory].id; // Use the id of the matching expense as the budgetRowId
-        break;
+        // Ensure that the value you're trying to access the id property on is not of type never
+        if (typeof expenses[expenseCategory] !== 'undefined') {
+          budgetRowId = expenses[expenseCategory].id; // Use the id of the matching expense as the budgetRowId
+          break;
+        }
       }
     }
 
@@ -252,6 +257,8 @@ const saveTransactions = async () => {
   // Clear the selected categories
   selectedCategories = reactive({});
 };
+
+// ... existing code ...
 const handleNewCategory = async () => {
   await addRowToUserBudget(
       "string",
