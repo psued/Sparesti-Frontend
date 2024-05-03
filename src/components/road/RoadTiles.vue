@@ -94,6 +94,10 @@ function goToSavingGoal() {
   }
 }
 
+
+  /**
+   * Function to complete the current saving goal
+   */
 async function completeSavingGoal() {
   try {
     const res = await completeCurrentSavingGoal();
@@ -105,11 +109,16 @@ async function completeSavingGoal() {
   }
 }
 
+/**
+ * Function to create a new saving goal
+ */
 function createSavingGoal() {
   router.push(`/saving-goal/create`);
 }
 
-
+/**
+ * Road interface to represent a road
+ */
 interface Road {
   id: number;
   amount: number,
@@ -130,7 +139,9 @@ const addRoad = (amount: number) => {
   roads.value.push({id: roads.value.length, amount, emoji: "/house-" + houseNr + ".png", direction, moved, pig, arrived: false});
 };
 
-
+/**
+ * Function to move the pig at the start of the road
+ */
 function moveStart(): Promise<void> {
   return new Promise((resolve) => {
     startpig.value = "/animation/pig-walking-" + (roads.value.length%2 === 0 ? 'right' : 'left') + ".gif";
@@ -147,6 +158,10 @@ function moveStart(): Promise<void> {
   });
 
 }
+/**
+ * Function to move the pig on the road
+ * @param road The road to move the pig on
+ */
 function movePig(road: Road): Promise<void> {
   return new Promise((resolve) => {
     if (!goal || !road || road.amount > saved.value || roads.value.length === 1) {
@@ -170,6 +185,9 @@ function movePig(road: Road): Promise<void> {
     } 
   });
 }
+/**
+ * Function to move the pig at the end of the road when the goal is reached
+ */
 function moveEnd(): Promise<void> {
   return new Promise((resolve) => {
     roads.value[0].pig = `/animation/pig-walking-${roads.value[0].direction}.gif`;
@@ -188,14 +206,10 @@ function moveEnd(): Promise<void> {
 }
 
 const userStore = useUserStore();
-const openPopup = () => {
-  showPopup.value = true;
 
-};
-const closePopup = () => {
-  showPopup.value = false;
-}
-
+/**
+ * Function to update the current saving goal
+ */
 const updateSavingGoal = async () => {
   try {
     let savingGoal = await getCurrentSavingGoal();
@@ -213,9 +227,14 @@ const updateSavingGoal = async () => {
   }
 };
 
+/**
+ * Function to add to the saved amount
+ * @param amount The amount to add to the saved amount
+ */
 watch(savingGoalListener, async () => {
   await updateSavingGoal();
 }); 
+
 
 onMounted(async () => {
   if (!userStore.isLoggedIn()) {
@@ -232,7 +251,7 @@ onMounted(async () => {
     addRoad(amount);
   }
   
-  
+  // Create the first moves when loading and the roads have been placed
   nextTick(async () => {
     try{
     if(roads.value.length <= 0){
@@ -258,6 +277,9 @@ onMounted(async () => {
   });
 });
 
+/**
+ * Function to trigger the confetti animation
+ */
 const triggerConfetti = () => {
   if(userStore.getMuted) return;
   showConfetti.value = true;
@@ -282,6 +304,9 @@ const triggerConfetti = () => {
   }, 5000); // 5000 milliseconds (adjust as needed)
 };
 
+/**
+ * Function to play the pling sound
+ */
 const playPlingSound = () => {
   if (userStore.getMuted) return;
   const sound = new Howl({
@@ -292,6 +317,9 @@ const playPlingSound = () => {
   });
 };
 
+/**
+ * Function to play the yay sound
+ */
 const playYaySound = () => {
   if (userStore.getMuted) return;
   const sound = new Howl({
@@ -301,6 +329,10 @@ const playYaySound = () => {
     loop: false,
   });
 };
+
+/**
+ * Watcher to check if the roads have been completed
+ */
 watchEffect(() => {
   if(userStore.getMuted) return;
   roads.value.forEach(road => {
@@ -311,6 +343,7 @@ watchEffect(() => {
   });
   if (roadComplete.value && !roadCompleteSound.value) {
       roadCompleteSound.value = true;
+      triggerConfetti();
       playYaySound();
   }
 });

@@ -47,7 +47,7 @@ devices. * The component handles dark mode and theme changes. */
 </template>
 
 <script setup lang="ts">
-import { onMounted,   onUnmounted, ref, defineEmits, defineProps, computed, watch } from "vue";
+import { onMounted,   onUnmounted, ref, defineEmits, defineProps, computed, watch, watchEffect } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 import { Transition } from "vue";
 import "@/assets/icons.css";
@@ -167,14 +167,21 @@ async function fetchLoginStreak() {
 
 onMounted(async () => {
   try {
-    await fetchLoginStreak();
-    await fetchSavingProgress();
+    fetchLoginStreak();
+    fetchSavingProgress();
   } catch (error) {
     console.error('Error fetching login streak:', error);
   }
 });
 
-computed(() => {
+computed(async () => {
+  if (userStore.isLoggedIn()) {
+    await fetchSavingProgress();
+    await fetchLoginStreak();
+  }
+});
+
+watchEffect(async () => {
   if (userStore.isLoggedIn()) {
     fetchSavingProgress();
     fetchLoginStreak();
