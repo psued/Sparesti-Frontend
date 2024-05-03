@@ -6,18 +6,26 @@
       <div class="input-wrapper">
         <label for="firstName">Hva er ditt fornavn?</label>
         <input id="firstName" v-model="firstName" placeholder="First Name" required />
+        <div v-if="formErrors.firstName" class="error">{{ formErrors.firstName }}</div>
       </div>
       <div class="input-wrapper">
         <label for="lastName">Hva er ditt etternavn?</label>
         <input id="lastName" v-model="lastName" placeholder="Last Name" required />
+        <div v-if="formErrors.lastName" class="error">{{ formErrors.lastName }}</div>
       </div>
       <div class="input-wrapper">
         <label for="nickname">Hva kaller vennene dine deg?</label>
         <input id="nickname" v-model="nickName" placeholder="Nickname" required />
+        <div v-if="formErrors.nickName" class="error">{{ formErrors.nickName }}</div>
       </div>
       <div class="input-wrapper">
         <label for="birthdate">Hvor gammel er du?</label>
-        <input type="date" id="birthdate" v-model="birthdate" required />
+        <input 
+        type="date" 
+        id="birthdate" 
+        v-model="birthdate" 
+        required />
+        <div v-if="formErrors.birthdate" class="error">{{ formErrors.birthdate }}</div>
       </div>
       <div class="input-wrapper">
         <label for="occupationStatus">Hva er din nåværende yrkesstatus?</label>
@@ -27,6 +35,7 @@
           <option value="employed">Arbeidende</option>
           <option value="unemployed">Arbeidsledig</option>
         </select>
+        <div v-if="formErrors.occupationStatus" class="error">{{ formErrors.occupationStatus }}</div>
       </div>
     </div>
     <FormButton type="submit" @click="goToNextStep">Next</FormButton>
@@ -66,39 +75,26 @@ function goToNextStep() {
       occupationStatus: occupationStatus.value,
     });
     emit("update-step", 2);
-  } else {
-    alert("Please fill in all fields before proceeding.");
   }
 }
 
+/**
+ * Checks if the form is valid, and has error messages for different scenarios
+ */
 function isFormValid() {
-  formErrors.value = {
-    firstName: "",
-    lastName: "",
-    nickName: "",
-    birthdate: "",
-    occupationStatus: "",
-  };
+  const today = new Date();
+  const tomorrow = new Date(today.setDate(today.getDate()-1)).toISOString().slice(0, 10);
+  
+  formErrors.value.firstName = firstName.value ? "" : "Fornavn er påkrevd.";
+  formErrors.value.lastName = lastName.value ? "" : "Etternavn er påkrevd.";
+  formErrors.value.nickName = nickName.value ? "" : "Kallenavn er påkrevd.";
+  formErrors.value.birthdate = !birthdate.value ? "Fødselsdato er påkrevd." : 
+                              (birthdate.value > tomorrow ? "Fødselsdato kan ikke være i fremtiden." : "");
+  formErrors.value.occupationStatus = occupationStatus.value ? "" : "Yrkesstatus er påkrevd.";
 
-  let isValid = true;
-  if (!firstName.value) {
-    formErrors.value.firstName = "First name is required";
-    isValid = false;
-  }
-  if (!lastName.value) {
-    formErrors.value.lastName = "Last name is required";
-    isValid = false;
-  }
-  if (!birthdate.value) {
-    formErrors.value.birthdate = "Birthdate is required";
-    isValid = false;
-  }
-  if (!occupationStatus.value) {
-    formErrors.value.occupationStatus = "Occupation status is required";
-    isValid = false;
-  }
-  return isValid;
+  return Object.values(formErrors.value).every(x => x === "");
 }
+
 onMounted(() => {
   firstName.value = store.stepOneData.firstName;
   lastName.value = store.stepOneData.lastName;
@@ -156,5 +152,9 @@ select option[value=""][disabled] {
 
 .form-button {
   width: 100%;
+}
+
+.error {
+  color: #E57373;
 }
 </style>

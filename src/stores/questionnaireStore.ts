@@ -75,7 +75,6 @@ export const useQuestionnaireStore = defineStore("questionnaireStore", {
     getAllData() {
       const userInfo = {
         id: "",
-        userId: -1,
         displayName: `${this.questionnaireData.stepOne.nickName}`,
         firstName: this.questionnaireData.stepOne.firstName,
         lastName: this.questionnaireData.stepOne.lastName,

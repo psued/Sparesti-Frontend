@@ -39,6 +39,9 @@
       </div>
       <button @click="addProduct" class="add-button">Add</button>
     </div>
+    <div v-if="formErrors.length" class="error-messages">
+      <div v-for="error in formErrors" :key="error">{{ error }}</div>
+    </div>
     <div class="button-container">
       <FormButton type="button" @click="goBack">Tilbake</FormButton>
       <FormButton type="submit" @click="finishQuestionnaire">Neste</FormButton>
@@ -61,6 +64,7 @@ const emit = defineEmits(["update-step"]);
 
 const products = ref(store.stepFourData.products);
 const newProduct = ref({ name: "", frequency: "daily", amount: 0, price: 0 });
+const formErrors = ref<string[]>([]);
 
 const checkingAccount = ref(store.stepTwoData.checkingAccount.replace(/\s/g, ''));
 const savingsAccount = ref(store.stepTwoData.savingsAccount.replace(/\s/g, ''));
@@ -70,14 +74,26 @@ watch(products, (newProducts) => {
 }, { deep: true });
 
 function addProduct() {
-  if (newProduct.value.name && newProduct.value.frequency && newProduct.value.price) {
+  formErrors.value = []; 
+
+  if (!newProduct.value.name.trim()) {
+    formErrors.value.push("Produktnavn er påkrevd.");
+  }
+  if (newProduct.value.price <= 0) {
+    formErrors.value.push("Pris per enhet må være større enn 0.");
+  }
+  if (newProduct.value.amount <= 0) {
+    formErrors.value.push("Har du ingen mengde?");
+  }
+
+  if (formErrors.value.length === 0) {
     products.value.push({
       name: newProduct.value.name,
       frequency: newProduct.value.frequency,
       amount: newProduct.value.amount,
       price: newProduct.value.price,
     });
-    newProduct.value = { name: "", frequency: "", amount: 0, price: 0};
+    newProduct.value = { name: "", frequency: "daily", amount: 0, price: 0 };
   }
 }
 
@@ -212,6 +228,10 @@ onMounted(() => {
 
 .form-container h2, .form-container p {
   margin-bottom: 10px;
+}
+
+.error {
+  color: #E57373;
 }
 </style>
 

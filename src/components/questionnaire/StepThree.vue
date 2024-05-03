@@ -12,6 +12,7 @@
         required
         class="text-input"
       />
+      <div v-if="formErrors.annualIncome" class="error">{{ formErrors.annualIncome }}</div>
     </div>
 
     <div class="input-group">
@@ -58,8 +59,6 @@ function goToNextStep() {
       changeWillingness: changeWillingness.value,
     });
     emit("update-step", 4);
-  } else {
-    alert("Please fill in all fields before proceeding.");
   }
 }
 
@@ -68,21 +67,20 @@ function goBack() {
 }
 
 function isFormValid() {
-  formErrors.value = {
-    annualIncome: "",
-    changeWillingness: "",
-  };
+  formErrors.value.annualIncome = validateAnnualIncome(annualIncome.value);
+  formErrors.value.changeWillingness = (changeWillingness.value === undefined || changeWillingness.value === null) ? "Please indicate your willingness to change." : "";
 
-  let isValid = true;
-  if (!annualIncome.value && annualIncome.value !== 0) {
-    formErrors.value.annualIncome = "Annual income is required";
-    isValid = false;
+  return !formErrors.value.annualIncome && !formErrors.value.changeWillingness;
+}
+
+function validateAnnualIncome(income: any) {
+  const numIncome = parseFloat(income);
+  if (!income && income !== 0) {
+    return "Annual income is required";
+  } else if (isNaN(numIncome) || numIncome < 0) {
+    return "Annual income cannot be less than zero";
   }
-  if (changeWillingness.value === undefined || changeWillingness.value === null) {
-    formErrors.value.changeWillingness = "Please indicate your willingness to change.";
-    isValid = false;
-  }
-  return isValid;
+  return "";
 }
 
 onMounted(() => {
@@ -151,6 +149,10 @@ onMounted(() => {
 
 .form-button {
   padding: 10px 20px;
+}
+
+.error {
+  color: #E57373;
 }
 </style>
 
