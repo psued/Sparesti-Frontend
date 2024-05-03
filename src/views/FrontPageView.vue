@@ -17,7 +17,9 @@
       @close="closePopup"
       :position="popupPosition"
     />
-    <PopupComponent :isVisible="showBadgePopup" :flashingBorder="true" class="popup">
+  </div>
+
+  <PopupComponent :isVisible="showBadgePopup" :flashingBorder="true" class="popup">
       <template #content>
         <h2>Gratulerer, du har mottatt en medalje!</h2>
         <BadgeComponent :badge="rewardedBadge" :owned="true" />
@@ -32,7 +34,7 @@
         <div class="confetti-container" v-if="showConfetti"></div>
       </template>
     </PopupComponent>
-  </div>
+
 </template>
 
 <script setup lang="ts">
@@ -127,6 +129,7 @@ const triggerConfetti = () => {
 };
 
 const playPlingSound = () => {
+  if(userStore.getMuted) return;
   const sound = new Howl({
     src: [plingSound],
     autoplay: true,
@@ -233,18 +236,28 @@ onMounted(async () => {
 }
 
 .popup {
-  position: absolute;
+  position: fixed; /* Keep the popup in a fixed position */
+  top: 50%; /* Position the top edge of the element at the middle of the screen */
+  left: 50%; /* Position the left edge of the element at the middle of the screen */
+  transform: translate(-50%, -50%); /* Shift the element back by half its own width and height to truly center it */
   background-color: white;
   border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-  max-height: fit-content;
-  overflow-y: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   padding: 20px;
-  width: 80%;
-  width: fit-content;
-  height: fit-content;
-  text-align: -webkit-center;
-  z-index: 999;
+  width: 80%; /* Control width */
+  height: fit-content; /* Adjust height as needed */
+  display: flex; /* Enables flexbox */
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center children horizontally */
+  justify-content: center; /* Center children vertically */
+  z-index: 999; /* Ensures the popup stays above other content */
+}
+
+/* Optional: Ensuring width doesn't become too large on bigger screens */
+@media (min-width: 600px) {
+  .popup {
+    width: 400px; /* Maximum width on large screens */
+  }
 }
 
 .button {

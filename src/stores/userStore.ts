@@ -8,8 +8,8 @@ export const useUserStore = defineStore({
     idToken: useStorage("idToken", "", sessionStorage),
     userName: useStorage("userName", "", sessionStorage),
     expireTime: useStorage("timeToLive", 0, sessionStorage),
-    userId: useStorage("userId", -1, sessionStorage),
-    userInfoExists: useStorage("userInfoExists", false, sessionStorage)
+    userInfoExists: useStorage("userInfoExists", false, sessionStorage),
+    muted: useStorage("muted", false, localStorage),
   }),
   getters: {
     getAccessToken(): string {
@@ -24,11 +24,11 @@ export const useUserStore = defineStore({
     getExpireTime(): number {
       return this.expireTime;
     },
-    getUserId(): number {
-      return this.userId;
-    },
     getUserInfoExists(): boolean {
       return this.userInfoExists;
+    },
+    getMuted(): boolean {
+      return this.muted;
     },
   },
   actions: {
@@ -44,11 +44,11 @@ export const useUserStore = defineStore({
     setTimeToLive(timeToLive: number) {
       this.expireTime = Date.now() + timeToLive * 1000;
     },
-    setUserId(userId: number) {
-      this.userId = userId;
-    },
     setUserInfoExists(exists: boolean) {
       this.userInfoExists = exists;
+    },
+    toggleMuted() {
+      this.muted = !this.muted;
     },
     tokenIsExpired(): boolean {
       return Date.now() > this.expireTime;

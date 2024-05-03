@@ -106,6 +106,16 @@ export const updateLoginStreak = async (): Promise<any | null> => {
   }
 }
 
+export const getLoginStreak = async (): Promise<number | null> => {
+  try {
+    const res = await api.get('/users/login-streak')
+    return res.data;
+  } catch (error: any) {
+    console.error("Error getting login streak:", error);
+    return error.response;
+  }
+}
+
 export const updateProfilePicture = async (profilePictureUrl: string): Promise<string | null> => {
   try {
     const response = await api.post("/users/update", {

@@ -99,21 +99,29 @@
     align-items: center;
   }
 
+  .saving-goal-card {
+    background-color: var(--color-badges-owned);
+  }
+
+  .saving-goal-card:hover {
+    background-color: var(--color-badges-owned-hover);
+  }
+
   .saving-goal-item {
     width: 100%; 
     display: flex; 
     justify-content: center;
   }
 
-.button {
-  margin: 1rem auto;
-  cursor: pointer;
-  width: 200px;
-  height: 50px;
-  position: absolute;
-  top: 0;
-  left: 10px;
-}
+  .button {
+    margin: 1rem auto;
+    cursor: pointer;
+    width: 200px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    left: 10px;
+  }
 @media screen and (max-width: 900px){
     .header {
       display: flex;
