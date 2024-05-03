@@ -20,7 +20,7 @@
         </template>
       </ButtonComponent>
 
-      <ButtonComponent :foreground-color="'#ff4d4d'" :background-color="'#be1e1e'" v-if="!completed && challengeExpired" class="removeButton">
+      <ButtonComponent v-if="!completed && challengeExpired" class="removeButton">
         <template v-slot:content>
           <p class="removeText">Fjern Utfordring</p>
         </template>
