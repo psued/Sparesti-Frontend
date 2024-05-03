@@ -17,5 +17,8 @@ const props = defineProps<{
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid;
 }
 </style>

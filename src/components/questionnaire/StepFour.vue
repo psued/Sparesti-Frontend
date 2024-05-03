@@ -1,91 +1,126 @@
 <template>
   <div class="form-container">
-    <h2>Snart ferdig</h2>
-    <div class="product-container">
+    <h2>Vi trenger Litt mer info</h2>
+    <p>Legg til produkter du vil spare på</p>
+    <div class="product-list">
+      <!-- Product Header -->
+      <div class="product-header">
+        <span class="header-name">Navn</span>
+        <span class="header-amount">Mengde</span>
+        <span class="header-price">Enhets pris</span>
+        <span class="header-action"></span>
+      </div>
+      <!-- Product Items -->
       <div v-for="(item, index) in products" :key="index" class="product-item">
         <span>{{ item.name }}</span>
-        <span>{{ item.frequency }} per {{ item.timeUnit }}</span>
+        <span>{{ item.amount }}</span>
         <span>{{ item.price }}kr</span>
         <button @click="removeProduct(index)">X</button>
       </div>
     </div>
+    <!-- New Product Form -->
     <div class="new-product">
-      <input v-model="newProduct.name" placeholder="Product name" />
-      <input v-model="newProduct.frequency" placeholder="Frequency" />
-      <select v-model="newProduct.timeUnit">
-        <option value="day">Dag</option>
-        <option value="week">Uke</option>
-        <option value="month">Måned</option>
-      </select>
-      <input v-model="newProduct.price" placeholder="Unit price" />
-      <button @click="addProduct">Add</button>
+      <label for="productName" class="form-label">Produktnavn:</label>
+      <input v-model="newProduct.name" placeholder="Produkt" class="new-product-input" />
+      <label for="productAmount" class="form-label">Mengde:</label>
+      <input v-model.number="newProduct.amount" type="number" placeholder="Mengde" class="new-product-input" />
+      <div class="frequency-wrapper">
+        <label for="frequencySelect" class="form-label">Hvor ofte?</label>
+        <select v-model="newProduct.frequency" class="timeunit-select">
+          <option value="daily">Daglig</option>
+          <option value="weekly">Ukentlig</option>
+          <option value="monthly">Månedlig</option>
+        </select>
+      </div>
+      <div class="price-wrapper">
+        <label for="productPrice" class="form-label">Pris per enhet?</label>
+        <input v-model="newProduct.price" type="number" placeholder="Enhetspris" class="price-input" />
+        <span>kr</span>
+      </div>
+      <button @click="addProduct" class="add-button">Add</button>
     </div>
-    <FormButton @click="finishQuestionnaire">Ferdig</FormButton>
+    <div class="button-container">
+      <FormButton type="button" @click="goBack">Tilbake</FormButton>
+      <FormButton type="submit" @click="finishQuestionnaire">Neste</FormButton>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, defineEmits, onMounted, watch } from "vue";
-import { useRouter } from "vue-router";
 import { useQuestionnaireStore } from "@/stores/questionnaireStore";
-import type { Product } from "@/types/QuestionnaireData";
+import { submitUserInfo, updateUserInfo, updateAccounts } from "@/api/userHooks";
 import FormButton from "@/components/forms/FormButton.vue";
-import router from "@/router";
-import { submitUserInfo } from "@/api/userHooks";
 import { useUserStore } from "@/stores/userStore";
 
-const userStore = useUserStore();
-
-const emit = defineEmits(["update-step"]);
 const store = useQuestionnaireStore();
+const userStore = useUserStore();
+const isLoading = ref(false);
+const error = ref(null);
+const emit = defineEmits(["update-step"]);
 
-const finishQuestionnaire = async () => {
-  const userInfo = store.getAllData();
-  userInfo.userId = userStore.getUserId;
-  console.log("Submitting questionnaire data:", userInfo);
-  submitUserInfo(userInfo)
-    .then(() => {
-      console.log("Questionnaire data submitted successfully!");
-      router.push("/");
-    })
-    .catch((error) => {
-      console.error("Failed to submit questionnaire data:", error);
-    });
-};
+const products = ref(store.stepFourData.products);
+const newProduct = ref({ name: "", frequency: "daily", amount: 0, price: 0 });
 
-const products = ref<Product[]>(store.stepFourData.products);
-const newProduct = ref({ name: "", frequency: "", timeUnit: "day", price: "" });
+const checkingAccount = ref(store.stepTwoData.checkingAccount.replace(/\s/g, ''));
+const savingsAccount = ref(store.stepTwoData.savingsAccount.replace(/\s/g, ''));
 
-watch(
-  products,
-  (newProducts) => {
-    store.updateStepFourData({ products: newProducts });
-  },
-  { deep: true },
-);
+watch(products, (newProducts) => {
+  store.updateStepFourData({ products: newProducts });
+}, { deep: true });
 
 function addProduct() {
-  if (
-    newProduct.value.name &&
-    newProduct.value.frequency &&
-    newProduct.value.price
-  ) {
+  if (newProduct.value.name && newProduct.value.frequency && newProduct.value.price) {
     products.value.push({
       name: newProduct.value.name,
       frequency: newProduct.value.frequency,
-      timeUnit: newProduct.value.timeUnit,
+      amount: newProduct.value.amount,
       price: newProduct.value.price,
     });
-    newProduct.value = { name: "", frequency: "", timeUnit: "day", price: "" };
+    newProduct.value = { name: "", frequency: "", amount: 0, price: 0};
   }
 }
 
-function removeProduct(index: number) {
+function removeProduct(index: any) {
   products.value.splice(index, 1);
 }
 
-function goToNextStep() {
-  emit("update-step", 5);
+const finishQuestionnaire = async () => {
+  isLoading.value = true;
+  const checkingAccountNumber = parseInt(checkingAccount.value, 10);
+  const savingsAccountNumber = parseInt(savingsAccount.value, 10);
+  const userInfo = {
+    ...store.getAllData(),
+    checkingAccount: checkingAccount.value,
+    savingsAccount: savingsAccount.value,
+    budgetingProducts: products.value.map(product => ({
+      name: product.name,
+      frequency: product.frequency.toUpperCase(), 
+      amount: product.amount, 
+      unitPrice: product.price,
+    }))
+  };
+
+  try {
+    if (userStore.getUserInfoExists) {
+      await updateUserInfo(userInfo);
+    } else {
+      await submitUserInfo(userInfo);
+      userStore.setUserInfoExists(true);
+    }
+
+    await updateAccounts(checkingAccountNumber, savingsAccountNumber);
+    emit("update-step", 5);
+  } catch (err: any) {
+    console.error("Failed during the process:", err);
+    error.value = err.message || "Failed to complete all updates.";
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+function goBack() {
+  emit("update-step", 3);
 }
 
 onMounted(() => {
@@ -93,17 +128,91 @@ onMounted(() => {
 });
 </script>
 
+
 <style scoped>
-.form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.product-list {
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 1rem;
+  width: 100%;
+  overflow-y: auto;
+  text-align: left; 
 }
+
+.product-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 2px solid #ccc;
+  margin-bottom: 10px;
+}
+
 .product-item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.product-item:last-child {
+  border-bottom: none;
+}
+
+.header-name, .item-name {
+  flex: 2;
+}
+
+.header-amount, .item-amount { 
+  flex: 2;
+}
+
+.header-price, .item-price { 
+  flex: 3;
+}
+
+.header-action {
+  flex: 0.5;
+  visibility: hidden;
+}
+
+.product-item button {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.new-product-input, .price-input, .timeunit-select {
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 10px;
+  width: 25%;
+}
+
+.add-button {
+  border: none;
+  border-radius: 5px;
+  padding: 7px 15px;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
   width: 100%;
+  margin-top: 30px;
+}
+
+.form-container h2, .form-container p {
   margin-bottom: 10px;
 }
 </style>
+
 @/stores/QuestionnaireStore

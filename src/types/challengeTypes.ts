@@ -35,6 +35,7 @@ export interface ChallengeCreation {
   timeInterval: string;
   difficultyLevel: string;
   productName?: string;
+  productPrice?: number;
   productCategory?: string;
   reductionPercentage?: number;
 }

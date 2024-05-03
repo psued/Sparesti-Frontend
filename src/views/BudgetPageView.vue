@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1 id="budgetTitle">Budsjett</h1>
     <button v-if="allBudgetsExpired" @click="toggleRenewModal">Forny Budsjett</button>
     <div v-if="showRenewModal" class="modal" @click.self="showRenewModal = false">
       <div class="modal-content">
@@ -29,7 +30,7 @@
             </div>
           </div>
           <p v-if="invalidFormat" class="invalid"> Vennligst fyll ut alle feltene</p>
-          <button type="submit">Lagre</button>
+          <button type="submit" :disabled="isSubmitting || invalidFormat">Lagre</button>
         </form>
       </div>
     </div>
@@ -136,24 +137,46 @@ const createBudget = () => {
   if (newBudget.name === '' || newBudget.startDate === '' || newBudget.endDate === '') {
     invalidFormat.value = true;
     return;
-  }
+  } 
   renewBudget(newBudget.name, newBudget.startDate, newBudget.endDate);
   toggleModal(); // Close modal after adding the category
+  window.location.reload(); // Refresh the page to reflect changes
   newBudget.name = '';
   newBudget.startDate = '';
   newBudget.endDate = '';
 };
 
+const isSubmitting = ref(false);
+
 const renewBudgets = async () => {
-  const allBudgets = await getBudgetByUser();
-  console.log(allBudgets);
-  if (allBudgets !== null) {
-    const latestExpiryBudget = allBudgets.reduce((latest, current) => {
-      return new Date(latest.expiryDate) > new Date(current.expiryDate) ? latest : current;
-    });
-    await addBudgetWithRow(newBudget.name, newBudget.startDate, newBudget.endDate, latestExpiryBudget);
-  } else {
-    console.error("No newest budget found");
+  // Validate input fields are not empty
+  if (newBudget.name.trim() === '' || newBudget.startDate.trim() === '' || newBudget.endDate.trim() === '') {
+    invalidFormat.value = true;
+    return;
+  }
+  invalidFormat.value = false;
+
+  // Prevent multiple submissions
+  if (isSubmitting.value) return;
+  isSubmitting.value = true;
+
+  try {
+    const allBudgets = await getBudgetByUser();
+    if (allBudgets !== null) {
+      const latestExpiryBudget = allBudgets.reduce((latest, current) => {
+        return new Date(latest.expiryDate) > new Date(current.expiryDate) ? latest : current;
+      });
+      await addBudgetWithRow(newBudget.name, newBudget.startDate, newBudget.endDate, latestExpiryBudget);
+      toggleRenewModal();
+      window.location.reload();
+    } else {
+      console.error("No newest budget found");
+    }
+  } catch (error) {
+    console.error("Failed to renew budget:", error);
+  } finally {
+    // Reset isSubmitting to allow new operations after the current one completes
+    isSubmitting.value = false;
   }
 };
 
@@ -214,14 +237,40 @@ const renewCurrentBudget = async () => {
     }
   }
 };
-
 </script>
 
 <style scoped>
+#budgetTitle {
+  font-style: italic;
+  margin: 2rem;
+  font-size: 4rem;
+  text-align: center;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #66aa68; /* Green background */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: block; /* Change display to block */
+  margin: 2rem auto; /* Auto margins for horizontal centering, 2rem margin from the title */
+  width: fit-content; /* Ensure button width is based on content */
+}
+
+button:hover {
+  background-color: #45a049; /* Darker green */
+}
+
+button:active {
+  transform: scale(0.98); /* Slightly scale down when clicked */
+  background-color: #367c39; /* Even darker green */
+}
 
 .invalid {
   color: red;
 }
-
 </style>
 

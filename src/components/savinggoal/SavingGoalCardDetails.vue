@@ -77,7 +77,7 @@
   });
   
   const navigateToSavingGoalsPage = () => {
-    router.push(`/saving-goals/user/${userId.value}`);
+    router.push(`/saving-goals`);
   };
 
   const onUpdate = async () => {

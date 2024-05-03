@@ -18,12 +18,9 @@
       :position="popupPosition"
     />
     <PopupComponent :isVisible="showBadgePopup" :flashingBorder="true" class="popup">
-      <!-- Slot for content -->
       <template #content>
         <h2>Gratulerer, du har mottatt en medalje!</h2>
-        <!-- Render the rewarded badge here -->
         <BadgeComponent :badge="rewardedBadge" :owned="true" />
-        <!-- Change this to be a ButtonComponent, I dont know why it doesnt work when I use it -->
         <ButtonComponent class="button" @click="closeBadgePopupAndAwardBadge">
           <template v-slot:content>
             <h2>Godta Medalje</h2>

@@ -1,46 +1,38 @@
 <template>
   <div class="form-container">
     <h2 class="form-title">La oss komme i gang...</h2>
+    <p>Vennligst skriv inn informasjone om deg selv</p>
     <div class="question-container">
-      <label for="firstName">Hva er ditt fornavn?</label>
-      <input
-        id="firstName"
-        v-model="firstName"
-        placeholder="First Name"
-        required
-      />
-
-      <label for="lastName">Hva er ditt etternavn?</label>
-      <input
-        id="lastName"
-        v-model="lastName"
-        placeholder="Last Name"
-        required
-      />
-
-      <label for="nickname">Hva kaller vennene dine deg?</label>
-      <input id="nickname" v-model="nickName" placeholder="Nickname" required />
-
-      <label for="birthdate">Hvor gammel er du?</label>
-      <input
-        type="date"
-        id="birthdate"
-        v-model="birthdate"
-        placeholder="dd.mm.yyyy"
-        required
-      />
-
-      <label for="occupationStatus">Hva er din nåværende yrkesstatus?</label>
-      <select id="occupationStatus" v-model="occupationStatus" required>
-        <option value="">Yrkesstatus</option>
-        <option value="student">Student</option>
-        <option value="employed">Arbeidende</option>
-        <option value="unemployed">Arbeidsledig</option>
-      </select>
+      <div class="input-wrapper">
+        <label for="firstName">Hva er ditt fornavn?</label>
+        <input id="firstName" v-model="firstName" placeholder="First Name" required />
+      </div>
+      <div class="input-wrapper">
+        <label for="lastName">Hva er ditt etternavn?</label>
+        <input id="lastName" v-model="lastName" placeholder="Last Name" required />
+      </div>
+      <div class="input-wrapper">
+        <label for="nickname">Hva kaller vennene dine deg?</label>
+        <input id="nickname" v-model="nickName" placeholder="Nickname" required />
+      </div>
+      <div class="input-wrapper">
+        <label for="birthdate">Hvor gammel er du?</label>
+        <input type="date" id="birthdate" v-model="birthdate" required />
+      </div>
+      <div class="input-wrapper">
+        <label for="occupationStatus">Hva er din nåværende yrkesstatus?</label>
+        <select id="occupationStatus" v-model="occupationStatus" required>
+          <option value="" disabled>Yrkesstatus</option>
+          <option value="student">Student</option>
+          <option value="employed">Arbeidende</option>
+          <option value="unemployed">Arbeidsledig</option>
+        </select>
+      </div>
     </div>
     <FormButton type="submit" @click="goToNextStep">Next</FormButton>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { ref, defineEmits, onMounted } from "vue";
@@ -116,39 +108,53 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+
+.form-title {
+  text-align: center;
 }
 
 .question-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.input-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%; 
+  margin-bottom: 20px;
+}
+
+.input-wrapper label {
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.input-wrapper input,
+.input-wrapper select {
+  border: none;
+  border-radius: 5px; 
+  padding: 10px;
+  margin: 0;
+  width: 100%;
 }
 
 select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background: url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>')
-    no-repeat; /* Add custom arrow */
-  background-position: right 10px top 50%;
+  background: url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px top 50%, #fff;
   background-size: 12px;
-  padding-right: 30px;
   cursor: pointer;
-}
-
-select {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 10px;
-  font-size: 16px;
 }
 
 select option[value=""][disabled] {
   display: none;
 }
+
+.form-button {
+  width: 100%;
+}
 </style>
-@/stores/QuestionnaireStore

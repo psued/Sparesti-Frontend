@@ -33,7 +33,7 @@
         </div>
       </div>
       <div v-else-if="editUploadType === 'emoji'" class="form-group">
-        <EmojiPickerComponent :emoji-prop="emoji" @pickEmoji="pickEmoji"/>
+        <EmojiPickerComponent :emoji-prop="emoji" @pickEmoji="pickEmoji" id="challengeEmojiPicker"/>
       </div>
       <div class = "button-group">
       <button @click="saveChanges" class="editing-button">Save Changes</button>
@@ -162,7 +162,7 @@ const confirmDelete = async () => {
   } catch (error) {
     console.error('Error deleting saving goal:', error);
   }
-  router.push(`/saving-goals/user/${userId}`);
+  router.push('/saving-goals');
 };
 
 function handleImageUpload(event: Event) {
@@ -198,6 +198,12 @@ function handleImageUpload(event: Event) {
   box-shadow: 0 0 5px #ccc;
   transform: scale(1.05);
   cursor: pointer;
+}
+
+#challengeEmojiPicker {
+  margin-top: 20px;
+  width: 45px;
+  height: 45px;
 }
 
 .header {

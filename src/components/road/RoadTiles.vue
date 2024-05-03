@@ -9,13 +9,20 @@
 * @description The template section of the RoadTiles component.
 */
 <template>
+  <ButtonComponent v-if="savingGoalId < 0" class="button" @click="createSavingGoal()">
+      <template v-slot:content>
+          <h2>Kom i gang!</h2>
+        </template>
+    </ButtonComponent>
   <div class="road-container">
     <div class="background-img" :class="darkMode ? 'background-dark' : 'background-light'"></div>
     <div class="road-box">
 
       <div v-if="goal > 0" class="road-edge-point road-end">
-        <div class="road-edge-area" :class="{'node-end': roadComplete}">
+        <div class="road-edge-area saving-goal" :class="{'node-end': roadComplete}"  @click="goToSavingGoal()">
           <img v-if="roadComplete" class="walking-end-pig" @click="triggerConfetti" :src="endpig"></img>
+          <img v-else-if="savingGoalImage.length > 4" :src="savingGoalImage" class="saving-goal-image"></img>
+          <p v-else class="emoji">{{ savingGoalImage }}</p>
         </div>
       </div>
 
@@ -59,6 +66,8 @@ import plingSound from "/pling.wav";
 import yaySound from "/yay.wav";
 import confetti from 'canvas-confetti';
 import { useDark, useToggle } from "@vueuse/core";
+import { useRouter } from "vue-router";
+import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 
 
 const showPopup = ref(false);
@@ -69,13 +78,26 @@ const comleteImg = ref("/animation/gold-coin-spin.gif");
 const roadComplete = ref(false);
 const showConfetti = ref(false);
 const darkMode = useDark();
-
+const savingGoalImage = ref('');
+const router = useRouter();
 
 const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 
 const goal = ref(0);
 const saved = ref(0);
 const step = ref(0);
+
+const savingGoalId = ref(-1);
+
+function goToSavingGoal() {
+  if (savingGoalId.value > 0) {
+    router.push(`/saving-goal/details/${savingGoalId.value}`);
+  }
+}
+
+function createSavingGoal() {
+  router.push(`/saving-goal/create`);
+}
 
 interface Road {
   id: number;
@@ -175,9 +197,11 @@ onMounted(async () => {
   if (savingGoal) {
     goal.value = savingGoal.targetAmount;
     saved.value = savingGoal.savedAmount;
+    savingGoalImage.value = savingGoal.mediaUrl || '';
+    savingGoalId.value = savingGoal.id;
   } else {
-    goal.value = 200;
-    saved.value = 200;
+    goal.value = 0;
+    saved.value = 0;
   }
   step.value = 100;
   const steps = goal.value / step.value;
@@ -193,7 +217,7 @@ onMounted(async () => {
     if(roads.value.length <= 0){
       console.log("No roads");
     } else {
-    for (let i = roads.value.length; i > 0; i--) {
+    for (let i = roads.value.length; i >= 0; i--) {
       if (roads.value[i] && roads.value[i].amount <= saved.value) {
         if (i === roads.value.length - 1) {
           await moveStart();
@@ -201,9 +225,7 @@ onMounted(async () => {
         if (roads.value[i - 1].amount <= saved.value) {
           await movePig(roads.value[i]);
         }
-      } else if (roads.value.length === 1){
-        await moveStart();
-      }
+      } 
     }
 
     if (goal.value !== 0 && goal.value <= saved.value) {
@@ -422,7 +444,7 @@ watchEffect(() => {
   position: absolute;
   width: 90px;
   height: 90px;
-  z-index: 900;
+  z-index: 10;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -453,6 +475,34 @@ watchEffect(() => {
   left: 170px;
 }
 
+.saving-goal-image {
+  height: 100%;
+  width: 100%;
+}
+
+.emoji {
+  font-size: 6em;
+}
+
+.saving-goal {
+  cursor: pointer;
+  transition: box-shadow 0.3s;
+  transition: transform 0.3s ease;
+}
+
+.saving-goal:hover {
+  box-shadow: 0 0 20px #ccc;
+  transform: scale(1.05);
+}
+
+.button {
+  margin: 1rem auto;
+  cursor: pointer;
+  width: 200px;
+  height: 50px;
+  position: relative;
+  top: 0;
+}
 /* Pig */
 .walking-pig{
   width: 40px;

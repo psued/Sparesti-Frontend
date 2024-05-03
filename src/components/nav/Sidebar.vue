@@ -80,7 +80,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         class="bar-item-desktop"
         :class="[{ 'text-dark': darkMode }]"
         @click="toggleBar"
-        to="/saving-goal/create"
+        to="/saving-goals"
       >
         <text>Sparemål</text>
       </router-link>

@@ -29,6 +29,9 @@ const formattedTotalSavings = computed(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid;
 }
 
 .total-savings-label {
