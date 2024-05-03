@@ -74,7 +74,7 @@ const generateNewChallenge = async () => {
   challengeObject.value = await generateRandomChallenge(userEmail);
   console.log(challengeObject.value);
 };
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close']);
 const acceptChallenge = async () => {
   if (challengeObject.value.productName == undefined && challengeObject.value.reductionPercentage == undefined ) {
     await createSavingChallenge(challengeObject.value)
@@ -92,7 +92,7 @@ const acceptChallenge = async () => {
       addChallengeToUser(Number(response.id));
     });
   }
-  emit("close");
+  window.location.reload();
 };
 </script>
 

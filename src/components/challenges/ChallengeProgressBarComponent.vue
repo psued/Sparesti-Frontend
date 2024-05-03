@@ -24,7 +24,7 @@
   --radius: calc((var(--size) - var(--stroke-width)) / 2);
   --circumference: calc(var(--radius) * pi * 2);
   --dash: calc((var(--progress) * var(--circumference)) / 100);
-  animation: progress-animation 5s linear 0s 1 forwards;
+  animation: progress-animation 0.5s linear 0.1s forwards;
 }
 
 .circular-progress circle {
@@ -45,7 +45,6 @@
   transform-origin: var(--half-size) var(--half-size);
   stroke-dasharray: var(--dash) calc(var(--circumference) - var(--dash));
   transition: stroke-dasharray 0.3s linear 0s;
-  stroke: #F5C116;
 }
 
 @property --progress {
@@ -59,6 +58,7 @@
     --progress: 0;
   }
   to {
+    stroke: #F5C116;
     --progress: v-bind(completionPercentage);
   }
 }
