@@ -110,17 +110,18 @@ function goToNextStep() {
 .button-container {
   display: flex;
   justify-content: space-between;
+  width: 100%;
   margin-top: 20px;
 }
 .checkbox-container {
-  margin-right: 10px; /* Space between checkbox and category */
+  margin-right: 10px;
 }
 
 .category-container {
-  flex-grow: 1; /* Allows the category to take up any extra space */
+  flex-grow: 1;
 }
 
 .amount-container {
-  white-space: nowrap; /* Ensures the amount does not wrap */
+  white-space: nowrap;
 }
 </style>
