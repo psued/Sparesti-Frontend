@@ -86,7 +86,7 @@ const completionPercentage = computed(() => {
   max-width: 60%;
   height: auto;
   position: absolute;
-  top: -100px;
+  top: -20px;
   left: -20vw;
   z-index: -1;
 }

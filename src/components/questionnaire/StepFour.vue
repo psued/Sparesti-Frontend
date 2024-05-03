@@ -160,7 +160,7 @@ onMounted(() => {
 }
 
 .header-name, .item-name {
-  flex: 3;
+  flex: 2;
 }
 
 .header-amount, .item-amount { 
@@ -169,11 +169,10 @@ onMounted(() => {
 
 .header-price, .item-price { 
   flex: 3;
-  text-align: center;
 }
 
 .header-action {
-  flex: 1;
+  flex: 0.5;
   visibility: hidden;
 }
 
