@@ -1,3 +1,7 @@
+<!--
+  This is the main view that renders the questionnaire components.
+  It handles the navigation between the different steps of the questionnaire.
+-->
 <template>
   <div class="questionnaire-container">
     <div class="piggy-bank-image">

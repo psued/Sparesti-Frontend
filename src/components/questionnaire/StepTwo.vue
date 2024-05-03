@@ -1,3 +1,7 @@
+<!--
+  This is the second step of the questionnaire. It asks for the user's bank account information.
+  The user is asked to provide their checking account and savings account numbers.
+-->
 <template>
   <div class="form-container">
     <h2 class="header">Bankinformasjon</h2>

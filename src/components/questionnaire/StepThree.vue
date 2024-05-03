@@ -1,3 +1,8 @@
+<!--
+  This is the third step of the questionnaire.
+  It asks the user about their annual income and willingness to change their saving habits.
+  The user can input their annual income and use a slider to indicate their willingness to change.
+-->
 <template>
   <div class="form-container">
     <h2>Halvveis ferdig!</h2>

@@ -1,3 +1,8 @@
+<!--
+This component is used to display a progress bar that shows the completion percentage of the questionnaire.
+The completion percentage is passed as a prop to this component.
+-->
+
 <template>
 	<div class="progress-bar-container">
 		<div class="progress-bar" :style="{ width: progressWidth }"></div>

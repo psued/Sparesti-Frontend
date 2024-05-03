@@ -1,3 +1,8 @@
+<!--
+  StepSix.vue is the last step in the questionnaire. 
+  It is a simple component that displays a message to the user 
+  that they are done with the questionnaire. 
+-->
 <template>
 	<div class="form-container">
 		<h2>Nå er du helt ferdig!</h2>
