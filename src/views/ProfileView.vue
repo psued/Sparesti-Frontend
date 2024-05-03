@@ -28,6 +28,10 @@
             </span>
           </template>
         </ButtonComponent>
+        <button to="/settings" class="settings-button">
+          Informasjon & innstillinger 
+          <i class="icon-setting"></i>
+        </button>
       </section>
     </section>
     <section class="badges-section">
@@ -50,10 +54,7 @@
       </div>
     </section>
     <section class="settings-button">
-      <button to="/settings" class="settings-button">
-        Informasjon & innstillinger 
-        <i class="icon-setting"></i>
-      </button>
+      
     </section>
   </div>
 </template>

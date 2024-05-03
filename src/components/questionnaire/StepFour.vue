@@ -230,7 +230,7 @@ onMounted(() => {
   margin-bottom: 10px;
 }
 
-.error {
+.error-messages {
   color: #E57373;
 }
 </style>

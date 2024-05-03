@@ -74,11 +74,20 @@ function isFormValid() {
 }
 
 function validateAnnualIncome(income: any) {
-  const numIncome = parseFloat(income);
+  // Check if the income is empty
   if (!income && income !== 0) {
-    return "Annual income is required";
-  } else if (isNaN(numIncome) || numIncome < 0) {
-    return "Annual income cannot be less than zero";
+    return "Årlig inntekt er påkrevd.";
+  }
+
+  // Check for invalid characters
+  if (/[^0-9.]/.test(income)) {
+    return "Inntekten kan bare inneholde tall.";
+  }
+
+  // Convert string to a floating-point number
+  const numIncome = parseFloat(income);
+  if (isNaN(numIncome) || numIncome < 0) {
+    return "Går du i minus?";
   }
   return "";
 }

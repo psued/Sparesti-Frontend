@@ -1,7 +1,7 @@
 <template>
   <div class="form-container">
     <h2 class="form-title">La oss komme i gang...</h2>
-    <p>Vennligst skriv inn informasjone om deg selv</p>
+    <p>Vennligst skriv inn informasjon om deg selv</p>
     <div class="question-container">
       <div class="input-wrapper">
         <label for="firstName">Hva er ditt fornavn?</label>
