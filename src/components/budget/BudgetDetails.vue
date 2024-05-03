@@ -47,7 +47,7 @@
       <h3>Legg til en ny utgift</h3>
       <form @submit.prevent="handleNewCategory">
         <h4>Trykk på smilefjeset og velg emoji</h4>
-        <EmojiPickerComponent @pickEmoji="updateEmoji" :emoji-prop="emoji"/>
+        <EmojiPickerComponent @pickEmoji="updateEmoji" :emoji-prop="emoji" id="challengeEmojiPicker"/>
         <input class="input-margin" v-model="newCategory.name" placeholder="Kategori navn" />
         <input class="input-margin" v-model.number="newCategory.total" type="Total sum" placeholder="Total Amount" />
         <button type="submit">Lagre</button>
@@ -351,6 +351,11 @@ const ProgressBar = BudgetProgressBar;
   border-radius: 5px;
   padding: 5px;
   cursor: pointer;
+}
+
+#challengeEmojiPicker {
+  width: 45px;
+  height: 45px;
 }
 
 </style>
