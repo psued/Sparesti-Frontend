@@ -20,19 +20,25 @@
         </template>
       </ButtonComponent>
 
-      <ButtonComponent v-if="!completed && challengeExpired" class="removeButton">
+      <ButtonComponent v-if="failed" class="removeButton" @click="updateCompleted">
         <template v-slot:content>
           <p class="removeText">Fjern Utfordring</p>
         </template>
       </ButtonComponent>
 
-      <ButtonComponent @click="toggleAddPopup" v-if="challengeType === 'Spare' && !completed && !challengeExpired" class="addButton">
+      <ButtonComponent @click="toggleAddPopup" v-if="(challengeType === 'Spare' && !completed && !failed)" class="addButton">
         <template v-slot:content>
           <p>Legg til Penger</p>
         </template>
       </ButtonComponent>
 
-      <ButtonComponent @click="toggleAddPopup" v-if="challengeType === 'Forbruk' && !completed && !challengeExpired" class="addButton">
+      <ButtonComponent @click="toggleAddPopup" v-if="challengeType === 'Budsjett' && !failed && !completed" class="addButton">
+        <template v-slot:content>
+          <p>Legg til Penger</p>
+        </template>
+      </ButtonComponent>
+
+      <ButtonComponent @click="toggleAddPopup" v-if="challengeType === 'Forbruk' && !failed && !completed" class="addButton">
         <template v-slot:content>
           <p>Legg til Produkt</p>
         </template>
@@ -59,7 +65,7 @@
             </div>
           </div>
 
-          <div v-if="challengeType === 'Spare'">
+          <div v-if="challengeType === 'Spare' || challengeType === 'Budsjett'">
             <p>How much money would you like to add?</p>
             <input min="1" :max="challengeObject.targetAmount - challengeObject.usedAmount" type="number">
             <div class="popupButtonsDiv">
@@ -68,7 +74,12 @@
                   <p>Avbryt</p>
                 </template>
               </ButtonComponent>
-              <ButtonComponent class="popupButton" @click="addToChallenge('saving')">
+              <ButtonComponent v-if="challengeType === 'Spare'" class="popupButton" @click="addToChallenge('saving')">
+                <template v-slot:content>
+                  <p>Bekreft</p>
+                </template>
+              </ButtonComponent>
+              <ButtonComponent v-if="challengeType === 'Budsjett'" class="popupButton" @click="addToChallenge('consumption')">
                 <template v-slot:content>
                   <p>Bekreft</p>
                 </template>
@@ -103,6 +114,8 @@ const props = defineProps({
   }
 });
 
+
+
 const challengeType = ref("");
 
 if(props.challengeObject.productName){
@@ -122,6 +135,18 @@ const completed = computed(() => {
     return props.challengeObject.usedAmount <= props.challengeObject.targetAmount && challengeExpired;
   }
 });
+
+const failed = computed(() => {
+  if(challengeType.value === "Spare"){
+    return !completed.value && challengeExpired;
+  } else if(challengeType.value === "Forbruk"){
+    return props.challengeObject.usedAmount >= props.challengeObject.targetAmount;
+  } else if(challengeType.value === "Budsjett"){
+    return props.challengeObject.usedAmount >= props.challengeObject.targetAmount;
+  }
+});
+
+console.log("Challenge: "  + props.challengeObject.title + " completed: " +  completed.value + " failed: " + failed.value + " challengeExpired: " + challengeExpired)
 
 const timeLeftText = computed(() => {
   let timeLeft = new Date(props.challengeObject.expiryDate).getTime() - new Date().getTime();

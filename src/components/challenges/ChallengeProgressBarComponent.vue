@@ -51,7 +51,7 @@
 @property --progress {
   syntax: "<number>";
   inherits: false;
-  initial-value: 0;
+  initial-value: v-bind(completionPercentage);
 }
 
 @keyframes progress-animation {
