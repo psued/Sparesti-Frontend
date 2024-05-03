@@ -78,7 +78,7 @@
       <template v-slot:content>
         <div class="addPopup">
           <div v-if="challengeType === 'Forbruk'">
-            <p>Are you sure you want to add a product?</p>
+            <p>Er du sikker på at du vil legge til et produkt?</p>
             <div class="popupButtonsDiv">
               <ButtonComponent
                 class="popupButton"
@@ -100,7 +100,7 @@
           </div>
 
           <div v-if="challengeType === 'Spare' || challengeType === 'Budsjett'">
-            <p>How much money would you like to add?</p>
+            <p>Hvor mye penger vil du legge til?</p>
             <input
               min="1"
               :max="challengeObject.targetAmount - challengeObject.usedAmount"

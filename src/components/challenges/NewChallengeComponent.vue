@@ -12,16 +12,16 @@
     />
     <div id="contentContainer">
       <div v-if="!showCreateChallenge && !showGenerateChallenge">
-        <h1>New Challenge</h1>
+        <h1>Ny Utfordring</h1>
 
         <ButtonComponent class="button" @click="toggleCreateChallenge">
           <template v-slot:content>
-            <h2>Create</h2>
+            <h2>Lag</h2>
           </template>
         </ButtonComponent>
         <ButtonComponent class="button" @click="toggleGenerateChallenge">
           <template v-slot:content>
-            <h2>Generate</h2>
+            <h2>Generer</h2>
           </template>
         </ButtonComponent>
       </div>
