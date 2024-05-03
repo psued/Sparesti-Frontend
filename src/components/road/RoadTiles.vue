@@ -20,7 +20,7 @@
 
       <div v-if="goal > 0" class="road-edge-point road-end">
         <text v-if="roadComplete" class="complete-text">Klikk for å fullføre!</text>
-        <div class="road-edge-area saving-goal" :class="{'node-end': roadComplete}"  @click="goToSavingGoal()">
+        <div class="road-edge-area saving-goal" :class="{'node-end': roadComplete}"  @click="saved === goal ? completeSavingGoal() : goToSavingGoal()">
           <img v-if="roadComplete" class="walking-end-pig" @click="triggerConfetti" :src="endpig"></img>
           <img v-if="savingGoalImage.length > 4" :src="savingGoalImage" class="saving-goal-image"></img>
           <p v-else class="emoji">{{ savingGoalImage }}</p>
@@ -59,7 +59,7 @@
 import { onMounted, ref, nextTick, watchEffect } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import { useLogin } from "@/api/authenticationHooks";
-import { getCurrentSavingGoal } from "@/api/savingGoalHooks";
+import { getCurrentSavingGoal, completeCurrentSavingGoal, savingGoalListener, addToSavedAmount } from "@/api/savingGoalHooks";
 import { Howl } from 'howler';
 import plingSound from "/pling.wav";
 import yaySound from "/yay.wav";
@@ -91,6 +91,17 @@ const savingGoalId = ref(-1);
 function goToSavingGoal() {
   if (savingGoalId.value > 0) {
     router.push(`/saving-goal/details/${savingGoalId.value}`);
+  }
+}
+
+async function completeSavingGoal() {
+  try {
+    const res = await completeCurrentSavingGoal();
+    if (res && res === 200) {
+      router.push('/saving-goal/create');
+    }
+  } catch(error) {
+    alert("You have not reached your goal yet!");
   }
 }
 
@@ -185,12 +196,8 @@ const closePopup = () => {
   showPopup.value = false;
 }
 
-onMounted(async () => {
-  if (!userStore.isLoggedIn()) {
-    useLogin();
-  }
+const updateSavingGoal = async () => {
   let savingGoal = await getCurrentSavingGoal();
-
   if (savingGoal) {
     goal.value = savingGoal.targetAmount;
     saved.value = savingGoal.savedAmount;
@@ -200,9 +207,20 @@ onMounted(async () => {
     goal.value = 0;
     saved.value = 0;
   }
-    saved.value = 10000;
+};
+
+watch(savingGoalListener, async () => {
+  await updateSavingGoal();
+}); 
+
+onMounted(async () => {
+  if (!userStore.isLoggedIn()) {
+    useLogin();
+  }
+  await updateSavingGoal();
+  
   step.value = 100;
-  const steps = Math.round(goal.value / step.value);
+  const steps = Math.floor(goal.value / step.value);
 
 
   for(let i = steps; i > 0; i--){

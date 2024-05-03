@@ -202,7 +202,7 @@ const ProgressBar = BudgetProgressBar;
 
 .back-arrow {
   font-size: 24px;
-  color: #333;
+  color: var(--color-badges-owned);
   text-decoration: none;
   padding-bottom: 10px;
   display: block;
@@ -260,7 +260,7 @@ const ProgressBar = BudgetProgressBar;
   position: relative;
   display: inline-block;
   font-size: 24px;
-  color: #333;
+  color: #ffffff; 
   margin-top: 20px;
   margin-bottom: 10px;
 }

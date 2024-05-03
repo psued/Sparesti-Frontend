@@ -266,4 +266,3 @@ export const addBudgetWithRow = async (
     return await getBudgetById(newBudgetId);
 };
 
-

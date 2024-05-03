@@ -167,3 +167,12 @@ export const addToSavedAmount = async (savingGoalId: number, amount: number) : P
     throw error;
   }
 }
+
+export const completeCurrentSavingGoal = async () : Promise<number | null> => {
+  try {
+    const response = await api.patch('/savings-goals/complete');
+    return response.status;
+  } catch (error) {
+    return null;
+  }
+}
