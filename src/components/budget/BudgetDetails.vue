@@ -57,20 +57,46 @@
     </div>
   </div>
   <div v-if="showTransactionModal" class="modal" @click.self="showTransactionModal = false">
-    <div class="modal-content">
+    <div class="modal-transaction-content">
       <span class="close" @click="toggleTransactionModal">&times;</span>
-        <h3>Hello world</h3>
-      </div>
+      <h3>Transactions</h3>
+      <!-- 8. Display the transactions for the current page -->
+      <ul>
+        <li v-for="transaction in currentTransactions" :key="transaction.id">
+          ID: {{ transaction.id }}, Amount: {{ transaction.amount }}, Date: {{ transaction.date }}
+
+          <!-- Display transaction details here -->
+
+          <select v-model="selectedCategories[transaction.id]">
+            <option value="">Select a category</option>
+            <option v-for="(expense, category) in expenses" :key="category">{{ category }}</option>
+          </select>
+        </li>
+      </ul>
+      <div class="pagination-container">
+        <div>
+          <button @click="previousPage">Previous</button>
+          <button @click="nextPage">Next</button>
+          <button @click="saveTransactions">Save</button>
+        </div>
+        <select v-model="transactionsPerPage">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+    </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import BudgetProgressBar from "./BudgetProgressBar.vue";
-import { ref, reactive, onMounted, computed } from "vue";
+import { ref, reactive, onMounted, computed, watch } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import axios from "axios";
 import {
-  addRowToUserBudget,
+  addRowToUserBudget, addTransactionToBudgetRow,
   deleteBudgetRow,
   getBudgetById,
   getBudgetByUser,
@@ -83,8 +109,14 @@ import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
 const transactions = ref([]);
 const currentPage = ref(1);
 const transactionsPerPage = ref(5);
+let categories = ref([]);
 
 const totalPages = computed(() => Math.ceil(transactions.value.length / transactionsPerPage.value));
+
+
+watch(transactionsPerPage, (newValue) => {
+  transactionsPerPage.value = Number(newValue);
+});
 
 const currentTransactions = computed(() => {
   const start = (currentPage.value - 1) * transactionsPerPage.value;
@@ -92,6 +124,17 @@ const currentTransactions = computed(() => {
   return transactions.value.slice(start, end);
 });
 
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const previousPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
 
 
 const userStore = useUserStore();
@@ -169,12 +212,46 @@ const addCategory = () => {
 };
 
 const addTransaction = async () => {
+  console.log(categories.value);
   showTransactionModal.value = true;
-  console.log("Add transaction function triggered");
   const transactionResponse = await useTransactionsNotInBudgetRow();
   console.log(transactionResponse);
+  if (transactionResponse) {
+    transactions.value = transactionResponse;
+  }
 };
 
+let selectedCategories = reactive({});
+let budgetRowIds = reactive({});
+
+
+const saveTransactions = async () => {
+  // Filter out transactions that still have "Select a category" selected
+  const transactionsToSave = currentTransactions.value.filter(transaction => selectedCategories[transaction.id] && selectedCategories[transaction.id] !== "Select a category");
+
+  // Iterate over the remaining transactions and call addTransactionToBudgetRow for each one
+  for (const transaction of transactionsToSave) {
+    const category = selectedCategories[transaction.id];
+    let budgetRowId;
+
+    // Iterate through the expenses object to find the expense with the same category name
+    for (const expenseCategory in expenses) {
+      if (expenseCategory === category) {
+        budgetRowId = expenses[expenseCategory].id; // Use the id of the matching expense as the budgetRowId
+        break;
+      }
+    }
+
+    if (budgetRowId) {
+      await addTransactionToBudgetRow(budgetRowId, transaction.id);
+    } else {
+      console.error(`No matching expense found for category: ${category}`);
+    }
+  }
+
+  // Clear the selected categories
+  selectedCategories = reactive({});
+};
 const handleNewCategory = async () => {
   await addRowToUserBudget(
       "string",
@@ -380,6 +457,15 @@ const ProgressBar = BudgetProgressBar;
   width: 300px;
 }
 
+.modal-transaction-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 500px;
+  height: 350px; /* Set a constant height */
+  overflow-y: auto;
+}
+
 .close {
   float: right;
   font-size: 28px;
@@ -398,5 +484,11 @@ const ProgressBar = BudgetProgressBar;
   width: 50px;
   height: 50px;
   position: relative;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

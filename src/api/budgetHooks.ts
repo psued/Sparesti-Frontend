@@ -283,4 +283,20 @@ export const useTransactionsNotInBudgetRow = async (): Promise<Transaction[] | n
     }
 };
 
+export const addTransactionToBudgetRow = async (budgetRowId: number, transactionId: number): Promise<boolean> => {
+    try {
+        const response = await api.post(`/transaction-budget-row/add/${budgetRowId}/${transactionId}`);
+
+        if (response.status === 200) {
+            return true;
+        } else {
+            console.error('Failed to add transaction to budget row:', response.statusText);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error adding transaction to budget row:', error);
+        return false;
+    }
+};
+
 
