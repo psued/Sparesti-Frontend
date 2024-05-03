@@ -87,7 +87,7 @@ import {
 } from "@/api/challengeHooks";
 import {type ChallengeCreation} from "@/types/challengeTypes";
 import type {BudgetRow} from "@/types/Budget";
-import {getNewestBudget} from "@/api/budgetHooks";
+import {getBudgetWithNewestExpiryDate, getNewestBudget} from "@/api/budgetHooks";
 
 const challengeTitle = ref("");
 const challengeDescription = ref("");
@@ -135,7 +135,7 @@ const tempCategory = ref<BudgetRow>({
 const budgetRows = ref<BudgetRow[]>([]);
 const budgetDays = ref(0);
 async function fetchChallengeObjects() {
-  const budgetResponse = await getNewestBudget();
+  const budgetResponse = await getBudgetWithNewestExpiryDate();
   if(budgetResponse) {
     budgetDays.value =  ((new Date(budgetResponse.expiryDate).getTime()) - (new Date(budgetResponse.creationDate).getTime())) / (1000 * 60 * 60 * 24)
     for(let i = 0; i < budgetResponse.row.length; i++){
