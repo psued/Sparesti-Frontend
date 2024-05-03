@@ -46,7 +46,7 @@ const props = defineProps({
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #F09217;
+  background-color: var(--color-button-challenges-border);
   border-radius: 50%;
   top: 5px;
   left: 50%;
@@ -56,7 +56,7 @@ const props = defineProps({
   position: absolute;
   width: 100%;
   height: 100%;
-  background-color: #F5C116;
+  background-color: var(--color-button-challenges);
   border-radius: 50%;
   top: 0;
   left: 50%;
@@ -72,7 +72,7 @@ const props = defineProps({
   position: absolute;
   width: 90%;
   height: 90%;
-  background-color: rgba(255, 226, 55, 0.4);
+  background-color: transparent;
   border-radius: 50%;
   top: 50%;
   left: 50%;

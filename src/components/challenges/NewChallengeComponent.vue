@@ -18,7 +18,7 @@
         </ButtonComponent>
       </div>
       <CreateChallengeComponent v-if="showCreateChallenge"/>
-      <GenerateChallengeComponent v-if="showGenerateChallenge"/>
+      <GenerateChallengeComponent @close="close" v-if="showGenerateChallenge"/>
     </div>
   </div>
 </template>

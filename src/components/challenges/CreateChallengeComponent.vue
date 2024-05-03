@@ -236,7 +236,8 @@ input:focus, textarea:focus, select:focus {
 input, textarea, select {
   background-color: var(--color-background);
   border: none;
-  border-bottom: solid 1px #729960;
+  border-bottom: solid 1px var(--color-text);
+  color: var(--color-text);
 }
 
 
@@ -255,6 +256,7 @@ input, textarea, select {
   font-size: 1.5rem;
   width: 240px;
   margin-bottom: 1rem;
+  color: var(--color-text);
 }
 
 #contentBlock1 {
@@ -272,6 +274,7 @@ input, textarea, select {
 
 #challengeDescriptionInput {
   resize: none;
+  color: var(--color-text);
 }
 
 .emojiContainer {
@@ -341,9 +344,9 @@ input, textarea, select {
 
 #finishButton {
   position: absolute;
-  width: 100px;
-  height: 30px;
-  bottom: 20px;
+  width: 200px;
+  height: 60px;
+  bottom: 60px;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -351,6 +354,6 @@ input, textarea, select {
 #finishText {
   font-weight: 700;
   font-size: 1rem;
-  color: white;
+  color: var(--color-text);
 }
 </style>

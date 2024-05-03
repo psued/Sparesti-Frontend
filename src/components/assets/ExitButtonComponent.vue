@@ -4,7 +4,7 @@
   The button is styled with a grey circular background and a cross icon.
   The button emits a 'close' event when clicked.
 -->
-<<template>
+<template>
   <div class="buttonContainer">
     <div class="bgCircle">
       <svg @click="close" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
