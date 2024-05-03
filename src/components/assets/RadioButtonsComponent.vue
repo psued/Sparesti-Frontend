@@ -63,6 +63,6 @@ function emitAnswer(radioButton: string) {
 .timeIntervalText {
   font-size: 1rem;
   font-weight: bold;
-  color: #c5760c;
+  color: var(--color-text);
 }
 </style>

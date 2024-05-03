@@ -27,11 +27,11 @@ function handleMouseup() {
 const props = defineProps({
   backgroundColor: {
     type: String,
-    default: '#F09217'
+    default: 'var(--color-button-challenges-border)'
   },
   foregroundColor: {
     type: String,
-    default: '#F5C116'
+    default: 'var(--color-button-challenges)'
   },
   pressed: {
     type: Boolean

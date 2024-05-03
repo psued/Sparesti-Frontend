@@ -207,8 +207,8 @@ const addToChallenge = async (challengeInput: string) => {
   flex-direction: column;
   justify-content: space-between;
   margin: 1rem;
-  background-color: #A6CD94;
-  border: 0.5vw solid #9BC289;
+  background-color: var(--color-badges-owned);
+  border: 2px solid var(--color-badges-owned-hover);
   border-radius: 20px;
   padding: 1rem 0;
 }
@@ -241,20 +241,20 @@ const addToChallenge = async (challengeInput: string) => {
 }
 
 .daysRemaining {
-  color: #F0F0F0;
+  color: var(--color-text);
   font-weight: 500;
   font-size: 1rem;
 }
 
 .challengeTitle {
   margin: 10px;
-  color: #4D4D4D;
+  color: var(--color-text);
   font-weight: 500;
   overflow-wrap: anywhere;
 }
 
 .challengeText {
-  color: #EEEEEE;
+  color: var(--color-text);
   margin: 0.6rem 0.3rem;
   white-space: normal;
 }
@@ -300,8 +300,8 @@ const addToChallenge = async (challengeInput: string) => {
   position: absolute;
   width: 200px;
   height: max-content;
-  background-color: #A6CD94;
-  border: 0.5vw solid #9BC289;
+  background-color: var(--color-badges-owned);
+  border: 2px solid var(--color-badges-owned-hover);
   border-radius: 20px;
   padding: 1rem 0;
   top: 40%;
