@@ -75,11 +75,15 @@ const completionPercentage = computed(() => {
   flex-direction: column;
   align-items: center;
   width: 100%;
+  min-height: 300px;
   max-width: 400px;
   margin: auto;
+  margin-bottom: 20px; 
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 20px;
+  position: relative;
+  overflow: visible;
 }
 
 .piggy-bank-image img {
