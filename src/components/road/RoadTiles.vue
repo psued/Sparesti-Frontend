@@ -201,8 +201,8 @@ onMounted(async () => {
     savingGoalImage.value = savingGoal.mediaUrl || '';
     savingGoalId.value = savingGoal.id;
   } else {
-    goal.value = 300;
-    saved.value = 200;
+    goal.value = 0;
+    saved.value = 0;
   }
   step.value = 100;
   const steps = Math.round(goal.value / step.value);
