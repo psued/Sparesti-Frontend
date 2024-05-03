@@ -57,6 +57,9 @@ const savedAmount = ref(0);
 const targetAmount = ref(1);
 const savingGoalPresent = ref(false);
 const progress = computed(() => {
+  if (savedAmount.value >= targetAmount.value) {
+    return 100;
+  }
   return Math.round((savedAmount.value / targetAmount.value) * 100);
 });
 const progressWidth = computed(() => {
@@ -74,8 +77,8 @@ async function fetchSavingProgress() {
       return;
     }
     savingGoalPresent.value = true;
-    savedAmount.value = res.savedAmount;
     targetAmount.value = res.targetAmount;
+    savedAmount.value = res.savedAmount >= res.targetAmount ? res.targetAmount : res.savedAmount;
   } catch (error) {
     return;
   }

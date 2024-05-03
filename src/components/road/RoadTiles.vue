@@ -507,7 +507,7 @@ watchEffect(() => {
 
 .saving-goal-image {
   height: 100%;
-  width: 60%;
+  width: auto;
 }
 
 .emoji {
