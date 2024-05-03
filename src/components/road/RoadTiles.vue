@@ -20,7 +20,7 @@
 
       <div v-if="goal > 0" class="road-edge-point road-end">
         <text v-if="roadComplete" class="complete-text">Klikk for å fullføre!</text>
-        <div class="road-edge-area saving-goal" :class="{'node-end': roadComplete}"  @click="saved === goal ? completeSavingGoal() : goToSavingGoal()">
+        <div class="road-edge-area saving-goal" :class="{'node-end': roadComplete}"  @click="saved >= goal ? completeSavingGoal() : goToSavingGoal()">
           <img v-if="roadComplete" class="walking-end-pig" @click="triggerConfetti" :src="endpig"></img>
           <img v-if="savingGoalImage.length > 4" :src="savingGoalImage" class="saving-goal-image"></img>
           <p v-else class="emoji">{{ savingGoalImage }}</p>
@@ -197,15 +197,19 @@ const closePopup = () => {
 }
 
 const updateSavingGoal = async () => {
-  let savingGoal = await getCurrentSavingGoal();
-  if (savingGoal) {
-    goal.value = savingGoal.targetAmount;
-    saved.value = savingGoal.savedAmount;
-    savingGoalImage.value = savingGoal.mediaUrl || '';
-    savingGoalId.value = savingGoal.id;
-  } else {
-    goal.value = 0;
-    saved.value = 0;
+  try {
+    let savingGoal = await getCurrentSavingGoal();
+    if (savingGoal) {
+      goal.value = savingGoal.targetAmount;
+      saved.value = savingGoal.savedAmount;
+      savingGoalImage.value = savingGoal.mediaUrl || '';
+      savingGoalId.value = savingGoal.id;
+    } else {
+      goal.value = 0;
+      saved.value = 0;
+    }
+  } catch (error) {
+    console.log("No saving goal found");
   }
 };
 
