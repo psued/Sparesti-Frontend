@@ -89,7 +89,6 @@ const editableGoal = ref<SavingGoal>(props.savingGoal);
 const todaysDate = new Date().toISOString().split('T')[0];
 const userStore = useUserStore();
 const userEmail = userStore.getUserName;
-const userId = userStore.getUserId;
 const router = useRouter();
 const imagePreview = ref<string | null>(null);
 const selectedIconUrl = ref<string | null>(null);

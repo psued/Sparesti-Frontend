@@ -8,7 +8,6 @@ export const useUserStore = defineStore({
     idToken: useStorage("idToken", "", sessionStorage),
     userName: useStorage("userName", "", sessionStorage),
     expireTime: useStorage("timeToLive", 0, sessionStorage),
-    userId: useStorage("userId", -1, sessionStorage),
     userInfoExists: useStorage("userInfoExists", false, sessionStorage),
     muted: useStorage("muted", false, localStorage),
   }),
@@ -24,9 +23,6 @@ export const useUserStore = defineStore({
     },
     getExpireTime(): number {
       return this.expireTime;
-    },
-    getUserId(): number {
-      return this.userId;
     },
     getUserInfoExists(): boolean {
       return this.userInfoExists;
@@ -47,9 +43,6 @@ export const useUserStore = defineStore({
     },
     setTimeToLive(timeToLive: number) {
       this.expireTime = Date.now() + timeToLive * 1000;
-    },
-    setUserId(userId: number) {
-      this.userId = userId;
     },
     setUserInfoExists(exists: boolean) {
       this.userInfoExists = exists;
