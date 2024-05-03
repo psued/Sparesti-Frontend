@@ -12,13 +12,21 @@
       <div class="account">
         <h2>Checking Account</h2>
         <p v-show="!accountEditMode">{{ checkingAccountNr }}</p>
-        <input type="text" v-model="checkingAccountNr" v-show="accountEditMode" />
+        <input type="text" 
+        v-model="checkingAccountNr" 
+        v-show="accountEditMode" 
+        maxlength="11"
+        />
         <p v-if="checkingAccountNr">{{ checkingBalance.toFixed(2) + ' kr' }}</p>
       </div>
       <div class="account">
         <h2>Savings Account</h2>
         <p v-show="!accountEditMode">{{ savingsAccountNr }}</p>
-        <input type="text" v-model="savingsAccountNr" v-show="accountEditMode" />
+        <input type="text" 
+        v-model="savingsAccountNr" 
+        v-show="accountEditMode" 
+        maxlength="11"
+        />
         <p v-if="savingsAccountNr">{{ savingsBalance.toFixed(2) + ' kr' }}</p>
       </div>
     </div>
@@ -40,6 +48,7 @@ import BackButtonComponent from "@/components/assets/BackButtonComponent.vue";
 
 const router = useRouter();
 
+const showModal = ref(false);
 const accountEditMode = ref(false);
 
 const checkingAccountNr = ref(0);
@@ -47,6 +56,8 @@ const checkingBalance = ref(0.0);
 
 const savingsAccountNr = ref(0);
 const savingsBalance = ref(0.0);
+
+const formErrors = ref({ checkingAccount: '', savingsAccount: '' });
 
 const goToPreviousPage = () => {
   router.back();
@@ -70,10 +81,8 @@ const toggleAccountEdit = async () => {
   if (accountEditMode.value) {
     const res = await updateAccounts(checkingAccountNr.value, savingsAccountNr.value);
     if (!res) {
-      console.error("An unexpected error occurred while updating accounts. Please try again later.");
       return;
     } else if (res.status === 200) {
-      console.log("Accounts updated successfully");
     } else {
       alert("Failed to update accounts: " + res.data.title)
     }
@@ -90,7 +99,7 @@ onMounted(async () => {
 <style scoped>
 .flex-container {
   height: 700px;
-  padding: 70px;
+  padding: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -150,5 +159,8 @@ input[type="text"] {
     margin-bottom: 20px; 
     border: none;
   }
+
+  
 }
+
 </style>
