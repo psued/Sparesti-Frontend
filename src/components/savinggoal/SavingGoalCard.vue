@@ -162,7 +162,7 @@ const confirmDelete = async () => {
   } catch (error) {
     console.error('Error deleting saving goal:', error);
   }
-  router.push(`/saving-goals/user/${userId}`);
+  router.push('/saving-goals');
 };
 
 function handleImageUpload(event: Event) {
