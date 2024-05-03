@@ -6,6 +6,7 @@
       </div>
       <section class="top-part-profile">
         <label class="profile-pic-container">
+          <!-- Profile Picture -->
           <ProfilePicComponent :userProfilePic="imagePreview" v-if="imagePreview" />
           <ProfilePicComponent :userProfilePic="user.pictureUrl" v-else />
           <div class="overlay">
@@ -15,11 +16,14 @@
           </div>
           <input type="file" ref="fileInput" @change="handleImageUpload" accept="image/*" id="image" style="display:none">
         </label>
+        <!-- Total Savings -->
         <div class="total-savings-container">
           <TotalSavingsComponent :totalSavings="user.totalSavings" />
         </div>
       </section>
+      <!-- User Information -->
       <UserInfoComponent :user="user" :isEditing="isEditing" />
+      <!-- Edit and Settings Buttons -->
       <section class="edit-section">
         <ButtonComponent class="edit-profile-button" @click="toggleEditMode">
           <template v-slot:content>
@@ -63,7 +67,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { useUserStore } from "@/stores/userStore";
 import { getUserInfo, getUserByUsername, updateUserInfo, updateProfilePicture } from "@/api/userHooks";
 import { getBadgesByUser } from "@/api/badgeHooks";
 import type { UserBadge } from "@/types/Badge";
@@ -77,7 +80,6 @@ import BadgeComponent from "@/components/badge/BadgeComponent.vue";
 const router = useRouter();
 const user = ref<any | null>(null);
 const userBadges = ref<UserBadge[]>([]);
-const userStore = useUserStore();
 const isEditing = ref(false);
 const imagePreview = ref<string | null>(null);
 const userProfilePic = ref<string | null>(null);
@@ -86,6 +88,10 @@ const goToSettings = () => {
   router.push('/settings');
 };
 
+/**
+ * 
+ * @param event The event that triggered the image upload.
+ */
 const handleImageUpload = async (event: Event) => {
   if (!isEditing.value) {
     toggleEditMode();
@@ -101,6 +107,9 @@ const handleImageUpload = async (event: Event) => {
   }
 };
 
+/**
+ * Toggles the edit mode for the user profile.
+ */
 const toggleEditMode = async () => {
   try {
     if (isEditing.value) {
