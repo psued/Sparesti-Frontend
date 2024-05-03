@@ -1,5 +1,5 @@
 import { api } from "@/api/axiosConfig";
-import { type Budget } from "@/types/Budget";
+import {type Budget, type Transaction} from "@/types/Budget";
 
 export const getBudgetByUser = async (): Promise<Budget[] | null> => {
     try {
@@ -264,6 +264,23 @@ export const addBudgetWithRow = async (
 
     // Return the newly created budget with rows added
     return await getBudgetById(newBudgetId);
+};
+
+export const useTransactionsNotInBudgetRow = async (): Promise<Transaction[] | null> => {
+    try {
+        const response = await api.get(`/transaction-budget-row/transactions-not-in-budget-row`);
+
+        if (response.status === 200) {
+            // If the response data is an array, return it as is. If it's a single object, put it in an array.
+            return Array.isArray(response.data) ? response.data : [response.data];
+        } else {
+            console.error("Failed to fetch transactions not in budget row:", response.statusText);
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching transactions not in budget row:", error);
+        return null;
+    }
 };
 
 

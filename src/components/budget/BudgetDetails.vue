@@ -15,7 +15,7 @@
     <div class="header-container">
       <h3>Utgifter</h3>
       <div class="add-and-delete-category">
-        <button class="add-category-btn" @click="addCategory">
+        <button class="add-category-btn" @click="addTransaction">
           <span class="add-category-icon">➕</span> Tildel transaksjon til kategori
         </button>
         <button class="add-category-btn" @click="addCategory">
@@ -47,23 +47,52 @@
       <h3>Legg til en ny utgift</h3>
       <form @submit.prevent="handleNewCategory">
         <h4>Trykk på smilefjeset og velg emoji</h4>
-        <EmojiPickerComponent @pickEmoji="updateEmoji" :emoji-prop="emoji"/>
+        <div id="emojiPicker">
+          <EmojiPickerComponent id="emojiPicker" @pickEmoji="updateEmoji" :emoji-prop="emoji"/>
+        </div>
         <input class="input-margin" v-model="newCategory.name" placeholder="Kategori navn" />
         <input class="input-margin" v-model.number="newCategory.total" type="Total sum" placeholder="Total Amount" />
         <button type="submit">Lagre</button>
       </form>
     </div>
   </div>
+  <div v-if="showTransactionModal" class="modal" @click.self="showTransactionModal = false">
+    <div class="modal-content">
+      <span class="close" @click="toggleTransactionModal">&times;</span>
+        <h3>Hello world</h3>
+      </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import BudgetProgressBar from "./BudgetProgressBar.vue";
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import axios from "axios";
-import {addRowToUserBudget, deleteBudgetRow, getBudgetById, getBudgetByUser} from "@/api/budgetHooks";
+import {
+  addRowToUserBudget,
+  deleteBudgetRow,
+  getBudgetById,
+  getBudgetByUser,
+  useTransactionsNotInBudgetRow
+} from "@/api/budgetHooks";
 import {useRoute} from "vue-router";
 import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
+
+
+const transactions = ref([]);
+const currentPage = ref(1);
+const transactionsPerPage = ref(5);
+
+const totalPages = computed(() => Math.ceil(transactions.value.length / transactionsPerPage.value));
+
+const currentTransactions = computed(() => {
+  const start = (currentPage.value - 1) * transactionsPerPage.value;
+  const end = start + transactionsPerPage.value;
+  return transactions.value.slice(start, end);
+});
+
+
 
 const userStore = useUserStore();
 
@@ -103,10 +132,15 @@ type Expense = {
 const expenses: Expense = reactive({});
 
 const showModal = ref(false);
+const showTransactionModal = ref(false);
 const newCategory = reactive({ name: "", total: 0, emoji: "" });
 
 const toggleModal = () => {
   showModal.value = !showModal.value;
+};
+
+const toggleTransactionModal = () => {
+  showTransactionModal.value = !showTransactionModal.value;
 };
 
 const route = useRoute();
@@ -132,6 +166,13 @@ const toggleCancelDeleteMode = () => {
 const addCategory = () => {
   console.log("Add new category function triggered");
   showModal.value = true; // Open the modal
+};
+
+const addTransaction = async () => {
+  showTransactionModal.value = true;
+  console.log("Add transaction function triggered");
+  const transactionResponse = await useTransactionsNotInBudgetRow();
+  console.log(transactionResponse);
 };
 
 const handleNewCategory = async () => {
@@ -353,4 +394,9 @@ const ProgressBar = BudgetProgressBar;
   cursor: pointer;
 }
 
+#emojiPicker {
+  width: 50px;
+  height: 50px;
+  position: relative;
+}
 </style>
