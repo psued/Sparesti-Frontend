@@ -15,7 +15,6 @@ devices. * The component handles dark mode and theme changes. */
         class="logo"
       />
     </RouterLink>
-    <p>Hei</p>
   </div>
   <div class="progress-container">
     <!-- Progress bar -->
