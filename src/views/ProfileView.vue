@@ -124,7 +124,7 @@ const fetchAndSetUserInfo = async () => {
 	}
 
   try {
-    const userByUsername = await getUserByUsername(userStore.getUserName);
+    const userByUsername = await getUserByUsername();
     const userInfo = await getUserInfo();
     if (userInfo) {
       const userByUsernameResult = await userByUsername;

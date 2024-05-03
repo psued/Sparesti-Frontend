@@ -2,26 +2,12 @@ import { api, oauth2 } from "@/api/axiosConfig";
 import { useUserStore } from "@/stores/userStore";
 import type { UserInfo } from "@/types/UserInfo";
 
-export const getUserByUsername = async (
-  username: string,
-): Promise<any | null> => {
+export const getUserByUsername = async (): Promise<any | null> => {
   try {
-    const response = await api.get(`/users/${username}`);
+    const response = await api.get(`/users`);
     return response.data || null;
   } catch (error) {
     console.error("Error getting user by username:", error);
-    return null;
-  }
-};
-
-export const getUserByDisplayName = async (
-  displayName: string,
-): Promise<any | null> => {
-  try {
-    const response = await api.get(`/users/info/${displayName}`);
-    return response.data || null;
-  } catch (error) {
-    console.error("Error getting user by display name:", error);
     return null;
   }
 };

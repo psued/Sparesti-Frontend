@@ -91,7 +91,7 @@ const closePopup = () => {
 };
 
 const closeBadgePopupAndAwardBadge = async () => {
-  const user = await getUserByUsername(userStore.getUserName);
+  const user = await getUserByUsername();
   await giveUserBadge(Number(rewardedBadge.value?.id), user.id);
   rewardedBadge.value = null;
   showBadgePopup.value = false;
