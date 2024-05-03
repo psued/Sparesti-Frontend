@@ -4,12 +4,21 @@
 
 /* color palette from me */
 :root {
+<<<<<<< HEAD
   --vt-c-white: #f0f0f0;
   --vt-c-white-soft: #f3f2f0;
   --vt-c-white-mute: #f2f2f2;
 
   --vt-c-black: #131212;
   --vt-c-black-soft: #2e323e;
+=======
+  --vt-c-white: #ffffff;
+  --vt-c-white-soft: #f8f8f8;
+  --vt-c-white-mute: #f2f2f2;
+
+  --vt-c-black: #181818;
+  --vt-c-black-soft: #222222;
+>>>>>>> main
   --vt-c-black-mute: #282828;
 
   --vt-c-indigo: #2c3e50;
@@ -19,9 +28,10 @@
   --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
   --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
 
-  --vt-c-text-light-1: var(--vt-c-black-soft);
+  --vt-c-text-light-1: var(--vt-c-indigo);
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
+<<<<<<< HEAD
   --vt-c-text-dark-2: rgba(245, 245, 245, 0.9);
 
   --vt-c-button-base-light: #a6cd94;
@@ -63,6 +73,12 @@
 }
 
 /* Default Light theme */
+=======
+  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+}
+
+/* semantic color variables for this project */
+>>>>>>> main
 :root {
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
@@ -71,10 +87,11 @@
   --color-border: var(--vt-c-divider-light-2);
   --color-border-hover: var(--vt-c-divider-light-1);
 
-  --color-heading: var(--vt-c-black-soft);
-  --color-text: var(--vt-c-black-soft);
+  --color-heading: var(--vt-c-text-light-1);
+  --color-text: var(--vt-c-text-light-1);
 
   --section-gap: 160px;
+<<<<<<< HEAD
 
   --color-button-base: var(--vt-c-button-base-light);
   --color-button-hover: var(--vt-c-button-hover-light);
@@ -101,10 +118,20 @@ body.dark {
   --color-background: var(--vt-c-black-soft);
   --color-background-soft: var(--vt-c-black-soft);
   --color-background-mute: var(--vt-c-black-mute);
+=======
+}
 
-  --color-border: var(--vt-c-divider-dark-2);
-  --color-border-hover: var(--vt-c-divider-dark-1);
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: var(--vt-c-black);
+    --color-background-soft: var(--vt-c-black-soft);
+    --color-background-mute: var(--vt-c-black-mute);
+>>>>>>> main
 
+    --color-border: var(--vt-c-divider-dark-2);
+    --color-border-hover: var(--vt-c-divider-dark-1);
+
+<<<<<<< HEAD
   --color-heading: var(--vt-c-text-dark-1);
   --color-text: var(--vt-c-text-dark-2);
 
@@ -126,6 +153,11 @@ body.dark {
   --color-button-challenges-border: var(--vt-c-button-challenges-dark-border);
 
   --color-button-challenges-back: var(--vt-c-button-challenges-back-dark);
+=======
+    --color-heading: var(--vt-c-text-dark-1);
+    --color-text: var(--vt-c-text-dark-2);
+  }
+>>>>>>> main
 }
 
 *,
@@ -162,6 +194,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+<<<<<<< HEAD
 
 button {
   background-color: var(--color-button-base);
@@ -183,3 +216,5 @@ button:hover {
 .modal {
   background-color: var(--color-background-soft);
 }
+=======
+>>>>>>> main

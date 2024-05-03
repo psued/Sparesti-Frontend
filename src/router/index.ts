@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { createRouter, createWebHistory } from "vue-router";
 import AuthenticationView from "@/views/AuthenticationView.vue";
 import LoginForm from "@/components/forms/LoginForm.vue";
@@ -17,6 +18,10 @@ import SavingGoalView from "@/views/SavingGoalView.vue";
 import SavingGoalDetails from "@/components/savinggoal/SavingGoalDetails.vue";
 import SavingGoalCardDetails from "@/components/savinggoal/SavingGoalCardDetails.vue";
 import ContactView from "@/components/contact/Contact.vue";
+=======
+import { createRouter, createWebHistory } from 'vue-router'
+import HomeView from '../views/HomeView.vue'
+>>>>>>> main
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +32,7 @@ const router = createRouter({
       component: FrontPageView,
     },
     {
+<<<<<<< HEAD
       path: "/profile",
       name: "profile",
       component: ProfileView,
@@ -124,5 +130,16 @@ const router = createRouter({
     },
   ],
 });
+=======
+      path: '/about',
+      name: 'about',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/AboutView.vue')
+    }
+  ]
+})
+>>>>>>> main
 
 export default router;
