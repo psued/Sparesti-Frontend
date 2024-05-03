@@ -1,3 +1,14 @@
+/**
+ * @file FrontPageView.vue
+ * @description This file contains the implementation of the FrontPageView component.
+ * The FrontPageView component is responsible for rendering the front page of the application.
+ * It displays a daily tip blimp, a background container with clouds, a road, and a challenge details popup.
+ * It also handles the display of a badge popup when a user receives a badge.
+ * The component uses various child components such as ChallengeDetailsPopup, PopupComponent, ButtonComponent, BadgeComponent, and DailyTipBlimp.
+ * The component makes API calls to fetch challenges, user information, and award badges.
+ * It also handles user interactions such as closing popups, accepting badges, and triggering confetti animation.
+ * The component is written in TypeScript and uses Vue 3 composition API.
+ */
 <template>
   <daily-tip-blimp />
   <div class="container" @click="closeBadgePopup">
@@ -56,12 +67,12 @@ import { useRouter } from "vue-router";
 import { useLogin } from "@/api/authenticationHooks";
 import road from "../components/road/RoadTiles.vue";
 import { useDark} from "@vueuse/core";
-
 import checkCircleIcon from "/check-circle.svg";
 import starCircleIcon from "/star-circle.svg";
 import DailyTipBlimp from "../components/frontpage/DailyTipBlimp.vue";
 import { getUserByUsername } from "@/api/userHooks";
 
+// Initializing variables and references
 const selectedChallenge = ref<Challenge | null>(null);
 const rewardedBadge = ref<Badge | null>(null);
 const showPopup = ref(false);
@@ -71,7 +82,6 @@ const showConfetti = ref(false);
 const plingAudio = ref<HTMLAudioElement | null>(null);
 const playSound = ref(true);
 const dark = useDark();
-
 const selectedChallengeForPopup = computed(
   () => selectedChallenge.value || ({} as Challenge),
 );
@@ -79,17 +89,20 @@ const maxMedia =
   window.matchMedia && window.matchMedia("(min-width: 480px)").matches;
 const userStore = useUserStore();
 
+// Function to handle badge rewarded event
 const handleBadgeRewarded = async (badge: Badge) => {
   rewardedBadge.value = badge;
   showBadgePopup.value = true;
 };
 
+// Function to close the challenge details popup
 const closePopup = () => {
   selectedChallenge.value = null;
   showPopup.value = false;
   showConfetti.value = false;
 };
 
+// Function to close the badge popup and award the badge
 const closeBadgePopupAndAwardBadge = async () => {
   const user = await getUserByUsername();
   await giveUserBadge(Number(rewardedBadge.value?.id), user.id);
@@ -99,44 +112,42 @@ const closeBadgePopupAndAwardBadge = async () => {
   playPlingSound();
 };
 
+// Function to close the badge popup
 const closeBadgePopup = () => {
   showBadgePopup.value = false;
 };
 
+// Function to trigger the confetti animation
 const triggerConfetti = () => {
   showConfetti.value = true;
-  
   let scalar = 2;
   let coin = confetti.shapeFromText({text: '💰', scalar})
-
-  // Configure custom shape options for confetti
   const confettiOptions = {
-    particleCount: 100, // Number of confetti particles
-    spread: 70, // Spread of confetti
-    origin: { y: 0.6 }, // Starting position of confetti
-    sizes: [20, 30], // Size of the confetti particles (coins)
-    shapes: [coin], // Shape of the confetti particles (coins)
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 },
+    sizes: [20, 30],
+    shapes: [coin],
     scalar,
   };
-
-  // Trigger confetti with custom options
   confetti(confettiOptions);
-  
-  // Optionally, set a timeout to hide the confetti after a certain duration
   setTimeout(() => {
     showConfetti.value = false;
-  }, 5000); // 5000 milliseconds (adjust as needed)
+  }, 5000);
 };
 
+// Function to play the pling sound
 const playPlingSound = () => {
   if(userStore.getMuted) return;
   const sound = new Howl({
     src: [plingSound],
     autoplay: true,
     loop: false,
+    volume: 0.1,
   });
 };
 
+// Function to handle the component's mounted event
 onMounted(async () => {
   if (!userStore.isLoggedIn()) {
     useLogin();
@@ -151,6 +162,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+/* CSS styles for the component */
 .container {
   display: flex;
   flex-direction: column;
