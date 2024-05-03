@@ -123,7 +123,6 @@ const toggleEditMode = async () => {
             return;
           }
           const imageUrl = await uploadImage(image, imagePreview);
-          console.log("Image uploaded successfully." + imageUrl);
           if (imageUrl) {
             await updateProfilePicture(imageUrl);
           }
@@ -131,7 +130,6 @@ const toggleEditMode = async () => {
         }
       }
       await updateUserInfo(user.value);
-      console.log("Profile updated successfully.");
     }
     isEditing.value = !isEditing.value;
   } catch (error) {
@@ -154,7 +152,6 @@ const fetchAndSetUserInfo = async () => {
 
   try {
     const userByUsername = await getUserByUsername();
-    console.log("User by username:", userByUsername)
     const userInfo = await getUserInfo();
     if (userInfo) {
       const userByUsernameResult = await userByUsername;
