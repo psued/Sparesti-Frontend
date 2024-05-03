@@ -66,15 +66,10 @@ onMounted(() => {
   z-index: 1000;
 }
 
-<<<<<<< HEAD
 #content {
   position: relative;
   top: 90px;
   overflow-y: hidden;
-=======
-nav a.router-link-exact-active {
-  color: var(--color-text);
->>>>>>> main
 }
 
 #footer-box {
