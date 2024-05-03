@@ -15,7 +15,7 @@
     <div class="header-container">
       <h3>Utgifter</h3>
       <div class="add-and-delete-category">
-        <button class="add-category-btn" @click="addCategory">
+        <button class="add-category-btn" @click="addTransaction">
           <span class="add-category-icon">➕</span> Tildel transaksjon til kategori
         </button>
         <button class="add-category-btn" @click="addCategory">
@@ -47,23 +47,97 @@
       <h3>Legg til en ny utgift</h3>
       <form @submit.prevent="handleNewCategory">
         <h4>Trykk på smilefjeset og velg emoji</h4>
-        <EmojiPickerComponent @pickEmoji="updateEmoji" :emoji-prop="emoji" id="challengeEmojiPicker"/>
+        <div id="emojiPicker">
+          <EmojiPickerComponent id="emojiPicker" @pickEmoji="updateEmoji" :emoji-prop="emoji"/>
+        </div>
         <input class="input-margin" v-model="newCategory.name" placeholder="Kategori navn" />
         <input class="input-margin" v-model.number="newCategory.total" type="Total sum" placeholder="Total Amount" />
         <button type="submit">Lagre</button>
       </form>
     </div>
   </div>
+  <div v-if="showTransactionModal" class="modal" @click.self="showTransactionModal = false">
+    <div class="modal-transaction-content">
+      <span class="close" @click="toggleTransactionModal">&times;</span>
+      <h3>Transactions</h3>
+      <!-- 8. Display the transactions for the current page -->
+      <ul>
+        <li v-for="transaction in currentTransactions" :key="transaction.id">
+          ID: {{ transaction.id }}, Amount: {{ transaction.amount }}, Date: {{ transaction.date }}
+
+          <!-- Display transaction details here -->
+
+          <select v-model="selectedCategories[transaction.id]">
+            <option value="">Select a category</option>
+            <option v-for="(expense, category) in expenses" :key="category">{{ category }}</option>
+          </select>
+        </li>
+      </ul>
+      <div class="pagination-container">
+        <div>
+          <button @click="previousPage">Previous</button>
+          <button @click="nextPage">Next</button>
+          <button @click="saveTransactions">Save</button>
+        </div>
+        <select v-model="transactionsPerPage">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+    </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import BudgetProgressBar from "./BudgetProgressBar.vue";
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed, watch } from "vue";
+import type { Ref, UnwrapRef } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import axios from "axios";
-import {addRowToUserBudget, deleteBudgetRow, getBudgetById, getBudgetByUser} from "@/api/budgetHooks";
+import {
+  addRowToUserBudget, addTransactionToBudgetRow,
+  deleteBudgetRow,
+  getBudgetById,
+  getBudgetByUser,
+  useTransactionsNotInBudgetRow
+} from "@/api/budgetHooks";
 import {useRoute} from "vue-router";
 import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
+import type {Transaction} from "@/types/Budget";
+
+
+let transactions: Ref<UnwrapRef<any[]>> = ref([]);
+const currentPage = ref(1);
+const transactionsPerPage = ref(5);
+let categories = ref([]);
+
+const totalPages = computed(() => Math.ceil(transactions.value.length / transactionsPerPage.value));
+
+
+watch(transactionsPerPage, (newValue) => {
+  transactionsPerPage.value = Number(newValue);
+});
+
+const currentTransactions = computed(() => {
+  const start = (currentPage.value - 1) * transactionsPerPage.value;
+  const end = start + transactionsPerPage.value;
+  return transactions.value.slice(start, end);
+});
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
+const previousPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
 
 const userStore = useUserStore();
 
@@ -103,10 +177,15 @@ type Expense = {
 const expenses: Expense = reactive({});
 
 const showModal = ref(false);
+const showTransactionModal = ref(false);
 const newCategory = reactive({ name: "", total: 0, emoji: "" });
 
 const toggleModal = () => {
   showModal.value = !showModal.value;
+};
+
+const toggleTransactionModal = () => {
+  showTransactionModal.value = !showTransactionModal.value;
 };
 
 const route = useRoute();
@@ -134,6 +213,52 @@ const addCategory = () => {
   showModal.value = true; // Open the modal
 };
 
+const addTransaction = async () => {
+  console.log(categories.value);
+  showTransactionModal.value = true;
+  const transactionResponse = await useTransactionsNotInBudgetRow();
+  console.log(transactionResponse);
+  if (transactionResponse) {
+    transactions.value = transactionResponse;
+  }
+};
+
+let selectedCategories = reactive<{ [key: string]: string }>({});
+let budgetRowIds = reactive<{ [key: string]: number }>({});
+
+const saveTransactions = async () => {
+  // Explicitly declare the type of the variable to be Transaction[]
+  let transactionsToSave: Transaction[] = currentTransactions.value.filter(transaction => selectedCategories[transaction.id] && selectedCategories[transaction.id] !== "Select a category");
+
+  // Iterate over the remaining transactions and call addTransactionToBudgetRow for each one
+  for (const transaction of transactionsToSave) {
+    // Provide a more specific type for the key
+    let category: string = selectedCategories[transaction.id];
+    let budgetRowId;
+
+    // Iterate through the expenses object to find the expense with the same category name
+    for (const expenseCategory in expenses) {
+      if (expenseCategory === category) {
+        // Ensure that the value you're trying to access the id property on is not of type never
+        if (typeof expenses[expenseCategory] !== 'undefined') {
+          budgetRowId = expenses[expenseCategory].id; // Use the id of the matching expense as the budgetRowId
+          break;
+        }
+      }
+    }
+
+    if (budgetRowId) {
+      await addTransactionToBudgetRow(budgetRowId, transaction.id);
+    } else {
+      console.error(`No matching expense found for category: ${category}`);
+    }
+  }
+
+  // Clear the selected categories
+  selectedCategories = reactive({});
+};
+
+// ... existing code ...
 const handleNewCategory = async () => {
   await addRowToUserBudget(
       "string",
@@ -202,7 +327,7 @@ const ProgressBar = BudgetProgressBar;
 
 .back-arrow {
   font-size: 24px;
-  color: var(--color-badges-owned);
+  color: #333;
   text-decoration: none;
   padding-bottom: 10px;
   display: block;
@@ -260,7 +385,7 @@ const ProgressBar = BudgetProgressBar;
   position: relative;
   display: inline-block;
   font-size: 24px;
-  color: #ffffff; 
+  color: #333;
   margin-top: 20px;
   margin-bottom: 10px;
 }
@@ -339,6 +464,15 @@ const ProgressBar = BudgetProgressBar;
   width: 300px;
 }
 
+.modal-transaction-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 500px;
+  height: 350px; /* Set a constant height */
+  overflow-y: auto;
+}
+
 .close {
   float: right;
   font-size: 28px;
@@ -353,9 +487,15 @@ const ProgressBar = BudgetProgressBar;
   cursor: pointer;
 }
 
-#challengeEmojiPicker {
-  width: 45px;
-  height: 45px;
+#emojiPicker {
+  width: 50px;
+  height: 50px;
+  position: relative;
 }
 
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 </style>

@@ -61,7 +61,7 @@ watchEffect(() => {
   position: fixed;
   top: var(--navbarHeight);
   left: 0;
-  z-index: 1000;
+  z-index: 900;
   display: table;
   background: rgba(0,0,0,0.5);
   width: 100%;

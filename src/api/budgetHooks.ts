@@ -1,5 +1,5 @@
 import { api } from "@/api/axiosConfig";
-import { type Budget } from "@/types/Budget";
+import {type Budget, type Transaction} from "@/types/Budget";
 
 export const getBudgetByUser = async (): Promise<Budget[] | null> => {
     try {
@@ -233,16 +233,15 @@ export const addBudgetWithRow = async (
     }
 
     // Retrieve the newly created budget's ID
-    const newBudgetResponse = await api.get(`/budget/budgets/getnew`);
-
-    if (newBudgetResponse.status !== 200) {
-        throw new Error(`Failed to retrieve new budget: ${newBudgetResponse.statusText}`);
+    const newBudget = await getBudgetWithNewestExpiryDate();
+    if (!newBudget) {
+        throw new Error(`Failed to retrieve new budget`);
     }
 
     console.log("Newest budget:")
-    console.log(newBudgetResponse.data)
+    console.log(newBudget)
 
-    const newBudgetId = newBudgetResponse.data.id;
+    const newBudgetId = newBudget.id;
 
     const rows = Array.isArray(budget.row) ? budget.row : [budget.row];
 
@@ -265,4 +264,38 @@ export const addBudgetWithRow = async (
     // Return the newly created budget with rows added
     return await getBudgetById(newBudgetId);
 };
+
+export const useTransactionsNotInBudgetRow = async (): Promise<Transaction[] | null> => {
+    try {
+        const response = await api.get(`/transaction-budget-row/transactions-not-in-budget-row`);
+
+        if (response.status === 200) {
+            // If the response data is an array, return it as is. If it's a single object, put it in an array.
+            return Array.isArray(response.data) ? response.data : [response.data];
+        } else {
+            console.error("Failed to fetch transactions not in budget row:", response.statusText);
+            return null;
+        }
+    } catch (error) {
+        console.error("Error fetching transactions not in budget row:", error);
+        return null;
+    }
+};
+
+export const addTransactionToBudgetRow = async (budgetRowId: number, transactionId: number): Promise<boolean> => {
+    try {
+        const response = await api.post(`/transaction-budget-row/add/${budgetRowId}/${transactionId}`);
+
+        if (response.status === 200) {
+            return true;
+        } else {
+            console.error('Failed to add transaction to budget row:', response.statusText);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error adding transaction to budget row:', error);
+        return false;
+    }
+};
+
 

@@ -10,7 +10,7 @@
     </div>
     <h2 class="challengeTitle">{{challengeObject.title}}</h2>
     <ChallengeProgress :challenge-type="challengeType" :target-amount="challengeObject.targetAmount" :saved-amount="challengeObject.usedAmount" :media-url="challengeObject.mediaUrl || ''" />
-    <p class="challengeText">{{challengeObject.description + challengeType}}</p>
+    <p class="challengeText">{{challengeObject.description}}</p>
 
 
     <div class="completeButtonContainer">
@@ -20,19 +20,25 @@
         </template>
       </ButtonComponent>
 
-      <ButtonComponent v-if="!completed && challengeExpired" class="removeButton">
+      <ButtonComponent v-if="failed" class="removeButton" @click="updateCompleted">
         <template v-slot:content>
           <p class="removeText">Fjern Utfordring</p>
         </template>
       </ButtonComponent>
 
-      <ButtonComponent @click="toggleAddPopup" v-if="challengeType === 'Spare' && !completed && !challengeExpired" class="addButton">
+      <ButtonComponent @click="toggleAddPopup" v-if="(challengeType === 'Spare' && !completed && !failed)" class="addButton">
         <template v-slot:content>
           <p>Legg til Penger</p>
         </template>
       </ButtonComponent>
 
-      <ButtonComponent @click="toggleAddPopup" v-if="challengeType === 'Forbruk' && !completed && !challengeExpired" class="addButton">
+      <ButtonComponent @click="toggleAddPopup" v-if="challengeType === 'Budsjett' && !failed && !completed" class="addButton">
+        <template v-slot:content>
+          <p>Legg til Penger</p>
+        </template>
+      </ButtonComponent>
+
+      <ButtonComponent @click="toggleAddPopup" v-if="challengeType === 'Forbruk' && !failed && !completed" class="addButton">
         <template v-slot:content>
           <p>Legg til Produkt</p>
         </template>
@@ -59,7 +65,7 @@
             </div>
           </div>
 
-          <div v-if="challengeType === 'Spare'">
+          <div v-if="challengeType === 'Spare' || challengeType === 'Budsjett'">
             <p>How much money would you like to add?</p>
             <input min="1" :max="challengeObject.targetAmount - challengeObject.usedAmount" type="number">
             <div class="popupButtonsDiv">
@@ -68,7 +74,12 @@
                   <p>Avbryt</p>
                 </template>
               </ButtonComponent>
-              <ButtonComponent class="popupButton" @click="addToChallenge('saving')">
+              <ButtonComponent v-if="challengeType === 'Spare'" class="popupButton" @click="addToChallenge('saving')">
+                <template v-slot:content>
+                  <p>Bekreft</p>
+                </template>
+              </ButtonComponent>
+              <ButtonComponent v-if="challengeType === 'Budsjett'" class="popupButton" @click="addToChallenge('consumption')">
                 <template v-slot:content>
                   <p>Bekreft</p>
                 </template>
@@ -103,6 +114,8 @@ const props = defineProps({
   }
 });
 
+
+
 const challengeType = ref("");
 
 if(props.challengeObject.productName){
@@ -120,6 +133,16 @@ const completed = computed(() => {
     return props.challengeObject.usedAmount >= props.challengeObject.targetAmount
   } else {
     return props.challengeObject.usedAmount <= props.challengeObject.targetAmount && challengeExpired;
+  }
+});
+
+const failed = computed(() => {
+  if(challengeType.value === "Spare"){
+    return !completed.value && challengeExpired;
+  } else if(challengeType.value === "Forbruk"){
+    return props.challengeObject.usedAmount >= props.challengeObject.targetAmount;
+  } else if(challengeType.value === "Budsjett"){
+    return props.challengeObject.usedAmount >= props.challengeObject.targetAmount;
   }
 });
 
@@ -184,8 +207,8 @@ const addToChallenge = async (challengeInput: string) => {
   flex-direction: column;
   justify-content: space-between;
   margin: 1rem;
-  background-color: #A6CD94;
-  border: 0.5vw solid #9BC289;
+  background-color: var(--color-badges-owned);
+  border: 2px solid var(--color-badges-owned-hover);
   border-radius: 20px;
   padding: 1rem 0;
 }
@@ -218,20 +241,20 @@ const addToChallenge = async (challengeInput: string) => {
 }
 
 .daysRemaining {
-  color: #F0F0F0;
+  color: var(--color-text);
   font-weight: 500;
   font-size: 1rem;
 }
 
 .challengeTitle {
   margin: 10px;
-  color: #4D4D4D;
+  color: var(--color-text);
   font-weight: 500;
   overflow-wrap: anywhere;
 }
 
 .challengeText {
-  color: #EEEEEE;
+  color: var(--color-text);
   margin: 0.6rem 0.3rem;
   white-space: normal;
 }
@@ -277,8 +300,8 @@ const addToChallenge = async (challengeInput: string) => {
   position: absolute;
   width: 200px;
   height: max-content;
-  background-color: #A6CD94;
-  border: 0.5vw solid #9BC289;
+  background-color: var(--color-badges-owned);
+  border: 2px solid var(--color-badges-owned-hover);
   border-radius: 20px;
   padding: 1rem 0;
   top: 40%;

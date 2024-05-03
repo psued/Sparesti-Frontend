@@ -64,7 +64,7 @@
 
 .challengeCompletionPercentage {
 
-  color: #F0F0F0;
+  color: var(--color-text);
   font-size: 2rem;
 }
 
@@ -81,7 +81,7 @@
 }
 
 .challengeMoney {
-  color: #DFDFDF;
+  color: var(--color-text);
   font-size: 0.7rem;
 }
 

@@ -83,6 +83,7 @@ const userBadges = ref<UserBadge[]>([]);
 const isEditing = ref(false);
 const imagePreview = ref<string | null>(null);
 const userProfilePic = ref<string | null>(null);
+const totalSavings = ref<number>(0);
 
 const goToSettings = () => {
   router.push('/settings');
@@ -122,7 +123,6 @@ const toggleEditMode = async () => {
             return;
           }
           const imageUrl = await uploadImage(image, imagePreview);
-          console.log("Image uploaded successfully." + imageUrl);
           if (imageUrl) {
             await updateProfilePicture(imageUrl);
           }
@@ -130,7 +130,6 @@ const toggleEditMode = async () => {
         }
       }
       await updateUserInfo(user.value);
-      console.log("Profile updated successfully.");
     }
     isEditing.value = !isEditing.value;
   } catch (error) {
@@ -157,14 +156,8 @@ const fetchAndSetUserInfo = async () => {
     if (userInfo) {
       const userByUsernameResult = await userByUsername;
       userProfilePic.value = userByUsernameResult.profilePictureUrl;
-      setUser(userInfo, userProfilePic.value || "");
-      await userByUsername.then((response: { totalSavings: any; }) => {
-        if (user.value !== null) {
-          user.value.totalSavings = response.totalSavings;
-        } else {
-          console.error("Failed to set total savings");
-        }
-      });
+      totalSavings.value = userByUsernameResult.totalSavings;
+      setUser(userInfo, userProfilePic.value || "", totalSavings.value);
     } else {
       console.error("User info not available");
     }
@@ -173,7 +166,7 @@ const fetchAndSetUserInfo = async () => {
   }
 };
 
-const setUser = (userInfo: any, profilePictureUrl: string) => {
+const setUser = (userInfo: any, profilePictureUrl: string, totalSavings: number) => {
   user.value = {
     id: userInfo.id,
     displayName: userInfo.preferred_username || 'N/A',
@@ -182,7 +175,7 @@ const setUser = (userInfo: any, profilePictureUrl: string) => {
     email: userInfo.email || 'no-email@example.com',
     pictureUrl: profilePictureUrl || '/default-profile-pic.png',
     userBadges: [],
-    totalSavings: 0,
+    totalSavings: totalSavings || 0,
     birthdate: userInfo.birthdate || "Unknown birthdate",
   };
 };

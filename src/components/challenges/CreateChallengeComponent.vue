@@ -19,7 +19,7 @@
       <RadioButtonsComponent class="radioButtons" @radioClick="setChallengeType" :radioButtons="['Spare', 'Forbruk', 'Budsjett']"/>
     </div>
 
-    <div class="radioButtonsContainer" v-if="challengeType === 'Spare' || challengeType === 'Forbruk'">
+    <div class="radioButtonsContainer">
       <p class="radioText">Velg et tidsintervall</p>
       <RadioButtonsComponent class="radioButtons" @radioClick="pickTimeInterval" :radioButtons="['Daily', 'Weekly', 'Monthly']"/>
     </div>
@@ -51,20 +51,19 @@
       </div>
 
       <div class="createBudsjett" v-if="challengeType === 'Budsjett'">
-        <div>
-          <div class="budsjettBlock">
-            <p class="inputTitle">Kategori</p>
-            <select v-model="tempCategory"  name="category">
-              <option v-for="row in budgetRows" :value="row">{{row.name}}</option>
-            </select>
-          </div>
-
-          <div class="budsjettBlock">
-            <p class="inputTitle">Nytt Beløp</p>
-            <input v-model="targetAmount" type="number" min="0" :max="tempCategory.maxAmount-1" step="1" placeholder="Antall"/>
-          </div>
+        <div class="budsjettBlock">
+          <p class="inputTitle">Kategori</p>
+          <select v-model="tempCategory"  name="category">
+            <option v-for="row in budgetRows" :value="row">{{row.name}}</option>
+          </select>
         </div>
-        <p class="budsjettChallengeText" v-if="tempCategory.maxAmount">Det er budsjettert {{ tempCategory.maxAmount }}kr i denne kategorien</p>
+
+        <div class="budsjettBlock">
+          <p class="inputTitle">Nytt Beløp</p>
+          <input v-model="targetAmount" type="number" min="0" :max="tempCategory.maxAmount-1" step="1" placeholder="Antall"/>
+        </div>
+        <p v-if="amountOfDays && tempCategory.maxAmount" class="budsjettText">Det er budsjettert {{ Math.round(tempCategory.maxAmount / budgetDays * amountOfDays) }}kr i den valgte tidsperioden</p>
+        <p v-if="!amountOfDays || !tempCategory.maxAmount">Velg en kategori og tidsperiode</p>
       </div>
     </div>
     <ButtonComponent id="finishButton" @click="createChallenge">
@@ -88,7 +87,7 @@ import {
 } from "@/api/challengeHooks";
 import {type ChallengeCreation} from "@/types/challengeTypes";
 import type {BudgetRow} from "@/types/Budget";
-import {getNewestBudget} from "@/api/budgetHooks";
+import {getBudgetWithNewestExpiryDate, getNewestBudget} from "@/api/budgetHooks";
 
 const challengeTitle = ref("");
 const challengeDescription = ref("");
@@ -108,8 +107,16 @@ function pickEmoji(e: string) {
   emoji.value = e;
 }
 
+const amountOfDays = ref(0);
 function pickTimeInterval(interval: string) {
   timeInterval.value = interval;
+  if(interval === "Daily") {
+    amountOfDays.value = 1;
+  } else if(interval === "Weekly") {
+    amountOfDays.value = 7;
+  } else if(interval === "Monthly") {
+    amountOfDays.value = 30;
+  }
 }
 
 function setChallengeType(type : string) {
@@ -126,9 +133,11 @@ const tempCategory = ref<BudgetRow>({
 })
 
 const budgetRows = ref<BudgetRow[]>([]);
+const budgetDays = ref(0);
 async function fetchChallengeObjects() {
-  const budgetResponse = await getNewestBudget();
+  const budgetResponse = await getBudgetWithNewestExpiryDate();
   if(budgetResponse) {
+    budgetDays.value =  ((new Date(budgetResponse.expiryDate).getTime()) - (new Date(budgetResponse.creationDate).getTime())) / (1000 * 60 * 60 * 24)
     for(let i = 0; i < budgetResponse.row.length; i++){
       budgetRows.value.push(budgetResponse.row[i])
     }
@@ -148,6 +157,11 @@ async function createChallenge() {
     difficultyLevel.value = "MEDIUM";
   } else if (timeInterval.value === "Monthly") {
     difficultyLevel.value = "HARD";
+  }
+
+  if(challengeType.value === "Budsjett"){
+    category.value = tempCategory.value.name
+    reductionAmount.value = targetAmount.value / Math.round(tempCategory.value.maxAmount / budgetDays.value * amountOfDays.value) * 100
   }
 
   try {
@@ -194,6 +208,7 @@ async function createChallenge() {
     // Reset the form fields after successful creation
     alert("Challenge created successfully!");
     resetForm();
+    window.location.reload()
   } catch (error) {
     console.error("Error creating challenge:", error);
   }
@@ -221,7 +236,8 @@ input:focus, textarea:focus, select:focus {
 input, textarea, select {
   background-color: var(--color-background);
   border: none;
-  border-bottom: solid 1px #729960;
+  border-bottom: solid 1px var(--color-text);
+  color: var(--color-text);
 }
 
 
@@ -240,6 +256,7 @@ input, textarea, select {
   font-size: 1.5rem;
   width: 240px;
   margin-bottom: 1rem;
+  color: var(--color-text);
 }
 
 #contentBlock1 {
@@ -257,6 +274,7 @@ input, textarea, select {
 
 #challengeDescriptionInput {
   resize: none;
+  color: var(--color-text);
 }
 
 .emojiContainer {
@@ -305,19 +323,30 @@ input, textarea, select {
   display: flex;
   flex-direction: column;
   width: 30%;
+  height: 100%;
 }
 
 .budsjettBlock {
+  margin-right:10px;
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+  width: 30%;
+  height: 100%;
+}
+
+.budsjettText {
+  margin-right:10px;
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  height: 100%;
 }
 
 #finishButton {
   position: absolute;
-  width: 100px;
-  height: 30px;
-  bottom: 20px;
+  width: 200px;
+  height: 60px;
+  bottom: 60px;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -325,6 +354,6 @@ input, textarea, select {
 #finishText {
   font-weight: 700;
   font-size: 1rem;
-  color: white;
+  color: var(--color-text);
 }
 </style>

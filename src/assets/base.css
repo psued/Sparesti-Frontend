@@ -48,6 +48,15 @@
   --vt-c-roads-background-dark: #4C5059;
   --vt-c-roads-border-dark: #868F98;
 
+  --vt-c-button-challenges-light:#F5C116;
+  --vt-c-button-challenges-light-border:#F09217;
+
+  --vt-c-button-challenges-dark:#686ede;
+  --vt-c-button-challenges-dark-border:#48607C;
+
+  --vt-c-button-challenges-back-dark:#f2f2f2;
+  --vt-c-button-challenges-back-dark-border:#f2f2f2;
+
   --border-color-green: #00cc00;
   --border-color-yellow: #ffff00; 
   --border-color-red: #ff0000;
@@ -80,6 +89,12 @@
   --color-road-border: var(--vt-c-roads-border-light);
   
   --modal-background: var(--vt-c-white-soft); 
+
+
+  --color-button-challenges: var(--vt-c-button-challenges-light);
+  --color-button-challenges-border: var(--vt-c-button-challenges-light-border);
+
+  --color-button-challenges-back: var(--vt-c-button-challenges-light-border);
 }
 
 /* Dark theme */
@@ -107,6 +122,11 @@ body.dark {
   --color-road-border: var(--vt-c-roads-border-dark);
 
   --modal-background: var(--vt-c-black-soft);
+
+  --color-button-challenges: var(--vt-c-button-challenges-dark);
+  --color-button-challenges-border: var(--vt-c-button-challenges-dark-border);
+
+  --color-button-challenges-back: var(--vt-c-button-challenges-back-dark);
 }
 
 *,

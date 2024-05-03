@@ -12,8 +12,8 @@
     <SVGButtonComponent  v-if="!isVisible" @click="toggleIsVisible" class="newChallengeButton">
       <template v-slot:icon>
         <svg class="pluss" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15" stroke="#F09217" stroke-width="1.5" stroke-linecap="round"/>
-          <path d="M7 3.33782C8.47087 2.48697 10.1786 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 10.1786 2.48697 8.47087 3.33782 7" stroke="#F09217" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15" stroke="var(--color-button-challenges-back)" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M7 3.33782C8.47087 2.48697 10.1786 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 10.1786 2.48697 8.47087 3.33782 7" stroke="var(--color-button-challenges-back)" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
       </template>
     </SVGButtonComponent>
@@ -84,7 +84,7 @@ function toggleIsVisible() {
   height: 100px;
   width: 100px;
   margin: auto;
-  bottom: 2rem;
+  bottom: 90px;
   left: 50%;
   transform: translateX(-50%);
 }
