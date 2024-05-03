@@ -4,7 +4,7 @@
     <div class="background-container">
       <div class="background"></div>
     </div>
-    <div class="clouds" v-if="maxMedia">
+    <div class="clouds" v-if="maxMedia && !dark">
       <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
       <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
       <img src="/cloud_dark.png" alt="Cloud" class="cloud" />
@@ -53,6 +53,7 @@ import { updateLoginStreak } from "@/api/userHooks";
 import { useRouter } from "vue-router";
 import { useLogin } from "@/api/authenticationHooks";
 import road from "../components/road/RoadTiles.vue";
+import { useDark} from "@vueuse/core";
 
 import checkCircleIcon from "/check-circle.svg";
 import starCircleIcon from "/star-circle.svg";
@@ -67,6 +68,7 @@ const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 const showConfetti = ref(false);
 const plingAudio = ref<HTMLAudioElement | null>(null);
 const playSound = ref(true);
+const dark = useDark();
 
 const selectedChallengeForPopup = computed(
   () => selectedChallenge.value || ({} as Challenge),
@@ -175,13 +177,13 @@ onMounted(async () => {
 
 .cloud {
   z-index: 900;
-  position: absolute;
+  position: fixed;
   width: var(--cloud-width, 130px);
   height: auto;
   animation: floatClouds linear infinite;
   opacity: 0.3;
   display: none;
-  left: -10%;
+  left: -210px;
   height: 70px;
   width: 200px;
   filter: blur(5px);
@@ -189,16 +191,16 @@ onMounted(async () => {
 }
 
 .clouds {
-  z-index: 700;
+  z-index: 800;
 }
 
 @keyframes floatClouds {
   0% {
-    transform: translateX(-100%);
+    transform: translateX(0);
   }
 
   100% {
-    transform: translateX(100vw);
+    transform: translateX(120vw);
   }
 }
 
@@ -212,21 +214,21 @@ onMounted(async () => {
 .cloud:nth-child(2) {
   animation-duration: 60s;
   animation-delay: 5s;
-  top: 30%;
+  top: 40%;
   display: block;
 }
 
 .cloud:nth-child(3) {
   animation-duration: 30s;
   animation-delay: 10s;
-  top: 45%;
+  top: 65%;
   display: block;
 }
 
 .cloud:nth-child(4) {
   animation-duration: 40s;
   animation-delay: 13s;
-  top: 65%;
+  top: 85%;
   display: block;
 }
 
