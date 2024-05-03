@@ -422,7 +422,7 @@ watchEffect(() => {
   position: absolute;
   width: 90px;
   height: 90px;
-  z-index: 900;
+  z-index: 10;
   display: flex;
   justify-content: center;
   align-items: center;
