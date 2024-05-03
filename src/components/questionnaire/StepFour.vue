@@ -138,8 +138,7 @@ const finishQuestionnaire = async () => {
     await updateAccounts(checkingAccountNumber, savingsAccountNumber);
     emit("update-step", 5);
   } catch (err: any) {
-    console.error("Failed during the process:", err);
-    error.value = err.message || "Failed to complete all updates.";
+    error.value = err.message || "Greide ikke å fullføre oppdateringen.";
   } finally {
     isLoading.value = false;
   }
