@@ -136,8 +136,8 @@ const budgetRows = ref<BudgetRow[]>([]);
 const budgetDays = ref(0);
 async function fetchChallengeObjects() {
   const budgetResponse = await getNewestBudget();
-  budgetDays.value =  ((new Date(budgetResponse.expiryDate).getTime()) - (new Date(budgetResponse.creationDate).getTime())) / (1000 * 60 * 60 * 24)
   if(budgetResponse) {
+    budgetDays.value =  ((new Date(budgetResponse.expiryDate).getTime()) - (new Date(budgetResponse.creationDate).getTime())) / (1000 * 60 * 60 * 24)
     for(let i = 0; i < budgetResponse.row.length; i++){
       budgetRows.value.push(budgetResponse.row[i])
     }
@@ -159,7 +159,7 @@ async function createChallenge() {
     difficultyLevel.value = "HARD";
   }
 
-  if(challengeType === "Budsjett"){
+  if(challengeType.value === "Budsjett"){
     category.value = tempCategory.value.name
     reductionAmount.value = targetAmount.value / Math.round(tempCategory.value.maxAmount / budgetDays.value * amountOfDays.value) * 100
   }
