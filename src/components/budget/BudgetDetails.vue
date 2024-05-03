@@ -239,7 +239,6 @@ const addTransaction = async () => {
 };
 
 let selectedCategories = reactive<{ [key: string]: string }>({});
-let budgetRowIds = reactive<{ [key: string]: number }>({});
 
 const saveTransactions = async () => {
   // Explicitly declare the type of the variable to be Transaction[]

@@ -103,12 +103,9 @@ import {
   getNewestBudget,
   renewBudget,
   renewBudgetWithCategories,
-  getBudgetWithNewestExpiryDate,
   addBudgetWithRow,
 } from "@/api/budgetHooks";
 import type { Budget } from "@/types/Budget";
-import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
-import { categories } from "@vueuse/core/metadata.mjs";
 
 const budgetData = ref<Budget[]>([]);
 onMounted(async () => {

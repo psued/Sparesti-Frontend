@@ -144,7 +144,6 @@ const hoverMute = ref(false);
 
 // Emit functions
 const emit = defineEmits();
-
 const userStore = useUserStore();
 const apiStore = useApiStore();
 
