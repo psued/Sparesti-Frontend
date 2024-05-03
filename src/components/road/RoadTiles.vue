@@ -201,15 +201,19 @@ const closePopup = () => {
 }
 
 const updateSavingGoal = async () => {
-  let savingGoal = await getCurrentSavingGoal();
-  if (savingGoal) {
-    goal.value = savingGoal.targetAmount;
-    saved.value = savingGoal.savedAmount;
-    savingGoalImage.value = savingGoal.mediaUrl || '';
-    savingGoalId.value = savingGoal.id;
-  } else {
-    goal.value = 0;
-    saved.value = 0;
+  try {
+    let savingGoal = await getCurrentSavingGoal();
+    if (savingGoal) {
+      goal.value = savingGoal.targetAmount;
+      saved.value = savingGoal.savedAmount;
+      savingGoalImage.value = savingGoal.mediaUrl || '';
+      savingGoalId.value = savingGoal.id;
+    } else {
+      goal.value = 0;
+      saved.value = 0;
+    }
+  } catch (error) {
+    console.log("No saving goal found");
   }
 };
 
@@ -503,7 +507,7 @@ watchEffect(() => {
 
 .saving-goal-image {
   height: 100%;
-  width: 100%;
+  width: 60%;
 }
 
 .emoji {
