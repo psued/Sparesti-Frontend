@@ -91,8 +91,7 @@ const addRoad = (amount: number) => {
   const direction = roads.value.length % 2 === 0 ? 'right' : 'left';
   const moved = false;
   const pig = '/animation/pig-sitting-' + direction + '.png';
-  const houseNr = Math.floor(Math.random()*5) + 1;
-  console.log(houseNr);
+  const houseNr = Math.floor(Math.random()*8) + 1;
 
   roads.value.push({id: roads.value.length, amount, emoji: "/house-" + houseNr + ".png", direction, moved, pig, arrived: false});
 };
