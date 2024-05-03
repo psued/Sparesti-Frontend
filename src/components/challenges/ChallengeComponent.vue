@@ -14,7 +14,7 @@
 
 
     <div class="completeButtonContainer">
-      <ButtonComponent :foreground-color="'#83FF83'" :background-color="'#2ABF2A'" v-if="completed" class="completeButton">
+      <ButtonComponent :foreground-color="'#83FF83'" :background-color="'#2ABF2A'" v-if="completed" class="completeButton" @click="updateCompleted()">
         <template v-slot:content>
           <p class="completeText">Fullfør!</p>
         </template>
@@ -48,12 +48,12 @@
             <div class="popupButtonsDiv">
               <ButtonComponent class="popupButton" @click="addPopupIsVisible = false">
                 <template v-slot:content>
-                  <p>Cancel</p>
+                  <p>Avbryt</p>
                 </template>
               </ButtonComponent>
-              <ButtonComponent class="popupButton" @click="addPopupIsVisible = false">
+              <ButtonComponent class="popupButton" @click="addToChallenge('purchase')">
                 <template v-slot:content>
-                  <p>Confirm</p>
+                  <p>Bekreft</p>
                 </template>
               </ButtonComponent>
             </div>
@@ -65,12 +65,12 @@
             <div class="popupButtonsDiv">
               <ButtonComponent class="popupButton" @click="addPopupIsVisible = false">
                 <template v-slot:content>
-                  <p>Cancel</p>
+                  <p>Avbryt</p>
                 </template>
               </ButtonComponent>
-              <ButtonComponent class="popupButton" @click="addPopupIsVisible = false">
+              <ButtonComponent class="popupButton" @click="addToChallenge('saving')">
                 <template v-slot:content>
-                  <p>Confirm</p>
+                  <p>Bekreft</p>
                 </template>
               </ButtonComponent>
             </div>
@@ -85,9 +85,11 @@
 <script setup lang="ts">
 import ChallengeProgress from './ChallengeProgressComponent.vue';
 import type { MasterChallenge } from '@/types/challengeTypes';
-import {computed, ref} from 'vue';
+import { computed, ref } from 'vue';
+import { addAmountToChallenge, updateCompletedChallenge } from '@/api/challengeHooks';
 import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 import PopupComponent from "@/components/assets/PopupComponent.vue";
+import { set } from '@vueuse/core';
 
 const addPopupIsVisible = ref(false);
 function toggleAddPopup(){
@@ -103,8 +105,6 @@ const props = defineProps({
 
 const challengeType = ref("");
 
-console.log(props.challengeObject);
-console.log(props.challengeObject?.productName);
 if(props.challengeObject.productName){
   challengeType.value = "Forbruk";
 } else if(props.challengeObject.productCategory){
@@ -117,7 +117,7 @@ const challengeExpired = ((new Date(props.challengeObject.expiryDate)).getTime()
 
 const completed = computed(() => {
   if(challengeType.value === "Spare"){
-    return props.challengeObject.usedAmount >= props.challengeObject.targetAmount && !challengeExpired
+    return props.challengeObject.usedAmount >= props.challengeObject.targetAmount
   } else {
     return props.challengeObject.usedAmount <= props.challengeObject.targetAmount && challengeExpired;
   }
@@ -139,6 +139,42 @@ const timeLeftText = computed(() => {
   }
 });
 
+const updateCompleted = async () => {
+  try {
+    await updateCompletedChallenge(Number(props.challengeObject.id));
+    console.log("Challenge completed successfully.");
+    alert("Challenge completed successfully!");
+    setTimeout(() => {
+      location.reload();
+    }, 1000);
+  } catch (error) {
+    console.error("Failed to complete challenge:", error);
+  }
+}
+
+const addToChallenge = async (challengeInput: string) => {
+  try {
+    const inputElement = document.querySelector('input[type="number"]');
+    let amountToAdd = inputElement ? Number((inputElement as HTMLInputElement).value) : 0;
+    if (challengeInput === "purchase") {
+      amountToAdd = 1;
+    }
+    if (!amountToAdd || amountToAdd <= 0 || (amountToAdd > props.challengeObject.targetAmount - props.challengeObject.usedAmount)) {
+      alert("Invalid amount");
+      console.error("Invalid amount");
+      return;
+    }
+    await addAmountToChallenge(challengeInput, Number(props.challengeObject.id), amountToAdd);
+    console.log("Amount added to challenge successfully.");
+    addPopupIsVisible.value = false;
+    alert("Lagt til beløp til utfordring!");
+    setTimeout(() => {
+      location.reload();
+    }, 1000);
+  } catch (error) {
+    console.error("Failed to add amount to challenge:", error);
+  }
+}
 </script>
 
 <style scoped>

@@ -62,7 +62,7 @@ const router = createRouter({
       component: SavingGoalView,
     },
     {
-      path: "/saving-goals/user/:user_id",
+      path: "/saving-goals",
       name: "savingGoalDetails",
       component: SavingGoalDetails,
       props: true,

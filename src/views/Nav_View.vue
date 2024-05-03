@@ -7,12 +7,20 @@ devices. * The component handles dark mode and theme changes. */
   <div class="top-bar" :class="darkMode ? 'top-bar-dark' : ''">
     <RouterLink class="logo" to="/">
       <img
-        :src="darkMode ? './logo_long_dark.png' : './logo_long.png'"
+        :src="darkMode ? '/logo_long_dark.png' : '/logo_long.png'"
         alt="logo"
         class="logo"
       />
     </RouterLink>
   </div>
+  <div class="progress-container">
+    <!-- Progress bar -->
+    <p v-if="savingGoalPresent" class="numeric-progress">{{ savedAmount }}kr/{{ targetAmount }}kr</p>
+    <div class="progress-bar">
+      <div class="progress" :style="{ width: progressWidth }"></div>
+    </div>
+  </div>
+
   <!-- Hamburger menu -->
   <div :class="['hamburger', { darkMode: 'hamburger-dark' }]">
     <div class="hamburger-box" @click="toggleSidebar()">
@@ -26,12 +34,7 @@ devices. * The component handles dark mode and theme changes. */
 
   <!-- Sidebar -->
   <Transition name="move">
-    <sidebar
-      :darkMode="darkMode"
-      @theme="handleThemeChange"
-      @bar="toggleSidebar"
-      v-if="isSidebarOpen"
-    />
+    <sidebar :darkMode="darkMode" @theme="handleThemeChange" @bar="toggleSidebar" v-if="isSidebarOpen" />
   </Transition>
 
   <!-- Blur screen -->
@@ -41,11 +44,47 @@ devices. * The component handles dark mode and theme changes. */
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, defineEmits, defineProps } from "vue";
+import { onMounted,   onUnmounted, ref, defineEmits, defineProps, computed, watch } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 import { Transition } from "vue";
 import "@/assets/icons.css";
 import sidebar from "../components/nav/Sidebar.vue";
+import { useUserStore } from "@/stores/userStore";
+import { getCurrentSavingGoal, savingGoalListener } from "@/api/savingGoalHooks";
+
+// Progress bar
+const savedAmount = ref(0);
+const targetAmount = ref(1);
+const savingGoalPresent = ref(false);
+const progress = computed(() => {
+  return Math.round((savedAmount.value / targetAmount.value) * 100);
+});
+const progressWidth = computed(() => {
+  return `${progress.value}%`;
+});
+const userStore = useUserStore();
+
+async function fetchSavingProgress() {
+  if (!userStore.isLoggedIn()) {
+    return;
+  }
+  try {
+    const res = await getCurrentSavingGoal();
+    if(!res) {
+      return;
+    }
+    savingGoalPresent.value = true;
+    savedAmount.value = res.savedAmount;
+    targetAmount.value = res.targetAmount;
+  } catch (error) {
+    return;
+  }
+}
+watch(savingGoalListener, () => {
+  fetchSavingProgress();
+});
+
+
 
 // Dark mode preference based on user's system settings
 const prefersDarkMode =
@@ -61,6 +100,9 @@ const isPhone = ref(
 
 // Handle window resize event for mobile devices
 onMounted(() => {
+  if (userStore.isLoggedIn()) {
+    fetchSavingProgress();
+  }
   window.matchMedia &&
     window.matchMedia("(max-width: 480px)").addEventListener("change", (e) => {
       if (isSidebarOpen.value) {
@@ -219,6 +261,42 @@ const handleThemeChange = () => {
 
 .top-close-dark {
   animation: top-close-dark 0.35s forwards;
+}
+
+.progress-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 90px;
+  position: fixed;
+  top: 0;
+}
+
+.progress-bar {
+  height: 20px;
+  width: 70%;
+  background-color: #d75a01;
+  border: 2px solid #000;
+  border-radius: 7px;
+  padding: 1px;
+  box-sizing: border-box;
+}
+
+.progress {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  background-color: #ffc107;
+  border-radius: 5px;
+}
+
+.numeric-progress {
+  position: absolute;
+  -webkit-text-fill-color: #FFFFFF;
+  font-size: 1em;
+  font-weight: bold;
 }
 
 @keyframes top-open-dark {
@@ -481,5 +559,10 @@ const handleThemeChange = () => {
 .fade-enter-to,
 .fade-leave-from {
   opacity: 1;
+}
+@media (max-width: 630px) {
+  .progress-bar {
+    width: 50%;
+  }
 }
 </style>

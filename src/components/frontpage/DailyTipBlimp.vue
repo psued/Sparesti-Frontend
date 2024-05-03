@@ -70,6 +70,7 @@ const togglePopup = () => {
   pointer-events: auto;
   overflow: visible;
   z-index: 800;
+  pointer-events: none;
 }
 
 
@@ -77,7 +78,12 @@ const togglePopup = () => {
   z-index: 800;
   animation: floatAcross 110s infinite; /* Adjust time as needed */
   width: 20%;
+  pointer-events: all;
   /* TODO: change width for mobile, or else the blimp is a tiny baby blimp */
+}
+
+.backdrop {
+  pointer-events: all;
 }
 
 @media (max-width: 600px) {

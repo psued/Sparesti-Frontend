@@ -27,9 +27,9 @@
     <div id="optionalsContainer">
 
       <div class="createSpare" v-if="challengeType === 'Spare'">
-        <div class="optionalsBlock">
+        <div>
           <p class="inputTitle">Sparemål</p>
-          <input v-model="targetAmount" type="number" min="0" step="1" placeholder="kr"/>
+          <input v-model="targetAmount" type="number" min="1" step="1" placeholder="kr"/>
         </div>
       </div>
 
@@ -38,9 +38,15 @@
           <p class="inputTitle">Produktnavn</p>
           <input v-model="productName" type="text" placeholder="Produkt"/>
         </div>
+
         <div class="forbrukBlock">
           <p class="inputTitle">Kjøpsgrense</p>
-          <input v-model="targetAmount" type="number" min="0" step="1" placeholder="Antall"/>
+          <input v-model="quantityLimit" type="number" min="1" step="1" placeholder="Antall"/>
+        </div>
+
+        <div class="forbrukBlock">
+          <p class="inputTitle">Produkt pris</p>
+          <input v-model="productPrice" type="number" min="1" step="1" placeholder="Produkt pris (i kr)"/>
         </div>
       </div>
 
@@ -60,9 +66,7 @@
         </div>
         <p class="budsjettChallengeText" v-if="tempCategory.maxAmount">Det er budsjettert {{ tempCategory.maxAmount }}kr i denne kategorien</p>
       </div>
-
     </div>
-
     <ButtonComponent id="finishButton" @click="createChallenge">
       <template v-slot:content>
         <p id="finishText">Lag</p>
@@ -93,12 +97,12 @@ const emoji = ref("");
 const challengeType = ref("");
 const targetAmount = ref(0);
 const productName = ref("");
+const productPrice = ref(0);
 const quantityLimit = ref(0);
 const category = ref("");
 const reductionAmount = ref(0);
 const createdChallenge = ref<ChallengeCreation | null>(null);
 const difficultyLevel = ref("");
-
 
 function pickEmoji(e: string) {
   emoji.value = e;
@@ -164,6 +168,7 @@ async function createChallenge() {
         difficultyLevel: difficultyLevel.value.toUpperCase(),
         mediaUrl: emoji.value,
         productName: productName.value,
+        productPrice: productPrice.value,
         targetAmount: quantityLimit.value
       });
       addChallengeToUser(Number(createdChallenge.value.id));
@@ -295,6 +300,9 @@ input, textarea, select {
 
 .forbrukBlock {
   margin-right:10px;
+  display: flex;
+  flex-direction: column;
+  width: 30%;
 }
 
 .budsjettBlock {
