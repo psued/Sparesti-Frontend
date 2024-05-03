@@ -92,7 +92,8 @@
 
 <script setup lang="ts">
 import BudgetProgressBar from "./BudgetProgressBar.vue";
-import {ref, reactive, onMounted, computed, watch, Ref, UnwrapRef} from "vue";
+import { ref, reactive, onMounted, computed, watch } from "vue";
+import type { Ref, UnwrapRef } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import axios from "axios";
 import {
