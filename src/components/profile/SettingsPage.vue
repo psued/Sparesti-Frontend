@@ -40,7 +40,6 @@ import BackButtonComponent from "@/components/assets/BackButtonComponent.vue";
 
 const router = useRouter();
 
-const showModal = ref(false);
 const accountEditMode = ref(false);
 
 const checkingAccountNr = ref(0);
@@ -152,5 +151,4 @@ input[type="text"] {
     border: none;
   }
 }
-
 </style>

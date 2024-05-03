@@ -1,3 +1,10 @@
+<!-- 
+  This component is the first step of the questionnaire form. 
+  It collects basic information about the user such as 
+  first name, last name, nickname, birthdate, and occupation status. 
+  The form has validation for required fields and error messages for invalid inputs. 
+  The user can proceed to the next step once the form is valid. 
+-->
 <template>
   <div class="form-container">
     <h2 class="form-title">La oss komme i gang...</h2>

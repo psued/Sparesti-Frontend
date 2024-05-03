@@ -2,13 +2,13 @@
   <div class="modal">
     <div class="modal-content">
       <span class="close" @click="close">&times;</span>
-      <h2 id="header">Add User to Saving Goal</h2>
+      <h2 id="header">Legg til partnere til sparemål</h2>
       <div class="add-user-section">
         <input type="text" v-model="username" placeholder="Enter username" />
-        <button class="button-class" @click="addToSavingGoal">Add User</button>
+        <button class="add-user-button" @click="addToSavingGoal">Legg til</button>
       </div>
       <div class="collaborators-section">
-        <h3>Collaborators</h3>
+        <h3>Partnere</h3>
         <ul>
           <li v-for="collaborator in collaborators" :key="collaborator.id">
             {{ collaborator.userEmail }}
@@ -16,7 +16,7 @@
           </li>
         </ul>
       </div>
-      <button class="collaborate-button" @click="shareSavingGoal">Share Saving Goal!</button>
+      <button class="collaborate-button" @click="shareSavingGoal">Del sparemål!</button>
     </div>
   </div>
 </template>
@@ -157,12 +157,12 @@ onMounted(() => {
 }
 
 .modal-content {
-  background-color: #fefefe;
+  background-color: var(--modal-background);
   border: 1px solid #888;
   border-radius: 8px;
   padding: 20px;
   max-width: 80%;
-  width: 500px; /* Change the width as needed */
+  width: 500px;
 }
 
 .close {
@@ -195,17 +195,13 @@ onMounted(() => {
 
 .add-user-section button,
 .collaborators-section button {
-  padding: 5px 10px;
-  border-radius: 50%;
-  background-color: #ff0000;
-  color: #fff;
   border: none;
   cursor: pointer;
 }
 
 .add-user-section button:hover,
 .collaborators-section button:hover {
-  background-color: #cc0000;
+  background-color: #428642;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
@@ -230,14 +226,12 @@ onMounted(() => {
   padding: 10px 20px;
   border-radius: 5px;
   border: none;
-  background-color: #007bff;
   color: #fff;
   cursor: pointer;
   margin-top: 10px;
 }
 
 .collaborate-button:hover {
-  background-color: #0056b3;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
@@ -247,21 +241,10 @@ onMounted(() => {
   margin-top: 20px;
 }
 
-.button-wrapper button {
-  padding: 10px 20px;
+.add-user-button {
   border-radius: 5px;
-  border: none;
-  background-color: #007bff;
-  color: #fff;
-  cursor: pointer;
-}
-
-.button-wrapper button:hover {
-  background-color: #0056b3;
-}
-
-.button-class {
-  margin-top: 10px;
+  padding: 10px 10px;
+  margin-left: 15px;
 }
 
 @media screen and (max-width: 600px) {

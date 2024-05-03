@@ -1,3 +1,7 @@
+<!--
+  This component is used to display the user's recent transactions and 
+  allow them to select categories they want to budget less on.
+-->
 <template>
   <div class="form-container">
     <h2>Dine transaksjoner</h2>

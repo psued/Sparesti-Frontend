@@ -105,6 +105,12 @@ function removeProduct(index: any) {
   products.value.splice(index, 1);
 }
 
+/**
+ * Submits the questionnaire data that has been stored in the 
+ * QuestionnaireStore to the server if the userinformation has not yet been created.
+ * Also doubles as a function to updates the user information 
+ * if they decide to go back and change it.
+ */
 const finishQuestionnaire = async () => {
   isLoading.value = true;
   const checkingAccountNumber = parseInt(checkingAccount.value, 10);
