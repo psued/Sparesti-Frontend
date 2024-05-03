@@ -233,16 +233,15 @@ export const addBudgetWithRow = async (
     }
 
     // Retrieve the newly created budget's ID
-    const newBudgetResponse = await api.get(`/budget/budgets/getnew`);
-
-    if (newBudgetResponse.status !== 200) {
-        throw new Error(`Failed to retrieve new budget: ${newBudgetResponse.statusText}`);
+    const newBudget = await getBudgetWithNewestExpiryDate();
+    if (!newBudget) {
+        throw new Error(`Failed to retrieve new budget`);
     }
 
     console.log("Newest budget:")
-    console.log(newBudgetResponse.data)
+    console.log(newBudget)
 
-    const newBudgetId = newBudgetResponse.data.id;
+    const newBudgetId = newBudget.id;
 
     const rows = Array.isArray(budget.row) ? budget.row : [budget.row];
 
