@@ -52,6 +52,7 @@
         </div>
         <input class="input-margin" v-model="newCategory.name" placeholder="Kategori navn" />
         <input class="input-margin" v-model.number="newCategory.total" type="Total sum" placeholder="Total Amount" />
+        <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
         <button type="submit">Lagre</button>
       </form>
     </div>
@@ -195,7 +196,6 @@ const toggleDeleteMode = async () => {
     for (const category in expenses) {
       if (expenses[category].selected) {
         const budgetId = Number(route.params.id);
-        console.log("Deleting category: ", expenses[category].id);
         await deleteBudgetRow(budgetId, expenses[category].id);
         delete expenses[category];
       }
@@ -209,15 +209,12 @@ const toggleCancelDeleteMode = () => {
 };
 
 const addCategory = () => {
-  console.log("Add new category function triggered");
   showModal.value = true; // Open the modal
 };
 
 const addTransaction = async () => {
-  console.log(categories.value);
   showTransactionModal.value = true;
   const transactionResponse = await useTransactionsNotInBudgetRow();
-  console.log(transactionResponse);
   if (transactionResponse) {
     transactions.value = transactionResponse;
   }
@@ -258,8 +255,14 @@ const saveTransactions = async () => {
   selectedCategories = reactive({});
 };
 
-// ... existing code ...
+const errorMessage = ref("");
 const handleNewCategory = async () => {
+  for (const category in expenses) {
+    if (category === newCategory.name) {
+      errorMessage.value = "Gi kategorien et unikt navn";
+      return;
+    }
+  }
   await addRowToUserBudget(
       "string",
       0,

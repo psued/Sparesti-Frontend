@@ -102,7 +102,6 @@ onMounted(async () => {
   if (expensesResponse) {
     budgetData.value = expensesResponse;
     budgetData.value.sort((a, b) => new Date(b.expiryDate).getTime() - new Date(a.expiryDate).getTime());
-    console.log(budgetData.value);
   }
 });
 
@@ -115,7 +114,6 @@ const newBudget = reactive({ name: "", startDate: "", endDate: "" });
 
 const toggleModal = async () => {
   const newestBudget = await getNewestBudget();
-  console.log(newestBudget);
   showModal.value = !showModal.value;
 };
 
@@ -133,7 +131,6 @@ const noBudgets = computed(() => {
 });
 
 const createBudget = () => {
-  console.log(newBudget.endDate);
   if (newBudget.name === '' || newBudget.startDate === '' || newBudget.endDate === '') {
     invalidFormat.value = true;
     return;
@@ -149,27 +146,21 @@ const createBudget = () => {
 const isSubmitting = ref(false);
 
 const renewBudgets = async () => {
-  console.log("funke 1")
-  // Validate input fields are not empty
   if (newBudget.name.trim() === '' || newBudget.startDate.trim() === '' || newBudget.endDate.trim() === '') {
     invalidFormat.value = true;
     return;
   }
   invalidFormat.value = false;
 
-  // Prevent multiple submissions
   if (isSubmitting.value) return;
   isSubmitting.value = true;
 
   try {
     const allBudgets = await getBudgetByUser();
-    console.log("funke 2")
     if (allBudgets !== null) {
       const latestExpiryBudget = allBudgets.reduce((latest, current) => {
         return new Date(latest.expiryDate) > new Date(current.expiryDate) ? latest : current;
       });
-      console.log("funke 3")
-      console.log(latestExpiryBudget)
       await addBudgetWithRow(newBudget.name, newBudget.startDate, newBudget.endDate, latestExpiryBudget);
       toggleRenewModal();
       window.location.reload();
@@ -233,7 +224,6 @@ const renewCurrentBudget = async () => {
       return;
     }
 
-    console.log("Budget renewed with categories");
   } catch (error) {
     console.error("Failed to renew budget:", error);
     if ((error as any).response) {

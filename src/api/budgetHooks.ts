@@ -6,7 +6,6 @@ export const getBudgetByUser = async (): Promise<Budget[] | null> => {
         const response = await api.get(`/budget/budgets`);
 
     if (response.status === 200) {
-      console.log(response.data);
         return Array.isArray(response.data) ? response.data : [response.data];
     } else {
       console.error("Failed to fetch budget:", response.statusText);
@@ -31,7 +30,6 @@ export const addRowToUserBudget = async (
 
     if (response.status === 200 && response.data) {
       const budgetId = response.data.id;
-      console.log("Budget ID:", budgetId);
 
       const row = {
         name,
@@ -214,11 +212,6 @@ export const addBudgetWithRow = async (
     expiryDate: string,
     budget: Budget
 ): Promise<Budget | null> => {
-    console.log({
-        name: name,
-        expiryDate: expiryDate,
-        creationDate: creationDate
-    })
     // Create a new budget with only the name, creationDate, and expiryDate
     const createResponse = await api.post(`/budget/budgets/add`, {
         name: name,
@@ -238,8 +231,6 @@ export const addBudgetWithRow = async (
         throw new Error(`Failed to retrieve new budget`);
     }
 
-    console.log("Newest budget:")
-    console.log(newBudget)
 
     const newBudgetId = newBudget.id;
 
@@ -247,8 +238,6 @@ export const addBudgetWithRow = async (
 
     // Iterate through the budget.row array to add each row to the new budget
     for (const row of rows) {
-        console.log("VIKTIG!")
-        console.log(row)
         const addRowResponse = await api.post(`/budget/budgets/${newBudgetId}/rows/add`, {
             maxAmount: row.maxAmount,
             category: row.category,
