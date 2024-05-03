@@ -1,9 +1,12 @@
 <template>
   <div class="balloon-container">
-    <picture>
-      <img :src="darkMode ? '/BalloonPigDark.png' : '/BalloonPig.png'" alt="Balloon Pig" class="balloon" @click="showPopup = true"/>
+    <div class="clickable-balloon-area">
+      <div class="clickable-area" @click="showPopup=true"></div>
+      <picture>
+        <img :src="darkMode ? '/BalloonPigDark.png' : '/BalloonPig.png'" alt="Balloon Pig" class="balloon"/>
+      </picture>
+    </div>
 
-    </picture>
     <PopupComponent :is-visible="showPopup" @togglePopup="togglePopup">
       <template #content>
         <div class="popup-content" :class="{ 'dark-mode': darkMode }">
@@ -61,13 +64,23 @@ const togglePopup = () => {
   }
 }
 
+
+.clickable-balloon-area {
+  z-index: 800;
+  animation: floatAcross 110s infinite; /* Adjust time as needed */
+  pointer-events: auto;
+  width: 20%;
+  /* TODO: change width for mobile, or else the blimp is a tiny baby blimp */
+}
+
+
+
 .balloon-container {
   position: fixed;
   top: 20%;
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: auto;
   overflow: visible;
   z-index: 800;
   pointer-events: none;
@@ -75,11 +88,21 @@ const togglePopup = () => {
 
 
 .balloon {
-  z-index: 800;
-  animation: floatAcross 110s infinite; /* Adjust time as needed */
-  width: 20%;
+  pointer-events: none;
+  width: 100%;
+}
+
+.clickable-area {
+  background: transparent;
+  z-index: 801;
+  /* Custom clickable square area of png. Perfectly crafted for width of 50%*/
+  position: absolute;
+  top: 23%;  /* adjust these values based on the image and the desired clickable area */
+  left: 28%;
+  width: 38%;  /* size of the clickable area */
+  height: 45%;
+  cursor: pointer;
   pointer-events: all;
-  /* TODO: change width for mobile, or else the blimp is a tiny baby blimp */
 }
 
 .backdrop {
@@ -87,7 +110,7 @@ const togglePopup = () => {
 }
 
 @media (max-width: 600px) {
-  .balloon {
+  .clickable-balloon-area {
     width: 50%; /* Increase the size on mobile */
     /* animation very janky on mobile */
   }
