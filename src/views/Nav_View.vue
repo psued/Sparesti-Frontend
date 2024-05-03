@@ -277,7 +277,7 @@ const handleThemeChange = () => {
 .progress-bar {
   height: 20px;
   width: 70%;
-  background-color: #d75a01;
+  background-color: #f3f2f0;
   border: 2px solid #000;
   border-radius: 7px;
   padding: 1px;
@@ -288,13 +288,13 @@ const handleThemeChange = () => {
   height: 100%;
   width: auto;
   max-width: 100%;
-  background-color: #ffc107;
+  background-color: var(--color-badges-owned);
   border-radius: 5px;
 }
 
 .numeric-progress {
   position: absolute;
-  -webkit-text-fill-color: #FFFFFF;
+  -webkit-text-fill-color: #2E323E;
   font-size: 1em;
   font-weight: bold;
 }

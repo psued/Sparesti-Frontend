@@ -19,6 +19,7 @@
     <div class="road-box">
 
       <div v-if="goal > 0" class="road-edge-point road-end">
+        <text v-if="roadComplete" class="complete-text">Klikk for å fullføre!</text>
         <div class="road-edge-area saving-goal" :class="{'node-end': roadComplete}"  @click="saved === goal ? completeSavingGoal() : goToSavingGoal()">
           <img v-if="roadComplete" class="walking-end-pig" @click="triggerConfetti" :src="endpig"></img>
           <img v-else-if="savingGoalImage.length > 4" :src="savingGoalImage" class="saving-goal-image"></img>
@@ -223,11 +224,11 @@ onMounted(async () => {
   await updateSavingGoal();
   
   step.value = 100;
-  const steps = goal.value / step.value;
+  const steps = Math.round(goal.value / step.value);
 
 
-  for(let i = 1; i < steps; i++){
-    const amount = goal.value - (i * step.value);
+  for(let i = steps; i > 0; i--){
+    const amount = (i*100);
     addRoad(amount);
   }
   
@@ -241,7 +242,7 @@ onMounted(async () => {
         if (i === roads.value.length - 1) {
           await moveStart();
         }
-        if (roads.value[i - 1].amount <= saved.value) {
+        if (roads.value[i-1] && roads.value[i - 1].amount <= saved.value) {
           await movePig(roads.value[i]);
         }
       } 
@@ -326,6 +327,12 @@ watchEffect(() => {
   background-size: 100% 100%;
 }
 
+.complete-text{
+  position: absolute;
+  top: -30px;
+  font-size: 18px;
+}
+
 
 /* Complete Container */
 .road-container {
@@ -347,8 +354,8 @@ watchEffect(() => {
   overflow: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  margin-top: 90px;
-  margin-bottom: 140px;
+  padding-top: 45px;
+  padding-bottom: 90px;
 }
 
 .background-img{
@@ -521,6 +528,7 @@ watchEffect(() => {
   height: 50px;
   position: relative;
   top: 0;
+  z-index: 900;
 }
 /* Pig */
 .walking-pig{

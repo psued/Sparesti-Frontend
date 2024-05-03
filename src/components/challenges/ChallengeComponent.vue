@@ -20,13 +20,19 @@
         </template>
       </ButtonComponent>
 
-      <ButtonComponent @click="toggleAddPopup" v-if="challengeType === 'Spare' && !completed" class="addButton">
+      <ButtonComponent v-if="!completed && challengeExpired" class="removeButton">
+        <template v-slot:content>
+          <p class="removeText">Fjern Utfordring</p>
+        </template>
+      </ButtonComponent>
+
+      <ButtonComponent @click="toggleAddPopup" v-if="challengeType === 'Spare' && !completed && !challengeExpired" class="addButton">
         <template v-slot:content>
           <p>Legg til Penger</p>
         </template>
       </ButtonComponent>
 
-      <ButtonComponent @click="toggleAddPopup" v-if="challengeType === 'Forbruk' && !completed" class="addButton">
+      <ButtonComponent @click="toggleAddPopup" v-if="challengeType === 'Forbruk' && !completed && !challengeExpired" class="addButton">
         <template v-slot:content>
           <p>Legg til Produkt</p>
         </template>
@@ -110,8 +116,8 @@ if(props.challengeObject.productName){
 const challengeExpired = ((new Date(props.challengeObject.expiryDate)).getTime()) < ((new Date()).getTime());
 
 const completed = computed(() => {
-  if(challengeType.value === "purchase"){
-    return props.challengeObject.usedAmount >= props.challengeObject.targetAmount && !challengeExpired
+  if(challengeType.value === "Spare"){
+    return props.challengeObject.usedAmount >= props.challengeObject.targetAmount
   } else {
     return props.challengeObject.usedAmount <= props.challengeObject.targetAmount && challengeExpired;
   }
@@ -169,9 +175,6 @@ const addToChallenge = async (challengeInput: string) => {
     console.error("Failed to add amount to challenge:", error);
   }
 }
-
-console.log(props.challengeObject)
-
 </script>
 
 <style scoped>
@@ -246,6 +249,19 @@ console.log(props.challengeObject)
 
 .completeText {
   color: #12D612;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.removeButton {
+  width: 150px;
+  height: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.removeText {
+  color: #8f0d0d;
   font-size: 1rem;
   font-weight: 700;
 }
