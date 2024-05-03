@@ -228,7 +228,7 @@ onMounted(async () => {
   await updateSavingGoal();
   
   step.value = 100;
-  const steps = Math.round(goal.value / step.value);
+  const steps = Math.floor(goal.value / step.value);
 
 
   for(let i = steps; i > 0; i--){

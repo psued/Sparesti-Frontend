@@ -51,7 +51,7 @@
           <input
             type="number"
             id="value"
-            min="1"
+            min="100"
             max="1000000"
             v-model.number="savingGoal.targetAmount" 
           />
