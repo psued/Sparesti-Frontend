@@ -230,7 +230,7 @@
   padding: 10px;
   border: 2px solid var(--border-color-green);
   border-radius: 8px;
-  background-color: var(--color-badges-owned);
+  background-color: #eee;
   transition: transform 0.3s ease;
 }
 
@@ -244,7 +244,7 @@
 }
 
 .user-card:hover {
-  background-color: var(--color-badges-owned-hover);
+  background-color: #eee;
   box-shadow: 0 0 5px #ccc;
   transform: scale(1.05);
   cursor: pointer;
@@ -264,6 +264,7 @@
   font-size: 1.2em;
   border-left: 1px solid #ccc;
   padding-left: 10px;
+  color: #333;
 }
 
 .saving-goal-card {

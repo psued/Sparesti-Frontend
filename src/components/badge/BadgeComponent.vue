@@ -77,6 +77,7 @@ watchEffect(async () => {
   height: 100%;
   padding-bottom: 0px;
   max-height: fit-content;
+  min-width: 175px;
 }
 
 .badge-owned {
