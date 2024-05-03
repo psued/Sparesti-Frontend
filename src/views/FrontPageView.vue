@@ -1,14 +1,14 @@
-/**
- * @file FrontPageView.vue
- * @description This file contains the implementation of the FrontPageView component.
- * The FrontPageView component is responsible for rendering the front page of the application.
- * It displays a daily tip blimp, a background container with clouds, a road, and a challenge details popup.
- * It also handles the display of a badge popup when a user receives a badge.
- * The component uses various child components such as ChallengeDetailsPopup, PopupComponent, ButtonComponent, BadgeComponent, and DailyTipBlimp.
- * The component makes API calls to fetch challenges, user information, and award badges.
- * It also handles user interactions such as closing popups, accepting badges, and triggering confetti animation.
- * The component is written in TypeScript and uses Vue 3 composition API.
- */
+/** * @file FrontPageView.vue * @description This file contains the
+implementation of the FrontPageView component. * The FrontPageView component is
+responsible for rendering the front page of the application. * It displays a
+daily tip blimp, a background container with clouds, a road, and a challenge
+details popup. * It also handles the display of a badge popup when a user
+receives a badge. * The component uses various child components such as
+ChallengeDetailsPopup, PopupComponent, ButtonComponent, BadgeComponent, and
+DailyTipBlimp. * The component makes API calls to fetch challenges, user
+information, and award badges. * It also handles user interactions such as
+closing popups, accepting badges, and triggering confetti animation. * The
+component is written in TypeScript and uses Vue 3 composition API. */
 <template>
   <daily-tip-blimp />
   <div class="container" @click="closeBadgePopup">
@@ -30,22 +30,25 @@
     />
   </div>
 
-  <PopupComponent :isVisible="showBadgePopup" :flashingBorder="true" class="popup">
-      <template #content>
-        <h2>Gratulerer, du har mottatt en medalje!</h2>
-        <BadgeComponent :badge="rewardedBadge" :owned="true" />
-        <ButtonComponent class="button" @click="closeBadgePopupAndAwardBadge">
-          <template v-slot:content>
-            <h2>Godta Medalje</h2>
-          </template>
-          <template v-slot:click>
-            <h2>Godta Medalje</h2>
-          </template>
-        </ButtonComponent>
-        <div class="confetti-container" v-if="showConfetti"></div>
-      </template>
-    </PopupComponent>
-
+  <PopupComponent
+    :isVisible="showBadgePopup"
+    :flashingBorder="true"
+    class="popup"
+  >
+    <template #content>
+      <h2>Gratulerer, du har mottatt en medalje!</h2>
+      <BadgeComponent :badge="rewardedBadge" :owned="true" />
+      <ButtonComponent class="button" @click="closeBadgePopupAndAwardBadge">
+        <template v-slot:content>
+          <h2>Godta Medalje</h2>
+        </template>
+        <template v-slot:click>
+          <h2>Godta Medalje</h2>
+        </template>
+      </ButtonComponent>
+      <div class="confetti-container" v-if="showConfetti"></div>
+    </template>
+  </PopupComponent>
 </template>
 
 <script setup lang="ts">
@@ -53,22 +56,18 @@ import ChallengeDetailsPopup from "@/components/ChallengeDetailsPopup.vue";
 import PopupComponent from "@/components/assets/PopupComponent.vue";
 import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 import BadgeComponent from "@/components/badge/BadgeComponent.vue";
-import confetti from 'canvas-confetti';
-import { Howl } from 'howler';
+import confetti from "canvas-confetti";
+import { Howl } from "howler";
 import plingSound from "/pling.wav";
 import { onMounted, computed, ref } from "vue";
-import { getSortedChallengesByUser } from "@/api/challengeHooks";
-import { type ChallengesResponse, type Challenge } from "@/types/challengeTypes";
+import { type Challenge } from "@/types/challengeTypes";
 import { type Badge } from "@/types/Badge";
 import { useUserStore } from "@/stores/userStore";
 import { checkAndAwardBadge, giveUserBadge } from "@/api/badgeHooks";
 import { updateLoginStreak } from "@/api/userHooks";
-import { useRouter } from "vue-router";
 import { useLogin } from "@/api/authenticationHooks";
 import road from "../components/road/RoadTiles.vue";
-import { useDark} from "@vueuse/core";
-import checkCircleIcon from "/check-circle.svg";
-import starCircleIcon from "/star-circle.svg";
+import { useDark } from "@vueuse/core";
 import DailyTipBlimp from "../components/frontpage/DailyTipBlimp.vue";
 import { getUserByUsername } from "@/api/userHooks";
 
@@ -79,8 +78,6 @@ const showPopup = ref(false);
 const showBadgePopup = ref(false);
 const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 const showConfetti = ref(false);
-const plingAudio = ref<HTMLAudioElement | null>(null);
-const playSound = ref(true);
 const dark = useDark();
 const selectedChallengeForPopup = computed(
   () => selectedChallenge.value || ({} as Challenge),
@@ -121,7 +118,7 @@ const closeBadgePopup = () => {
 const triggerConfetti = () => {
   showConfetti.value = true;
   let scalar = 2;
-  let coin = confetti.shapeFromText({text: '💰', scalar})
+  let coin = confetti.shapeFromText({ text: "💰", scalar });
   const confettiOptions = {
     particleCount: 100,
     spread: 70,
@@ -138,7 +135,7 @@ const triggerConfetti = () => {
 
 // Function to play the pling sound
 const playPlingSound = () => {
-  if(userStore.getMuted) return;
+  if (userStore.getMuted) return;
   const sound = new Howl({
     src: [plingSound],
     autoplay: true,
@@ -251,7 +248,10 @@ onMounted(async () => {
   position: fixed; /* Keep the popup in a fixed position */
   top: 50%; /* Position the top edge of the element at the middle of the screen */
   left: 50%; /* Position the left edge of the element at the middle of the screen */
-  transform: translate(-50%, -50%); /* Shift the element back by half its own width and height to truly center it */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Shift the element back by half its own width and height to truly center it */
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);

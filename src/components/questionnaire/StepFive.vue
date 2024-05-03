@@ -8,11 +8,21 @@
     <div v-if="isLoading">Laster inn transaksjoner...</div>
     <div v-if="error">{{ error }}</div>
     <div v-if="transactions.length">
-      <p>Vi har hentet ut transaksjoner du har gjort de siste 30 dagene. <br> Hvilke plasser vil du bruke mindre penger på?</p>
+      <p>
+        Vi har hentet ut transaksjoner du har gjort de siste 30 dagene. <br />
+        Hvilke plasser vil du bruke mindre penger på?
+      </p>
       <ul class="transaction-list">
-        <li v-for="transaction in transactions" :key="transaction.id" class="transaction-item">
+        <li
+          v-for="transaction in transactions"
+          :key="transaction.id"
+          class="transaction-item"
+        >
           <div class="checkbox-container">
-            <input type="checkbox" v-model="selectedCategories[transaction.category]">
+            <input
+              type="checkbox"
+              v-model="selectedCategories[transaction.category]"
+            />
           </div>
           <div class="category-container">
             {{ transaction.category }}
@@ -31,18 +41,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineEmits, computed } from 'vue';
-import { getRecentTransactionsSorted } from '@/api/bankHooks';
-import FormButton from '@/components/forms/FormButton.vue';
-import { useQuestionnaireStore } from '@/stores/questionnaireStore';
-import { updateUserInfo } from '@/api/userHooks';
-import type { Transaction } from '@/types/Transaction';
+import { ref, onMounted, defineEmits, computed } from "vue";
+import { getRecentTransactionsSorted } from "@/api/bankHooks";
+import FormButton from "@/components/forms/FormButton.vue";
+import { useQuestionnaireStore } from "@/stores/questionnaireStore";
+import { updateUserInfo } from "@/api/userHooks";
+import type { Transaction } from "@/types/Transaction";
 
 const emit = defineEmits(["update-step"]);
 const store = useQuestionnaireStore();
 const transactions = ref<Transaction[]>([]);
 const isLoading = ref(false);
-const error = ref('');
+const error = ref("");
 const selectedCategories = ref<Record<string, boolean>>({});
 
 onMounted(async () => {
@@ -50,12 +60,14 @@ onMounted(async () => {
   try {
     const accountNr = Number(store.stepTwoData.checkingAccount);
     const data = await getRecentTransactionsSorted(accountNr);
-    if (data && typeof data === 'object') {
-      transactions.value = Object.entries(data).map(([category, amount], index) => ({
-        id: `${index}`,
-        category,
-        amount: Math.abs(amount as number)
-      }));
+    if (data && typeof data === "object") {
+      transactions.value = Object.entries(data).map(
+        ([category, amount], index) => ({
+          id: `${index}`,
+          category,
+          amount: Math.abs(amount as number),
+        }),
+      );
     } else {
       throw new Error("Ingen transaksjoner funnet");
     }
@@ -75,13 +87,13 @@ const selectedBudgettingLocations = computed(() => {
 
 async function finishUpdate() {
   const userInfo = {
-    budgetingLocations: selectedBudgettingLocations.value
+    budgetingLocations: selectedBudgettingLocations.value,
   };
   const result = await updateUserInfo(userInfo);
   if (result) {
-    console.log('User info updated successfully!');
+    console.log("User info updated successfully!");
   } else {
-    console.error('Failed to update user info');
+    console.error("Failed to update user info");
   }
 }
 

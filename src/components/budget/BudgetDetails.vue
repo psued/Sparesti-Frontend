@@ -16,21 +16,25 @@
       <h3>Utgifter</h3>
       <div class="add-and-delete-category">
         <button class="add-category-btn" @click="addTransaction">
-          <span class="add-category-icon">➕</span> Tildel transaksjon til kategori
+          <span class="add-category-icon">➕</span> Tildel transaksjon til
+          kategori
         </button>
         <button class="add-category-btn" @click="addCategory">
           <span class="add-category-icon">➕</span> Legg til kategori
         </button>
         <button class="delete-category-btn" @click="toggleDeleteMode">
-          <span class="add-category-icon">➖</span> {{ deleteMode ? 'Slett' : 'Slett kategori' }}
+          <span class="add-category-icon">➖</span>
+          {{ deleteMode ? "Slett" : "Slett kategori" }}
         </button>
-        <button v-if="deleteMode" @click="toggleCancelDeleteMode">Avbryt</button>
+        <button v-if="deleteMode" @click="toggleCancelDeleteMode">
+          Avbryt
+        </button>
       </div>
     </div>
 
     <ul>
       <li v-for="(expense, category) in expenses" :key="category">
-        <input v-if="deleteMode" type="checkbox" v-model="expense.selected">
+        <input v-if="deleteMode" type="checkbox" v-model="expense.selected" />
         <span class="emoji">{{ expense.emoji }}</span>
         <span class="category">{{ category }}</span>
         <span class="amount"
@@ -48,29 +52,49 @@
       <form @submit.prevent="handleNewCategory">
         <h4>Trykk på smilefjeset og velg emoji</h4>
         <div id="emojiPicker">
-          <EmojiPickerComponent id="emojiPicker" @pickEmoji="updateEmoji" :emoji-prop="emoji"/>
+          <EmojiPickerComponent
+            id="emojiPicker"
+            @pickEmoji="updateEmoji"
+            :emoji-prop="emoji"
+          />
         </div>
-        <input class="input-margin" v-model="newCategory.name" placeholder="Kategori navn" />
-        <input class="input-margin" v-model.number="newCategory.total" type="Total sum" placeholder="Total Amount" />
-        <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
+        <input
+          class="input-margin"
+          v-model="newCategory.name"
+          placeholder="Kategori navn"
+        />
+        <input
+          class="input-margin"
+          v-model.number="newCategory.total"
+          type="Total sum"
+          placeholder="Total Amount"
+        />
+        <p v-if="errorMessage" style="color: red">{{ errorMessage }}</p>
         <button type="submit">Lagre</button>
       </form>
     </div>
   </div>
-  <div v-if="showTransactionModal" class="modal" @click.self="showTransactionModal = false">
+  <div
+    v-if="showTransactionModal"
+    class="modal"
+    @click.self="showTransactionModal = false"
+  >
     <div class="modal-transaction-content">
       <span class="close" @click="toggleTransactionModal">&times;</span>
       <h3>Transactions</h3>
       <!-- 8. Display the transactions for the current page -->
       <ul>
         <li v-for="transaction in currentTransactions" :key="transaction.id">
-          ID: {{ transaction.id }}, Amount: {{ transaction.amount }}, Date: {{ transaction.date }}
+          ID: {{ transaction.id }}, Amount: {{ transaction.amount }}, Date:
+          {{ transaction.date }}
 
           <!-- Display transaction details here -->
 
           <select v-model="selectedCategories[transaction.id]">
             <option value="">Select a category</option>
-            <option v-for="(expense, category) in expenses" :key="category">{{ category }}</option>
+            <option v-for="(expense, category) in expenses" :key="category">
+              {{ category }}
+            </option>
           </select>
         </li>
       </ul>
@@ -86,7 +110,7 @@
           <option value="25">25</option>
           <option value="50">50</option>
         </select>
-    </div>
+      </div>
     </div>
   </div>
 </template>
@@ -96,26 +120,24 @@ import BudgetProgressBar from "./BudgetProgressBar.vue";
 import { ref, reactive, onMounted, computed, watch } from "vue";
 import type { Ref, UnwrapRef } from "vue";
 import { useUserStore } from "@/stores/userStore";
-import axios from "axios";
 import {
-  addRowToUserBudget, addTransactionToBudgetRow,
+  addRowToUserBudget,
+  addTransactionToBudgetRow,
   deleteBudgetRow,
   getBudgetById,
-  getBudgetByUser,
-  useTransactionsNotInBudgetRow
+  useTransactionsNotInBudgetRow,
 } from "@/api/budgetHooks";
-import {useRoute} from "vue-router";
+import { useRoute } from "vue-router";
 import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
-import type {Transaction} from "@/types/Budget";
-
+import type { Transaction } from "@/types/Budget";
 
 let transactions: Ref<UnwrapRef<any[]>> = ref([]);
 const currentPage = ref(1);
 const transactionsPerPage = ref(5);
-let categories = ref([]);
 
-const totalPages = computed(() => Math.ceil(transactions.value.length / transactionsPerPage.value));
-
+const totalPages = computed(() =>
+  Math.ceil(transactions.value.length / transactionsPerPage.value),
+);
 
 watch(transactionsPerPage, (newValue) => {
   transactionsPerPage.value = Number(newValue);
@@ -139,9 +161,6 @@ const previousPage = () => {
   }
 };
 
-
-const userStore = useUserStore();
-
 const deleteMode = ref(false);
 
 const emoji = ref("");
@@ -151,7 +170,7 @@ function updateEmoji(newEmoji: string) {
 }
 
 let totalAmount = 0;
-let leftAmount= 0;
+let leftAmount = 0;
 
 const props = defineProps({
   remainingBudget: {
@@ -159,7 +178,6 @@ const props = defineProps({
   },
   totalBudget: {
     type: Number,
-
   },
 });
 
@@ -225,7 +243,11 @@ let budgetRowIds = reactive<{ [key: string]: number }>({});
 
 const saveTransactions = async () => {
   // Explicitly declare the type of the variable to be Transaction[]
-  let transactionsToSave: Transaction[] = currentTransactions.value.filter(transaction => selectedCategories[transaction.id] && selectedCategories[transaction.id] !== "Select a category");
+  let transactionsToSave: Transaction[] = currentTransactions.value.filter(
+    (transaction) =>
+      selectedCategories[transaction.id] &&
+      selectedCategories[transaction.id] !== "Select a category",
+  );
 
   // Iterate over the remaining transactions and call addTransactionToBudgetRow for each one
   for (const transaction of transactionsToSave) {
@@ -237,7 +259,7 @@ const saveTransactions = async () => {
     for (const expenseCategory in expenses) {
       if (expenseCategory === category) {
         // Ensure that the value you're trying to access the id property on is not of type never
-        if (typeof expenses[expenseCategory] !== 'undefined') {
+        if (typeof expenses[expenseCategory] !== "undefined") {
           budgetRowId = expenses[expenseCategory].id; // Use the id of the matching expense as the budgetRowId
           break;
         }
@@ -264,29 +286,29 @@ const handleNewCategory = async () => {
     }
   }
   await addRowToUserBudget(
-      "string",
-      0,
-      newCategory.total,
-      newCategory.name,
-      emoji.value,
-      Number(route.params.id),
+    "string",
+    0,
+    newCategory.total,
+    newCategory.name,
+    emoji.value,
+    Number(route.params.id),
   );
   toggleModal(); // Close modal after adding the category
-  newCategory.name = '';
+  newCategory.name = "";
   newCategory.total = 0;
-  newCategory.emoji = '';
+  newCategory.emoji = "";
 
   const expensesResponse = await getBudgetById(Number(route.params.id));
 
   if (expensesResponse && expensesResponse.row) {
     for (const entry of expensesResponse.row) {
-      const {category, usedAmount, maxAmount, emoji, id} = entry;
+      const { category, usedAmount, maxAmount, emoji, id } = entry;
       expenses[category as ExpenseCategory] = {
         left: usedAmount, // Assuming usedAmount represents the left amount
         total: maxAmount, // Assuming maxAmount represents the total amount
         emoji: emoji,
         id: id,
-        selected: false
+        selected: false,
       };
       totalAmount += maxAmount;
       leftAmount += usedAmount;
@@ -296,18 +318,17 @@ const handleNewCategory = async () => {
 
 onMounted(async () => {
   try {
-
     const expensesResponse = await getBudgetById(Number(route.params.id));
 
     if (expensesResponse && expensesResponse.row) {
       for (const entry of expensesResponse.row) {
-        const {category, usedAmount, maxAmount, emoji, id} = entry;
+        const { category, usedAmount, maxAmount, emoji, id } = entry;
         expenses[category as ExpenseCategory] = {
           left: usedAmount, // Assuming usedAmount represents the left amount
           total: maxAmount, // Assuming maxAmount represents the total amount
           emoji: emoji,
           id: id,
-          selected: false
+          selected: false,
         };
         totalAmount += maxAmount;
         leftAmount += usedAmount;
@@ -323,7 +344,6 @@ const ProgressBar = BudgetProgressBar;
 </script>
 
 <style scoped>
-
 .input-margin {
   margin-top: 10px;
 }
@@ -368,21 +388,21 @@ const ProgressBar = BudgetProgressBar;
   padding: 3px;
 }
 
-  .header-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-  .add-and-delete-category {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
+.add-and-delete-category {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
 
-  .expenses {
-    margin: 15px;
-  }
+.expenses {
+  margin: 15px;
+}
 
 .expenses h3 {
   position: relative;
@@ -418,23 +438,23 @@ const ProgressBar = BudgetProgressBar;
   font-weight: bold;
 }
 
-  .amount {
-    white-space: nowrap;
-    flex-shrink: 0;
-    margin-right: 10px;
-  }
+.amount {
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-right: 10px;
+}
 
-  .add-category-btn {
-    padding: 0 1rem;
-    width: max-content;
-    display: flex;
-    background-color: #a6cd94;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    border-width: 0.15rem;
-    cursor: pointer;
-  }
+.add-category-btn {
+  padding: 0 1rem;
+  width: max-content;
+  display: flex;
+  background-color: #a6cd94;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  border-width: 0.15rem;
+  cursor: pointer;
+}
 
 .delete-category-btn {
   padding: 0 1rem;
@@ -482,7 +502,7 @@ const ProgressBar = BudgetProgressBar;
   cursor: pointer;
 }
 
-.delete-button{
+.delete-button {
   background-color: #ff0000;
   color: #ffffff;
   border-radius: 5px;

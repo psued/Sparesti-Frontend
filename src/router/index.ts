@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import AuthenticationView from '@/views/AuthenticationView.vue'
-import LoginForm from '@/components/forms/LoginForm.vue'
-import SignUpForm from '@/components/forms/SignUpForm.vue'
-import CompleteAccountForm from '@/components/forms/CompleteAccountForm.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import AuthenticationView from "@/views/AuthenticationView.vue";
+import LoginForm from "@/components/forms/LoginForm.vue";
+import SignUpForm from "@/components/forms/SignUpForm.vue";
+import CompleteAccountForm from "@/components/forms/CompleteAccountForm.vue";
 import ChallengesView from "../views/ChallengesView.vue";
 import LoadingView from "@/views/LoadingView.vue";
 import BudgetPageView from "@/views/BudgetPageView.vue";
@@ -16,7 +16,7 @@ import BadgeDetailsView from "@/views/BadgeDetailsView.vue";
 import SavingGoalView from "@/views/SavingGoalView.vue";
 import SavingGoalDetails from "@/components/savinggoal/SavingGoalDetails.vue";
 import SavingGoalCardDetails from "@/components/savinggoal/SavingGoalCardDetails.vue";
-import ContactView from '@/components/contact/Contact.vue'
+import ContactView from "@/components/contact/Contact.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,15 +47,15 @@ const router = createRouter({
       component: BudgetPageView,
     },
     {
-      path: '/details/:id',
-      name: 'BudgetDetails',
-      component: BudgetDetails
+      path: "/details/:id",
+      name: "BudgetDetails",
+      component: BudgetDetails,
     },
     {
-      path: '/badge/:id',
-      name: 'BadgeDetails',
+      path: "/badge/:id",
+      name: "BadgeDetails",
       component: BadgeDetailsView,
-      props: true
+      props: true,
     },
     {
       path: "/saving-goal/create",
@@ -86,13 +86,13 @@ const router = createRouter({
       props: true,
     },
     {
-      path: '/challenges',
-      name: 'challenges',
-      component: ChallengesView
+      path: "/challenges",
+      name: "challenges",
+      component: ChallengesView,
     },
     {
-      path: '/authentication',
-      name: 'authentication',
+      path: "/authentication",
+      name: "authentication",
       component: AuthenticationView,
       children: [
         {

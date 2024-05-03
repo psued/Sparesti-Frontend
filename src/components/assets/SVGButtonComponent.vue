@@ -6,20 +6,32 @@
    The SVG icon for the button is passed through the 'icon' slot.
  -->
 <template>
-  <div @mousedown="clicked = true" @mouseup="handleMouseup" @mouseleave="clicked = false" class="buttonContainer">
-    <div class="bgCircle"/>
-    <div :class="{animation1 : pressed || clicked && !pressed}" class="fgCircle"/>
-    <div :class="{animation2 : pressed || clicked && !pressed}" class="innerCircle"/>
-    <div :class="{animation2 : pressed || clicked && !pressed}" class="iconContainer">
-      <slot name="icon"/>
+  <div
+    @mousedown="clicked = true"
+    @mouseup="handleMouseup"
+    @mouseleave="clicked = false"
+    class="buttonContainer"
+  >
+    <div class="bgCircle" />
+    <div
+      :class="{ animation1: pressed || (clicked && !pressed) }"
+      class="fgCircle"
+    />
+    <div
+      :class="{ animation2: pressed || (clicked && !pressed) }"
+      class="innerCircle"
+    />
+    <div
+      :class="{ animation2: pressed || (clicked && !pressed) }"
+      class="iconContainer"
+    >
+      <slot name="icon" />
     </div>
   </div>
-
-
 </template>
 
 <script setup lang="ts">
-import {ref} from "vue";
+import { ref } from "vue";
 
 const clicked = ref(false);
 
@@ -31,9 +43,9 @@ function handleMouseup() {
 
 const props = defineProps({
   pressed: {
-    type: Boolean
-  }
-})
+    type: Boolean,
+  },
+});
 </script>
 
 <style scoped>
@@ -77,7 +89,6 @@ const props = defineProps({
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
-
 }
 
 .iconContainer {
@@ -97,7 +108,7 @@ const props = defineProps({
 
 @keyframes button-animation1 {
   from {
-  top: 0;
+    top: 0;
   }
   to {
     top: 5px;

@@ -1,7 +1,15 @@
 <template>
-  <div id="NewChallengeContainer" >
-    <ExitButtonComponent v-if="!showCreateChallenge && !showGenerateChallenge" @close="close" id="exitButton"/>
-    <BackButtonComponent @click="back" v-if="showCreateChallenge || showGenerateChallenge" id="backButton"/>
+  <div id="NewChallengeContainer">
+    <ExitButtonComponent
+      v-if="!showCreateChallenge && !showGenerateChallenge"
+      @close="close"
+      id="exitButton"
+    />
+    <BackButtonComponent
+      @click="back"
+      v-if="showCreateChallenge || showGenerateChallenge"
+      id="backButton"
+    />
     <div id="contentContainer">
       <div v-if="!showCreateChallenge && !showGenerateChallenge">
         <h1>New Challenge</h1>
@@ -17,8 +25,8 @@
           </template>
         </ButtonComponent>
       </div>
-      <CreateChallengeComponent v-if="showCreateChallenge"/>
-      <GenerateChallengeComponent @close="close" v-if="showGenerateChallenge"/>
+      <CreateChallengeComponent v-if="showCreateChallenge" />
+      <GenerateChallengeComponent @close="close" v-if="showGenerateChallenge" />
     </div>
   </div>
 </template>
@@ -26,39 +34,39 @@
 <script setup lang="ts">
 import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 import CreateChallengeComponent from "@/components/challenges/CreateChallengeComponent.vue";
-import {ref} from "vue";
 import ExitButtonComponent from "@/components/assets/ExitButtonComponent.vue";
 import BackButtonComponent from "@/components/assets/BackButtonComponent.vue";
 import GenerateChallengeComponent from "@/components/challenges/GenerateChallengeComponent.vue";
+import { ref } from "vue";
 
 const showCreateChallenge = ref(false);
 const showGenerateChallenge = ref(false);
 
 const toggleCreateChallenge = () => {
   showCreateChallenge.value = true;
-  toggleFreeze()
-}
+  toggleFreeze();
+};
 
 const toggleGenerateChallenge = () => {
   showGenerateChallenge.value = true;
-  toggleFreeze()
-}
+  toggleFreeze();
+};
 
 const back = () => {
   showCreateChallenge.value = false;
   showGenerateChallenge.value = false;
-  toggleFreeze()
-}
+  toggleFreeze();
+};
 
-const emit = defineEmits(['close', 'toggleFreeze'])
+const emit = defineEmits(["close", "toggleFreeze"]);
 
 const close = () => {
-  emit('close')
-}
+  emit("close");
+};
 
 const toggleFreeze = () => {
-  emit('toggleFreeze')
-}
+  emit("toggleFreeze");
+};
 </script>
 
 <style scoped>

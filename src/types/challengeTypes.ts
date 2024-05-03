@@ -22,7 +22,7 @@ export interface Challenge {
   mediaUrl: string | null;
   expiryDate: string;
   timeInterval: string;
-  imageUrl: string;  
+  imageUrl: string;
   completed: boolean;
 }
 

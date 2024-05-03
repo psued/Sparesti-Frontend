@@ -5,134 +5,157 @@
       <h2 id="header">Legg til partnere til sparemål</h2>
       <div class="add-user-section">
         <input type="text" v-model="username" placeholder="Enter username" />
-        <button class="add-user-button" @click="addToSavingGoal">Legg til</button>
+        <button class="add-user-button" @click="addToSavingGoal">
+          Legg til
+        </button>
       </div>
       <div class="collaborators-section">
         <h3>Partnere</h3>
         <ul>
           <li v-for="collaborator in collaborators" :key="collaborator.id">
             {{ collaborator.userEmail }}
-            <button @click="deleteCollaborator(collaborator.userEmail)">X</button>
+            <button @click="deleteCollaborator(collaborator.userEmail)">
+              X
+            </button>
           </li>
         </ul>
       </div>
-      <button class="collaborate-button" @click="shareSavingGoal">Del sparemål!</button>
+      <button class="collaborate-button" @click="shareSavingGoal">
+        Del sparemål!
+      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, ref, onMounted } from 'vue'
-import { getUserByUsername } from '@/api/userHooks'
-import { addSavingGoalToUser, getUsersBySavingGoal, deleteSavingGoalFromUser, userHasActiveSavingGoal } from '@/api/savingGoalHooks'
-import { useUserStore } from '@/stores/userStore'
+import { defineProps, ref, onMounted } from "vue";
+import { getUserByUsername } from "@/api/userHooks";
+import {
+  addSavingGoalToUser,
+  getUsersBySavingGoal,
+  deleteSavingGoalFromUser,
+  userHasActiveSavingGoal,
+} from "@/api/savingGoalHooks";
+import { useUserStore } from "@/stores/userStore";
 
 const props = defineProps({
-  savingGoalId: Number
-})
+  savingGoalId: Number,
+});
 
-const username = ref('')
-const collaborators = ref<{ id: number; userEmail: string }[]>([])
-const userStore = useUserStore()
+const username = ref("");
+const collaborators = ref<{ id: number; userEmail: string }[]>([]);
+const userStore = useUserStore();
 const userEmail = userStore.getUserName;
 
 const emit = defineEmits<{
-  (e: 'close'): void
-  (e: 'update'): void
-}>()
+  (e: "close"): void;
+  (e: "update"): void;
+}>();
 
 /**
  * Emit the 'close' event.
  */
 const close = () => {
-  emit('close')
-}
+  emit("close");
+};
 
 const update = () => {
-  emit('update')
-}
+  emit("update");
+};
 
 /**
  * Add a user to the saving goal as a collaborator.
  */
 const addToSavingGoal = async () => {
   if (
-    username.value === '' ||
+    username.value === "" ||
     username.value === userEmail ||
-    collaborators.value.some((collaborator) => collaborator.userEmail === username.value)
+    collaborators.value.some(
+      (collaborator) => collaborator.userEmail === username.value,
+    )
   ) {
-    alert('Invalid username')
-    username.value = ''
+    alert("Invalid username");
+    username.value = "";
   }
-  const user = await getUserByUsername()
+  const user = await getUserByUsername();
   if (!user) {
-    alert('User not found')
-    username.value = ''
-    return
+    alert("User not found");
+    username.value = "";
+    return;
   }
 
   if (await userHasActiveSavingGoal(username.value)) {
-    alert('User already has an active saving goal!')
-    username.value=''
-    return
+    alert("User already has an active saving goal!");
+    username.value = "";
+    return;
   }
 
-  await addSavingGoalToUser(username.value, props.savingGoalId ?? 0)
+  await addSavingGoalToUser(username.value, props.savingGoalId ?? 0);
 
-  fetchCollaborators()
-  username.value = ''
-  update()
-  alert('User added to saving goal')
-}
+  fetchCollaborators();
+  username.value = "";
+  update();
+  alert("User added to saving goal");
+};
 
 /**
  * Fetch the list of collaborators for the saving goal.
  */
 const fetchCollaborators = async () => {
-  const fetchedCollaborators = await getUsersBySavingGoal(props.savingGoalId ?? 0)
-  console.log(fetchedCollaborators)
+  const fetchedCollaborators = await getUsersBySavingGoal(
+    props.savingGoalId ?? 0,
+  );
+  console.log(fetchedCollaborators);
   if (fetchedCollaborators !== null) {
     collaborators.value = fetchedCollaborators
-      .filter((collaborator: { userEmail: string; }) => collaborator.userEmail !== userEmail) // Filter out the session username
-      .map((collaborator: { id: any; userEmail: any; }) => ({ id: collaborator.id, userEmail: collaborator.userEmail }))
+      .filter(
+        (collaborator: { userEmail: string }) =>
+          collaborator.userEmail !== userEmail,
+      ) // Filter out the session username
+      .map((collaborator: { id: any; userEmail: any }) => ({
+        id: collaborator.id,
+        userEmail: collaborator.userEmail,
+      }));
   }
-  console.log(collaborators.value)
-}
+  console.log(collaborators.value);
+};
 
 /**
  * Share the saving goal by copying its link to the clipboard.
  */
 const shareSavingGoal = () => {
-  const url = window.location.href
+  const url = window.location.href;
   navigator.clipboard
     .writeText(url)
     .then(() => {
-      console.log('URL copied to clipboard:', url)
-      alert('URL copied to clipboard')
+      console.log("URL copied to clipboard:", url);
+      alert("URL copied to clipboard");
     })
     .catch((error) => {
-      console.error('Error copying URL to clipboard:', error)
-      alert('Error copying URL to clipboard')
-    })
-}
+      console.error("Error copying URL to clipboard:", error);
+      alert("Error copying URL to clipboard");
+    });
+};
 
 /**
  * Delete a collaborator from the saving goal.
  * @param userId - The ID of the user to be deleted.
  */
 const deleteCollaborator = async (username: string) => {
-  const confirmed = confirm('Are you sure you want to delete this collaborator?')
+  const confirmed = confirm(
+    "Are you sure you want to delete this collaborator?",
+  );
   if (confirmed) {
-    await deleteSavingGoalFromUser(username, props.savingGoalId ?? 0)
-    fetchCollaborators()
-    alert('Collaborator deleted')
-    update()
+    await deleteSavingGoalFromUser(username, props.savingGoalId ?? 0);
+    fetchCollaborators();
+    alert("Collaborator deleted");
+    update();
   }
-}
+};
 
 onMounted(() => {
-  fetchCollaborators()
-})
+  fetchCollaborators();
+});
 </script>
 
 <style scoped>
@@ -186,7 +209,7 @@ onMounted(() => {
   padding: 15px;
 }
 
-.add-user-section input[type='text'] {
+.add-user-section input[type="text"] {
   width: calc(100% - 80px);
   padding: 10px;
   border-radius: 5px;

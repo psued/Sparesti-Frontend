@@ -12,29 +12,33 @@ The content of the popup is passed through the default slot.
 -->
 
 <template>
-  <div :class="{ backdrop: true, flashing: props.flashingBorder }" @click.self="togglePopup" v-if="props.isVisible">
+  <div
+    :class="{ backdrop: true, flashing: props.flashingBorder }"
+    @click.self="togglePopup"
+    v-if="props.isVisible"
+  >
     <slot name="content"></slot>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, defineExpose, watchEffect } from 'vue';
+import { defineProps, defineEmits, defineExpose, watchEffect } from "vue";
 
 const props = defineProps({
   isVisible: Boolean,
   flashingBorder: {
     type: Boolean,
-    default: false // Default value is false if not provided
-  }
+    default: false, // Default value is false if not provided
+  },
 });
-const emit = defineEmits(['togglePopup']);
+const emit = defineEmits(["togglePopup"]);
 
 const togglePopup = () => {
-  emit('togglePopup');
+  emit("togglePopup");
 };
 
 defineExpose({
-  togglePopup
+  togglePopup,
 });
 
 /*
@@ -47,10 +51,10 @@ let scrollTop = 0;
 watchEffect(() => {
   if (props.isVisible) {
     scrollTop = document.documentElement.scrollTop;
-    document.body.style.setProperty('--st', -scrollTop + "px");
-    document.body.classList.add('no-scroll');
+    document.body.style.setProperty("--st", -scrollTop + "px");
+    document.body.classList.add("no-scroll");
   } else {
-    document.body.classList.remove('no-scroll');
+    document.body.classList.remove("no-scroll");
     document.documentElement.scrollTop = scrollTop;
   }
 });
@@ -63,7 +67,7 @@ watchEffect(() => {
   left: 0;
   z-index: 900;
   display: table;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   width: 100%;
   height: calc(100vh - var(--navbarHeight));
 }

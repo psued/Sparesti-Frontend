@@ -61,13 +61,13 @@ const navigateToBadgesPage = () => {
 
 <style scoped>
 .header-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    position: relative;
-  }
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+}
+
 .back-button {
   font-size: 24px;
   color: #333;
@@ -156,7 +156,7 @@ const navigateToBadgesPage = () => {
   font-size: 1.2em;
   border-left: 1px solid #ccc;
   padding-left: 10px;
-  color: black; 
+  color: black;
 }
 
 .badge-info {

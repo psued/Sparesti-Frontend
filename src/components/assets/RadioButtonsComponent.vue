@@ -20,9 +20,14 @@ The label of the clicked button is passed as a payload with the event.
 
 <template>
   <div id="timeIntervalRadio">
-    <ButtonComponent @click="emitAnswer(radioButton as string)" :pressed="radioButton === pressedButton" v-for="radioButton in radioButtons" class="timeIntervalButton">
+    <ButtonComponent
+      @click="emitAnswer(radioButton as string)"
+      :pressed="radioButton === pressedButton"
+      v-for="radioButton in radioButtons"
+      class="timeIntervalButton"
+    >
       <template v-slot:content>
-        <p class="timeIntervalText">{{radioButton}}</p>
+        <p class="timeIntervalText">{{ radioButton }}</p>
       </template>
     </ButtonComponent>
   </div>
@@ -30,23 +35,22 @@ The label of the clicked button is passed as a payload with the event.
 
 <script setup lang="ts">
 import ButtonComponent from "@/components/assets/ButtonComponent.vue";
-import {ref} from "vue";
+import { ref } from "vue";
 
 const pressedButton = ref("");
 
 const props = defineProps({
   radioButtons: {
-    type: Array
-  }
-})
+    type: Array,
+  },
+});
 
-const emit = defineEmits(['radioClick'])
+const emit = defineEmits(["radioClick"]);
 
 function emitAnswer(radioButton: string) {
   pressedButton.value = radioButton;
-  emit('radioClick', radioButton)
+  emit("radioClick", radioButton);
 }
-
 </script>
 
 <style scoped>

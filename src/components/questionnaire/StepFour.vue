@@ -21,9 +21,18 @@
     <!-- New Product Form -->
     <div class="new-product">
       <label for="productName" class="form-label">Produktnavn:</label>
-      <input v-model="newProduct.name" placeholder="Produkt" class="new-product-input" />
+      <input
+        v-model="newProduct.name"
+        placeholder="Produkt"
+        class="new-product-input"
+      />
       <label for="productAmount" class="form-label">Mengde:</label>
-      <input v-model.number="newProduct.amount" type="number" placeholder="Mengde" class="new-product-input" />
+      <input
+        v-model.number="newProduct.amount"
+        type="number"
+        placeholder="Mengde"
+        class="new-product-input"
+      />
       <div class="frequency-wrapper">
         <label for="frequencySelect" class="form-label">Hvor ofte?</label>
         <select v-model="newProduct.frequency" class="timeunit-select">
@@ -34,7 +43,12 @@
       </div>
       <div class="price-wrapper">
         <label for="productPrice" class="form-label">Pris per enhet?</label>
-        <input v-model="newProduct.price" type="number" placeholder="Enhetspris" class="price-input" />
+        <input
+          v-model="newProduct.price"
+          type="number"
+          placeholder="Enhetspris"
+          class="price-input"
+        />
         <span>kr</span>
       </div>
       <button @click="addProduct" class="add-button">Add</button>
@@ -52,7 +66,11 @@
 <script setup lang="ts">
 import { ref, defineEmits, onMounted, watch } from "vue";
 import { useQuestionnaireStore } from "@/stores/questionnaireStore";
-import { submitUserInfo, updateUserInfo, updateAccounts } from "@/api/userHooks";
+import {
+  submitUserInfo,
+  updateUserInfo,
+  updateAccounts,
+} from "@/api/userHooks";
 import FormButton from "@/components/forms/FormButton.vue";
 import { useUserStore } from "@/stores/userStore";
 
@@ -66,19 +84,25 @@ const products = ref(store.stepFourData.products);
 const newProduct = ref({ name: "", frequency: "daily", amount: 0, price: 0 });
 const formErrors = ref<string[]>([]);
 
-const checkingAccount = ref(store.stepTwoData.checkingAccount.replace(/\s/g, ''));
-const savingsAccount = ref(store.stepTwoData.savingsAccount.replace(/\s/g, ''));
+const checkingAccount = ref(
+  store.stepTwoData.checkingAccount.replace(/\s/g, ""),
+);
+const savingsAccount = ref(store.stepTwoData.savingsAccount.replace(/\s/g, ""));
 
-watch(products, (newProducts) => {
-  store.updateStepFourData({ products: newProducts });
-}, { deep: true });
+watch(
+  products,
+  (newProducts) => {
+    store.updateStepFourData({ products: newProducts });
+  },
+  { deep: true },
+);
 
 /**
  * Adds a new product to the list of products.
  * Validates the input fields before adding the product.
  */
 function addProduct() {
-  formErrors.value = []; 
+  formErrors.value = [];
 
   if (!newProduct.value.name.trim()) {
     formErrors.value.push("Produktnavn er påkrevd.");
@@ -106,9 +130,9 @@ function removeProduct(index: any) {
 }
 
 /**
- * Submits the questionnaire data that has been stored in the 
+ * Submits the questionnaire data that has been stored in the
  * QuestionnaireStore to the server if the userinformation has not yet been created.
- * Also doubles as a function to updates the user information 
+ * Also doubles as a function to updates the user information
  * if they decide to go back and change it.
  */
 const finishQuestionnaire = async () => {
@@ -119,12 +143,12 @@ const finishQuestionnaire = async () => {
     ...store.getAllData(),
     checkingAccount: checkingAccount.value,
     savingsAccount: savingsAccount.value,
-    budgetingProducts: products.value.map(product => ({
+    budgetingProducts: products.value.map((product) => ({
       name: product.name,
-      frequency: product.frequency.toUpperCase(), 
-      amount: product.amount, 
+      frequency: product.frequency.toUpperCase(),
+      amount: product.amount,
       unitPrice: product.price,
-    }))
+    })),
   };
 
   try {
@@ -153,7 +177,6 @@ onMounted(() => {
 });
 </script>
 
-
 <style scoped>
 .product-list {
   border-radius: 8px;
@@ -161,7 +184,7 @@ onMounted(() => {
   margin-bottom: 1rem;
   width: 100%;
   overflow-y: auto;
-  text-align: left; 
+  text-align: left;
 }
 
 .product-header {
@@ -184,15 +207,18 @@ onMounted(() => {
   border-bottom: none;
 }
 
-.header-name, .item-name {
+.header-name,
+.item-name {
   flex: 2;
 }
 
-.header-amount, .item-amount { 
+.header-amount,
+.item-amount {
   flex: 2;
 }
 
-.header-price, .item-price { 
+.header-price,
+.item-price {
   flex: 3;
 }
 
@@ -211,7 +237,9 @@ onMounted(() => {
   text-align: center;
 }
 
-.new-product-input, .price-input, .timeunit-select {
+.new-product-input,
+.price-input,
+.timeunit-select {
   border: none;
   border-radius: 5px;
   padding: 5px;
@@ -235,12 +263,13 @@ onMounted(() => {
   margin-top: 30px;
 }
 
-.form-container h2, .form-container p {
+.form-container h2,
+.form-container p {
   margin-bottom: 10px;
 }
 
 .error-messages {
-  color: #E57373;
+  color: #e57373;
 }
 </style>
 

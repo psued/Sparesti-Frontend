@@ -19,7 +19,7 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @mouseleave="toggleHoverTheme"
       >
         <i
-        :class="[
+          :class="[
             darkMode
               ? 'icon-light-mode'
               : !hoverTheme
@@ -36,12 +36,18 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
         @mouseleave="toggleHoverMute"
       >
         <i
-        :class="[
+          :class="[
             darkMode
-                ? (userStore.getMuted ? 'icon-mute-dark' : 'icon-sound-dark')
+              ? userStore.getMuted
+                ? 'icon-mute-dark'
+                : 'icon-sound-dark'
               : !hoverMute
-                ? (userStore.getMuted ? 'icon-mute-light' : 'icon-sound-light')
-                : (userStore.getMuted ? 'icon-mute-light-hover' : 'icon-sound-light-hover'),
+                ? userStore.getMuted
+                  ? 'icon-mute-light'
+                  : 'icon-sound-light'
+                : userStore.getMuted
+                  ? 'icon-mute-light-hover'
+                  : 'icon-sound-light-hover',
           ]"
         />
       </div>
@@ -122,11 +128,11 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, defineEmits, defineProps } from "vue";
+import { onMounted, ref, defineEmits } from "vue";
 import { oauth2 } from "@/api/axiosConfig";
 import { useApiStore } from "@/stores/apiStore";
 import { useUserStore } from "@/stores/userStore";
-import { useDark, useToggle } from "@vueuse/core";
+import { useDark } from "@vueuse/core";
 
 // Reactive variables
 const darkMode = useDark();
@@ -139,10 +145,6 @@ const hoverMute = ref(false);
 // Emit functions
 const emit = defineEmits();
 
-// Get token from local storage
-const getToken = () => {
-  return localStorage.getItem("token");
-};
 const userStore = useUserStore();
 const apiStore = useApiStore();
 
@@ -294,16 +296,14 @@ onMounted(() => {
   text-decoration: none;
 }
 
-
 @media screen and (max-height: 1000px) {
-  .bar-item-desktop{
+  .bar-item-desktop {
     height: 60px;
     font-size: 28px;
   }
-  .bar-item-sign{
+  .bar-item-sign {
     height: 60px;
     font-size: 28px;
-  
   }
 }
 

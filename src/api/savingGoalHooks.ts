@@ -9,9 +9,11 @@ function notify() {
   savingGoalListener.value = !savingGoalListener.value;
 }
 
-export const createSavingGoal = async (data: SavingGoalCreation): Promise<SavingGoal> => {
+export const createSavingGoal = async (
+  data: SavingGoalCreation,
+): Promise<SavingGoal> => {
   try {
-    const response = await api.post(`/savings-goals`, data)
+    const response = await api.post(`/savings-goals`, data);
 
     if (response.status === 201) {
       return response.data;
@@ -25,11 +27,11 @@ export const createSavingGoal = async (data: SavingGoalCreation): Promise<Saving
 
 export const addSavingGoalToUser = async (
   userEmail: string,
-  savingGoalId: number
+  savingGoalId: number,
 ): Promise<void> => {
   try {
     const response = await api.post(
-      `/savings-goals/add-user/${savingGoalId}?userEmail=${encodeURIComponent(userEmail)}`
+      `/savings-goals/add-user/${savingGoalId}?userEmail=${encodeURIComponent(userEmail)}`,
     );
 
     if (response.status === 200) {
@@ -40,8 +42,7 @@ export const addSavingGoalToUser = async (
   } catch (error) {
     throw new Error(`Error adding saving goal to user: ${error}`);
   }
-}
-
+};
 
 export const getSavingGoals = async () => {
   try {
@@ -57,7 +58,7 @@ export const getSavingGoals = async () => {
   }
 };
 
-export const getSavingGoalById = async (savingGoalId: number) => { 
+export const getSavingGoalById = async (savingGoalId: number) => {
   try {
     const response = await api.get(`/savings-goals/${savingGoalId}`);
 
@@ -72,10 +73,13 @@ export const getSavingGoalById = async (savingGoalId: number) => {
 };
 
 export const deleteSavingGoalFromUser = async (
-  userEmail : string,
-  savingGoalId: number) => {
+  userEmail: string,
+  savingGoalId: number,
+) => {
   try {
-    const response = await api.delete(`/savings-goals/${savingGoalId}/user/delete?userEmail=${encodeURIComponent(userEmail)}`);
+    const response = await api.delete(
+      `/savings-goals/${savingGoalId}/user/delete?userEmail=${encodeURIComponent(userEmail)}`,
+    );
 
     if (response.status === 204) {
       return response.data;
@@ -87,7 +91,7 @@ export const deleteSavingGoalFromUser = async (
   }
 };
 
-export const deleteSavingGoal = async (savingGoalId: number) => { 
+export const deleteSavingGoal = async (savingGoalId: number) => {
   try {
     const response = await api.delete(`/savings-goals/${savingGoalId}`);
 
@@ -101,7 +105,10 @@ export const deleteSavingGoal = async (savingGoalId: number) => {
   }
 };
 
-export const updateSavingGoal = async ( savingGoalId: number, data: SavingGoalCreation) => {
+export const updateSavingGoal = async (
+  savingGoalId: number,
+  data: SavingGoalCreation,
+) => {
   try {
     const response = await api.put(`/savings-goals/${savingGoalId}`, data);
 
@@ -127,11 +134,13 @@ export const getUsersBySavingGoal = async (savingGoalId: number) => {
   } catch (error) {
     throw new Error(`Error getting users by saving goal: ${error}`);
   }
-}
+};
 
 export const userHasActiveSavingGoal = async (userEmail: string) => {
   try {
-    const response = await api.get(`/savings-goals/user/${encodeURIComponent(userEmail)}/active`);
+    const response = await api.get(
+      `/savings-goals/user/${encodeURIComponent(userEmail)}/active`,
+    );
 
     if (response.status === 200) {
       return response.data;
@@ -141,11 +150,11 @@ export const userHasActiveSavingGoal = async (userEmail: string) => {
   } catch (error) {
     throw new Error(`Error getting active saving goal: ${error}`);
   }
-}
+};
 
-export const getCurrentSavingGoal = async () : Promise<SavingGoal | null> => {
+export const getCurrentSavingGoal = async (): Promise<SavingGoal | null> => {
   try {
-    const response = await api.get('/savings-goals/current');
+    const response = await api.get("/savings-goals/current");
     if (response.status === 200) {
       return response.data;
     } else {
@@ -154,25 +163,30 @@ export const getCurrentSavingGoal = async () : Promise<SavingGoal | null> => {
   } catch (error) {
     return null;
   }
-}
+};
 
-export const addToSavedAmount = async (savingGoalId: number, amount: number) : Promise<number> => {
+export const addToSavedAmount = async (
+  savingGoalId: number,
+  amount: number,
+): Promise<number> => {
   try {
-    const response = await api.put(`/savings-goals/user/saving_goal/${savingGoalId}/update-saved-amount?savedAmount=${amount}`);
+    const response = await api.put(
+      `/savings-goals/user/saving_goal/${savingGoalId}/update-saved-amount?savedAmount=${amount}`,
+    );
     if (response.status === 200) {
-      notify(); 
+      notify();
     }
     return response.status;
   } catch (error) {
     throw error;
   }
-}
+};
 
-export const completeCurrentSavingGoal = async () : Promise<number | null> => {
+export const completeCurrentSavingGoal = async (): Promise<number | null> => {
   try {
-    const response = await api.patch('/savings-goals/complete');
+    const response = await api.patch("/savings-goals/complete");
     return response.status;
   } catch (error) {
     return null;
   }
-}
+};

@@ -59,7 +59,7 @@
 import { onMounted, ref, nextTick, watchEffect, watch } from "vue";
 import { useUserStore } from "@/stores/userStore";
 import { useLogin } from "@/api/authenticationHooks";
-import { getCurrentSavingGoal, completeCurrentSavingGoal, savingGoalListener, addToSavedAmount } from "@/api/savingGoalHooks";
+import { getCurrentSavingGoal, completeCurrentSavingGoal, savingGoalListener } from "@/api/savingGoalHooks";
 import { Howl } from 'howler';
 import plingSound from "/pling.wav";
 import yaySound from "/yay.wav";
@@ -68,7 +68,6 @@ import { useDark } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 
-const showPopup = ref(false);
 const startpig = ref("/animation/pig-sitting-right.png");
 const endpig = "/animation/dancing-pig.gif";
 const startmoved = ref(false);
@@ -79,8 +78,6 @@ const showConfetti = ref(false);
 const darkMode = useDark();
 const savingGoalImage = ref('');
 const router = useRouter();
-
-const popupPosition = ref<{ top: number; left: number }>({ top: 0, left: 0 });
 
 const goal = ref(0);
 const saved = ref(0);

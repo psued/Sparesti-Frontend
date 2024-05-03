@@ -28,7 +28,6 @@ api.interceptors.request.use(
         router.push("/login");
       }
       config.headers.Authorization = `Bearer ${token}`;
-
     }
     return config;
   },

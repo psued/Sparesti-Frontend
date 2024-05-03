@@ -4,22 +4,22 @@
   that they are done with the questionnaire. 
 -->
 <template>
-	<div class="form-container">
-		<h2>Nå er du helt ferdig!</h2>
-		<div class="form-group">
-			<p>Du kan begynne å bruke applikasjonen!</p>
-		</div>
-		<div class="button-container">
+  <div class="form-container">
+    <h2>Nå er du helt ferdig!</h2>
+    <div class="form-group">
+      <p>Du kan begynne å bruke applikasjonen!</p>
+    </div>
+    <div class="button-container">
       <FormButton type="button" @click="goBack">Tilbake</FormButton>
       <FormButton type="submit" @click="finishQuestionnaire">Ferdig</FormButton>
-    </div>	
-	</div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { defineEmits } from 'vue'; 
-import { useRouter } from 'vue-router';
-import FormButton from '@/components/forms/FormButton.vue';
+import { defineEmits } from "vue";
+import { useRouter } from "vue-router";
+import FormButton from "@/components/forms/FormButton.vue";
 
 const router = useRouter();
 const emit = defineEmits(["update-step"]);
@@ -29,7 +29,7 @@ function goBack() {
 }
 
 function finishQuestionnaire() {
-	router.push("/");
+  router.push("/");
 }
 </script>
 
@@ -41,4 +41,3 @@ function finishQuestionnaire() {
   margin-top: 30px;
 }
 </style>
-

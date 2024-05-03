@@ -6,7 +6,9 @@
   <div class="questionnaire-container">
     <div class="piggy-bank-image">
       <img
-        :src="isDark ? '/public/long-logo-darkmode.png' : '/public/long-logo.png'"
+        :src="
+          isDark ? '/public/long-logo-darkmode.png' : '/public/long-logo.png'
+        "
         alt="piggy-bank on a walk"
       />
     </div>
@@ -82,7 +84,7 @@ const completionPercentage = computed(() => {
   min-height: 300px;
   max-width: 400px;
   margin: auto;
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 20px;
@@ -99,4 +101,3 @@ const completionPercentage = computed(() => {
   z-index: -1;
 }
 </style>
-@/stores/QuestionnaireStore

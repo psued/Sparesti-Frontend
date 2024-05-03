@@ -123,4 +123,4 @@ export const giveUserBadge = async (
     console.error("Error giving badge:", error);
     return null;
   }
-}
+};

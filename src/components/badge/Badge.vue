@@ -23,16 +23,14 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref } from "vue";
 import BadgeComponent from "@/components/badge/BadgeComponent.vue";
 import { type Badge, type UserBadge } from "@/types/Badge"; // Importing the Badge interface
 import { getAllBadges, getBadgesByUser } from "@/api/badgeHooks";
-import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/userStore";
 
 const badges = ref<Badge[]>([]);
 const userBadges = ref<UserBadge[]>([]);
-const userStore = useUserStore();
 
 onMounted(async () => {
   badges.value = (await getAllBadges()) as Badge[];

@@ -22,7 +22,6 @@ export const getSavingsGoalsByUserId = async (): Promise<any[] | null> => {
   }
 };
 
-
 export const getUserInfo = async (): Promise<UserInfo | null> => {
   const userStore = useUserStore();
 
@@ -67,42 +66,47 @@ export const updateUserInfo = async (
   return res;
 };
 
-export const updateAccounts = async (checkingAccountNr: number | null, savingsAccountNr: number | null): Promise<any | null> => {
+export const updateAccounts = async (
+  checkingAccountNr: number | null,
+  savingsAccountNr: number | null,
+): Promise<any | null> => {
   const body = {
     checkingAccountNr,
     savingsAccountNr,
   };
   console.log("Body:", body);
   try {
-    const res = await api.post('/users/update', body)
+    const res = await api.post("/users/update", body);
     return res;
   } catch (error: any) {
     console.error("Error updating accounts:", error);
     return error.response;
   }
-}
+};
 
 export const updateLoginStreak = async (): Promise<any | null> => {
   try {
-    const res = await api.post('/users/update-login-streak')
+    const res = await api.post("/users/update-login-streak");
     return res;
   } catch (error: any) {
     console.error("Error updating login streak:", error);
     return error.response;
   }
-}
+};
 
 export const getLoginStreak = async (): Promise<number | null> => {
   try {
-    const res = await api.get('/users/login-streak')
+    const res = await api.get("/users/login-streak");
     return res.data;
   } catch (error: any) {
     console.error("Error getting login streak:", error);
     return error.response;
   }
-}
+};
 
-export const updateProfilePicture = async (profilePictureUrl: string): Promise<string | null> => {
+export const updateProfilePicture = async (
+  profilePictureUrl: string,
+): Promise<string | null> => {
   try {
     const response = await api.post("/users/update", {
       profilePictureUrl,
@@ -112,4 +116,4 @@ export const updateProfilePicture = async (profilePictureUrl: string): Promise<s
     console.error("Error updating profile picture:", error);
     return null;
   }
-}
+};

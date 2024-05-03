@@ -12,32 +12,35 @@
       <div class="account">
         <h2>Checking Account</h2>
         <p v-show="!accountEditMode">{{ checkingAccountNr }}</p>
-        <input type="text" 
-        v-model="checkingAccountNr" 
-        v-show="accountEditMode" 
-        maxlength="11"
+        <input
+          type="text"
+          v-model="checkingAccountNr"
+          v-show="accountEditMode"
+          maxlength="11"
         />
-        <p v-if="checkingAccountNr">{{ checkingBalance.toFixed(2) + ' kr' }}</p>
+        <p v-if="checkingAccountNr">{{ checkingBalance.toFixed(2) + " kr" }}</p>
       </div>
       <div class="account">
         <h2>Savings Account</h2>
         <p v-show="!accountEditMode">{{ savingsAccountNr }}</p>
-        <input type="text" 
-        v-model="savingsAccountNr" 
-        v-show="accountEditMode" 
-        maxlength="11"
+        <input
+          type="text"
+          v-model="savingsAccountNr"
+          v-show="accountEditMode"
+          maxlength="11"
         />
-        <p v-if="savingsAccountNr">{{ savingsBalance.toFixed(2) + ' kr' }}</p>
+        <p v-if="savingsAccountNr">{{ savingsBalance.toFixed(2) + " kr" }}</p>
       </div>
     </div>
     <div class="settings-section">
       <div class="settings-buttons">
-        <button class="button" @click="toggleAccountEdit">{{ accountEditMode ? "Save Changes" : "Change Accounts" }}</button>
+        <button class="button" @click="toggleAccountEdit">
+          {{ accountEditMode ? "Save Changes" : "Change Accounts" }}
+        </button>
       </div>
     </div>
   </div>
 </template>
-
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
@@ -48,7 +51,6 @@ import BackButtonComponent from "@/components/assets/BackButtonComponent.vue";
 
 const router = useRouter();
 
-const showModal = ref(false);
 const accountEditMode = ref(false);
 
 const checkingAccountNr = ref(0);
@@ -56,8 +58,6 @@ const checkingBalance = ref(0.0);
 
 const savingsAccountNr = ref(0);
 const savingsBalance = ref(0.0);
-
-const formErrors = ref({ checkingAccount: '', savingsAccount: '' });
 
 const goToPreviousPage = () => {
   router.back();
@@ -68,23 +68,30 @@ const getBankDetails = async () => {
   checkingAccountNr.value = userByUsername.checkingAccountNr;
   savingsAccountNr.value = userByUsername.savingsAccountNr;
   if (checkingAccountNr.value !== null) {
-    const checkingAccountDetails = await getBankAccountDetails(checkingAccountNr.value);
+    const checkingAccountDetails = await getBankAccountDetails(
+      checkingAccountNr.value,
+    );
     checkingBalance.value = checkingAccountDetails.balance;
   }
   if (savingsAccountNr.value !== null) {
-    const savingsAccountDetails = await getBankAccountDetails(savingsAccountNr.value);
+    const savingsAccountDetails = await getBankAccountDetails(
+      savingsAccountNr.value,
+    );
     savingsBalance.value = savingsAccountDetails.balance;
   }
-}
+};
 
 const toggleAccountEdit = async () => {
   if (accountEditMode.value) {
-    const res = await updateAccounts(checkingAccountNr.value, savingsAccountNr.value);
+    const res = await updateAccounts(
+      checkingAccountNr.value,
+      savingsAccountNr.value,
+    );
     if (!res) {
       return;
     } else if (res.status === 200) {
     } else {
-      alert("Failed to update accounts: " + res.data.title)
+      alert("Failed to update accounts: " + res.data.title);
     }
     await getBankDetails();
   }
@@ -106,10 +113,10 @@ onMounted(async () => {
 }
 
 .back-button {
-  position: absolute; 
-  top: 20px; 
-  left: 20px; 
-  width: 50px; 
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 50px;
   height: 50px;
 }
 
@@ -117,18 +124,17 @@ onMounted(async () => {
   justify-content: center;
   text-align: center;
   padding: 20px;
-
 }
 .account {
-  margin-bottom: 10%; 
+  margin-bottom: 10%;
 }
 
 input[type="text"] {
   padding: 8px;
   margin-top: 5px;
-  border: 1px solid; 
+  border: 1px solid;
   border-radius: 6px;
-  width: 80%; 
+  width: 80%;
 }
 
 .settings-buttons {
@@ -144,7 +150,7 @@ input[type="text"] {
   border-radius: 6px;
   padding: 10px;
   margin: 10px 0;
-  width: 70%; 
+  width: 70%;
   cursor: pointer;
   transition: background-color 0.3s;
 }
@@ -155,12 +161,9 @@ input[type="text"] {
   }
 
   .accounts-section {
-    margin-right: 0; 
-    margin-bottom: 20px; 
+    margin-right: 0;
+    margin-bottom: 20px;
     border: none;
   }
-
-  
 }
-
 </style>
