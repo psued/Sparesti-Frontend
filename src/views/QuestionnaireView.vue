@@ -2,7 +2,7 @@
   <div class="questionnaire-container">
     <div class="piggy-bank-image">
       <img
-        v-bind:src="'/public/long-logo.png'"
+        :src="isDark ? '/public/long-logo-darkmode.png' : '/public/long-logo.png'"
         alt="piggy-bank on a walk"
       />
     </div>
@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
-import { useQuestionnaireStore } from "@/stores/questionnaireStore";
+import { useDark } from "@vueuse/core";
 import ProgressBar from "@/components/questionnaire/ProgressBar.vue";
 import StepOne from "@/components/questionnaire/StepOne.vue";
 import StepTwo from "@/components/questionnaire/StepTwo.vue";
@@ -26,10 +26,10 @@ import StepFour from "@/components/questionnaire/StepFour.vue";
 import StepFive from "@/components/questionnaire/StepFive.vue";
 import StepSix from "@/components/questionnaire/StepSix.vue";
 
+const isDark = useDark();
 const components = [StepOne, StepTwo, StepThree, StepFour, StepFive, StepSix];
 const totalSteps = components.length;
 const currentStep = ref(1);
-const store = useQuestionnaireStore();
 
 const currentComponent = computed(() => {
   return components[currentStep.value - 1];

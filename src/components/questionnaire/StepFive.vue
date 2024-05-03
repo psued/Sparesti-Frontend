@@ -30,7 +30,6 @@
 import { ref, onMounted, defineEmits, computed } from 'vue';
 import { getRecentTransactionsSorted } from '@/api/bankHooks';
 import FormButton from '@/components/forms/FormButton.vue';
-import { useUserStore } from '@/stores/userStore';
 import { useQuestionnaireStore } from '@/stores/questionnaireStore';
 import { updateUserInfo } from '@/api/userHooks';
 import type { Transaction } from '@/types/Transaction';
@@ -41,7 +40,6 @@ const transactions = ref<Transaction[]>([]);
 const isLoading = ref(false);
 const error = ref('');
 const selectedCategories = ref<Record<string, boolean>>({});
-const userStore = useUserStore();
 
 onMounted(async () => {
   isLoading.value = true;

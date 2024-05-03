@@ -6,6 +6,7 @@
       </div>
       <section class="top-part-profile">
         <label class="profile-pic-container">
+          <!-- Profile Picture -->
           <ProfilePicComponent :userProfilePic="imagePreview" v-if="imagePreview" />
           <ProfilePicComponent :userProfilePic="user.pictureUrl" v-else />
           <div class="overlay">
@@ -15,11 +16,14 @@
           </div>
           <input type="file" ref="fileInput" @change="handleImageUpload" accept="image/*" id="image" style="display:none">
         </label>
+        <!-- Total Savings -->
         <div class="total-savings-container">
           <TotalSavingsComponent :totalSavings="user.totalSavings" />
         </div>
       </section>
+      <!-- User Information -->
       <UserInfoComponent :user="user" :isEditing="isEditing" />
+      <!-- Edit and Settings Buttons -->
       <section class="edit-section">
         <ButtonComponent class="edit-profile-button" @click="toggleEditMode">
           <template v-slot:content>
@@ -28,33 +32,33 @@
             </span>
           </template>
         </ButtonComponent>
-        <button to="/settings" class="settings-button">
-          Informasjon & innstillinger 
-          <i class="icon-setting"></i>
-        </button>
+        <ButtonComponent class="settings-button" @click="goToSettings">
+          <template v-slot:content>
+            <span class="button-content">
+              Innstillinger<i class="icon-setting"></i>
+            </span>
+          </template>
+        </ButtonComponent>
       </section>
     </section>
     <section class="badges-section">
       <div class="header-badges">
         <h1>Alle dine medaljer</h1>
       </div>
-        <div class="badges-list">
-          <router-link
-            v-for="userBadge in userBadges"
-            :key="userBadge.badge.id"
-            :to="{
-              name: 'BadgeDetails',
-              params: { id: userBadge.badge.id },
-              query: { isOwned: 'true' },
-            }"
-            class="badge-link"
-          >
-            <BadgeComponent :badge="userBadge.badge" :owned="true"/>
-          </router-link>
+      <div class="badge-container">
+        <router-link
+          v-for="userBadge in userBadges"
+          :key="userBadge.badge.id"
+          :to="{
+            name: 'BadgeDetails',
+            params: { id: userBadge.badge.id },
+            query: { isOwned: 'true' },
+          }"
+          class="badge-link"
+        >
+          <BadgeComponent :badge="userBadge.badge" :owned="true" />
+        </router-link>
       </div>
-    </section>
-    <section class="settings-button">
-      
     </section>
   </div>
 </template>
@@ -62,24 +66,32 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useUserStore } from "@/stores/userStore";
+import { useRouter } from "vue-router";
 import { getUserInfo, getUserByUsername, updateUserInfo, updateProfilePicture } from "@/api/userHooks";
 import { getBadgesByUser } from "@/api/badgeHooks";
-import type { UserBadge, Badge } from "@/types/Badge";
+import type { UserBadge } from "@/types/Badge";
 import { uploadImage } from "@/utils/imageUtils";
+import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 import ProfilePicComponent from "@/components/profile/ProfilePicComponent.vue";
 import UserInfoComponent from "@/components/profile/UserInfoComponent.vue";
 import TotalSavingsComponent from "@/components/profile/TotalSavingsComponent.vue";
 import BadgeComponent from "@/components/badge/BadgeComponent.vue";
-import ButtonComponent from '@/components/assets/ButtonComponent.vue';
 
+const router = useRouter();
 const user = ref<any | null>(null);
 const userBadges = ref<UserBadge[]>([]);
-const userStore = useUserStore();
 const isEditing = ref(false);
 const imagePreview = ref<string | null>(null);
 const userProfilePic = ref<string | null>(null);
 
+const goToSettings = () => {
+  router.push('/settings');
+};
+
+/**
+ * 
+ * @param event The event that triggered the image upload.
+ */
 const handleImageUpload = async (event: Event) => {
   if (!isEditing.value) {
     toggleEditMode();
@@ -95,6 +107,9 @@ const handleImageUpload = async (event: Event) => {
   }
 };
 
+/**
+ * Toggles the edit mode for the user profile.
+ */
 const toggleEditMode = async () => {
   try {
     if (isEditing.value) {
@@ -123,7 +138,9 @@ const toggleEditMode = async () => {
   }
 };
 
-
+/**
+ * Fetches the user's badges and user info.
+ */
 const fetchAndSetUserInfo = async () => {
 	try {
 		userBadges.value = (await getBadgesByUser()) as unknown as UserBadge[];
@@ -174,16 +191,29 @@ onMounted(fetchAndSetUserInfo);
 </script>
 
 <style scoped>
-.badges-list {
-  display: flex; 
-  flex-wrap: wrap; /* Allows the items to wrap to the next line */
-  justify-content: center; /* Centers the badges horizontally */
-  align-items: center; /* Centers the badges vertically */
+
+.edit-profile-button, .settings-button {
+  width: 200px;
+  height: 40px;
 }
 
 .edit-section {
-  left: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
 }
+
+.icon-setting {
+  background-image: url('/svg_icons/icon-setting.svg');
+  background-size: cover;
+  display: block;
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+}
+
 .icon-pencil-edit {
   background-image: url('/svg_icons/icon-pencil.svg');
   background-size: cover; 
@@ -192,23 +222,23 @@ onMounted(fetchAndSetUserInfo);
   height: 20px;
   margin-left: 10px;
 }
-.edit-profile-button {
-  width: 200px;
-  height: 40px;
-}
+
 .button-content {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.badge-link {
+  text-decoration: none;
+  color: var(--vt-c-black-soft);
+  display: block;
+  padding-bottom: 40px;
+  padding-left: 20px;
+}
 
 .badge-link:hover {
   background: none;
-}
-
-.profile-pic-container {
-  border: 2px solid;
 }
 
 .profile-pic-container, .total-savings-container {
@@ -257,14 +287,8 @@ onMounted(fetchAndSetUserInfo);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5rem;
+  gap: 5rem; 
   margin-bottom: 2rem;
-}
-
-.badge-link {
-  height: 225px;
-  padding-bottom: 20px;
-  width: 201px;
 }
 
 /* Desktop view */
@@ -295,27 +319,21 @@ onMounted(fetchAndSetUserInfo);
     padding-right: 2rem;
   }
 
-  .edit-section {
+  .badge-container {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
-    padding-top: 5%;
   }
 
-  .settings-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    border-radius: 1rem;
+  .badge-link {
+    max-height: fit-content;
   }
 }
 
 /* Mobile view */
 @media (max-width: 880px) {
   .profile-page-container {
-    grid-template-columns: 1fr, 1fr;
+    grid-template-columns: 1fr;
     justify-content: center;
     padding: 20px;
   }
@@ -323,6 +341,23 @@ onMounted(fetchAndSetUserInfo);
   .profile-pic-container, .total-savings-container {
     width: 150px;
     height: 150px;
+  }
+
+  .header-badges {
+    padding-top: 40px;
+    padding-bottom: 20px;
+  }
+
+  .badge-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .badge-link {
+    width: calc(50%);
+    margin-bottom: 10px; 
+    padding-left: 0;
   }
 }
 

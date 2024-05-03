@@ -1,3 +1,5 @@
+/** Component for login. Deprecated, and only used to test for design on
+    frontend as Oauth2 makes login happen in backend */
 <template>
   <div class="authentication-wrapper">
     <div class="piggy-bank-image">

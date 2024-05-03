@@ -40,7 +40,6 @@
 <script setup lang="ts">
 import { ref, defineEmits, onMounted, computed } from "vue";
 import { useQuestionnaireStore } from "@/stores/questionnaireStore";
-import { updateAccounts } from "@/api/userHooks";
 import FormButton from "@/components/forms/FormButton.vue";
 
 const emit = defineEmits(["update-step"]);
@@ -85,6 +84,15 @@ function formatAsBankAccount(digits: string) {
   }
 }
 
+function isFormValid() {
+  const pureChecking = checkingAccount.value.replace(/\s/g, '');
+  const pureSavings = savingsAccount.value.replace(/\s/g, '');
+  formErrors.value.checkingAccount = pureChecking.length === 11 ? "" : "Brukskonto må inneholde nøyaktig 11 sifre.";
+  formErrors.value.savingsAccount = pureSavings.length === 11 ? "" : "Sparekonto må inneholde nøyaktig 11 sifre.";
+
+  return !formErrors.value.checkingAccount && !formErrors.value.savingsAccount;
+}
+
 function goToNextStep() {
   if (isFormValid()) {
     store.updateStepTwoData({
@@ -97,15 +105,6 @@ function goToNextStep() {
 
 function goBack() {
   emit("update-step", 1);
-}
-
-function isFormValid() {
-  const pureChecking = checkingAccount.value.replace(/\s/g, '');
-  const pureSavings = savingsAccount.value.replace(/\s/g, '');
-  formErrors.value.checkingAccount = pureChecking.length === 11 ? "" : "Brukskonto må inneholde nøyaktig 11 sifre.";
-  formErrors.value.savingsAccount = pureSavings.length === 11 ? "" : "Sparekonto må inneholde nøyaktig 11 sifre.";
-
-  return !formErrors.value.checkingAccount && !formErrors.value.savingsAccount;
 }
 
 onMounted(() => {
