@@ -96,7 +96,6 @@
     deadline: new Date().toISOString().split("T")[0],
   });
   const userStore = useUserStore();
-  const userId = userStore.getUserId;
   const userEmail = userStore.getUserName;
   const createdSavingGoal = ref<SavingGoal | null>(null);
 
