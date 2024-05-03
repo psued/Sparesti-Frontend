@@ -89,7 +89,6 @@ const editableGoal = ref<SavingGoal>(props.savingGoal);
 const todaysDate = new Date().toISOString().split('T')[0];
 const userStore = useUserStore();
 const userEmail = userStore.getUserName;
-const userId = userStore.getUserId;
 const router = useRouter();
 const imagePreview = ref<string | null>(null);
 const selectedIconUrl = ref<string | null>(null);
@@ -114,11 +113,11 @@ const saveChanges = async () => {
 
     if (
       editableGoal.value.name.trim() === '' ||
-      editableGoal.value.targetAmount < 1 ||
+      editableGoal.value.targetAmount < 100 ||
       editableGoal.value.targetAmount > 1000000 ||
       editableGoal.value.deadline <= todaysDate
     ) {
-      alert('Vennligst fyll ut alle feltene riktig og prøv igjen.');
+      alert('Sparemål må være over 100 kr, ha et navn og en gyldig frist.');
       return;
     }
 

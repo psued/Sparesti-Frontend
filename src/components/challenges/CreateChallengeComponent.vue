@@ -2,9 +2,9 @@
   <div id="createChallengeContainer">
     <input maxlength="20" v-model="challengeTitle" type="text" placeholder="Tittel" id="challengeTitle"/>
 
-    <div id="test">
-      <div class="challengeContent1">
-        <p class="formText">Beskrivelse</p>
+    <div id="contentBlock1">
+      <div class="descriptionContainer">
+        <p class="inputTitle">Beskrivelse</p>
         <textarea placeholder="Beskrivelse" v-model="challengeDescription" maxlength="60" id="challengeDescriptionInput" rows="3"></textarea>
       </div>
 
@@ -26,55 +26,69 @@
 
     <div id="optionalsContainer">
 
-      <div class="optionalsInfo" v-if="challengeType === 'Spare'">
-        <div class="optionalsBlock">
-          <p class="formText">Sparemål</p>
+      <div class="createSpare" v-if="challengeType === 'Spare'">
+        <div>
+          <p class="inputTitle">Sparemål</p>
           <input v-model="targetAmount" type="number" min="1" step="1" placeholder="kr"/>
         </div>
       </div>
 
-      <div class="optionalsInfo" v-if="challengeType === 'Forbruk'">
-        <div class="optionalsBlock">
-          <p class="formText">Produktnavn</p>
+      <div class="createForbruk" v-if="challengeType === 'Forbruk'">
+        <div class="forbrukBlock">
+          <p class="inputTitle">Produktnavn</p>
           <input v-model="productName" type="text" placeholder="Produkt"/>
         </div>
-        <div class="optionalsBlock">
-          <p class="formText">Kjøpsgrense</p>
+
+        <div class="forbrukBlock">
+          <p class="inputTitle">Kjøpsgrense</p>
           <input v-model="quantityLimit" type="number" min="1" step="1" placeholder="Antall"/>
         </div>
-        <div class="optionalsBlock">
-          <p class="formText">Produkt pris</p>
+
+        <div class="forbrukBlock">
+          <p class="inputTitle">Produkt pris</p>
           <input v-model="productPrice" type="number" min="1" step="1" placeholder="Produkt pris (i kr)"/>
         </div>
       </div>
 
-      <div class="optionalsInfo" v-if="challengeType === 'Budsjett'">
-        <div class="optionalsBlock">
-          <p class="formText">Kategori</p>
-          <input v-model="category" type="number" min="0" step="1" placeholder="Kategori"/>
+      <div class="createBudsjett" v-if="challengeType === 'Budsjett'">
+        <div>
+          <div class="budsjettBlock">
+            <p class="inputTitle">Kategori</p>
+            <select v-model="tempCategory"  name="category">
+              <option v-for="row in budgetRows" :value="row">{{row.name}}</option>
+            </select>
+          </div>
+
+          <div class="budsjettBlock">
+            <p class="inputTitle">Nytt Beløp</p>
+            <input v-model="targetAmount" type="number" min="0" :max="tempCategory.maxAmount-1" step="1" placeholder="Antall"/>
+          </div>
         </div>
-        <div class="optionalsBlock">
-          <p class="formText">Reduksjon</p>
-          <input v-model="reductionAmount" type="number" min="1" step="1" placeholder="Antall"/>
-        </div>
+        <p class="budsjettChallengeText" v-if="tempCategory.maxAmount">Det er budsjettert {{ tempCategory.maxAmount }}kr i denne kategorien</p>
       </div>
     </div>
-
     <ButtonComponent id="finishButton" @click="createChallenge">
       <template v-slot:content>
-        <p id="finishText">Ferdig</p>
+        <p id="finishText">Lag</p>
       </template>
     </ButtonComponent>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import {onMounted, ref} from "vue";
 import ButtonComponent from "@/components/assets/ButtonComponent.vue";
 import EmojiPickerComponent from "@/components/assets/EmojiPickerComponent.vue";
 import RadioButtonsComponent from "@/components/assets/RadioButtonsComponent.vue";
-import { createSavingChallenge, createPurchaseChallenge, createConsumptionChallenge, addChallengeToUser } from "@/api/challengeHooks";
-import { type ChallengeCreation } from "@/types/challengeTypes";
+import {
+  createSavingChallenge,
+  createPurchaseChallenge,
+  createConsumptionChallenge,
+  addChallengeToUser
+} from "@/api/challengeHooks";
+import {type ChallengeCreation} from "@/types/challengeTypes";
+import type {BudgetRow} from "@/types/Budget";
+import {getNewestBudget} from "@/api/budgetHooks";
 
 const challengeTitle = ref("");
 const challengeDescription = ref("");
@@ -101,6 +115,30 @@ function pickTimeInterval(interval: string) {
 function setChallengeType(type : string) {
   challengeType.value = type;
 }
+
+const tempCategory = ref<BudgetRow>({
+  id: 0,
+  name: "",
+  usedAmount: 0,
+  maxAmount: 0,
+  category: "",
+  emoji: ""
+})
+
+const budgetRows = ref<BudgetRow[]>([]);
+async function fetchChallengeObjects() {
+  const budgetResponse = await getNewestBudget();
+  if(budgetResponse) {
+    for(let i = 0; i < budgetResponse.row.length; i++){
+      budgetRows.value.push(budgetResponse.row[i])
+    }
+  }
+}
+
+onMounted(async () => {
+  await fetchChallengeObjects();
+})
+
 
 async function createChallenge() {
 
@@ -176,16 +214,49 @@ function resetForm() {
 </script>
 
 <style scoped>
-#test {
+input:focus, textarea:focus, select:focus {
+  outline: none;
+}
+
+input, textarea, select {
+  background-color: var(--color-background);
+  border: none;
+  border-bottom: solid 1px #729960;
+}
+
+
+.inputTitle {
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+#createChallengeContainer {
+  margin: 15px 20px;
+}
+
+#challengeTitle {
+  text-align: center;
+  font-size: 1.5rem;
+  width: 240px;
+  margin-bottom: 1rem;
+}
+
+#contentBlock1 {
   display: flex;
   flex-direction: row;
 }
-.challengeContent1 {
+
+.descriptionContainer {
   display: flex;
   text-align: left;
   flex-direction: column;
   width: 70%;
   height: 100%;
+}
+
+#challengeDescriptionInput {
+  resize: none;
 }
 
 .emojiContainer {
@@ -201,45 +272,14 @@ function resetForm() {
   height: 45px;
 }
 
-#createChallengeContainer {
-  margin: 15px 20px;
-}
-
-#challengeDescriptionInput {
-  resize: none;
-}
-
 .radioButtonsContainer{
   margin-top: 20px;
-}
-
-#challengeTitle {
-  text-align: center;
-  font-size: 1.5rem;
-  width: 240px;
-  margin-bottom: 1rem;
-}
-input:focus, textarea:focus {
-  outline: none;
-}
-
-input, textarea {
-  background-color: var(--color-background);
-  border: none;
-  border-bottom: solid 1px #729960;
 }
 
 .radioText {
   font-weight: 600;
   margin-bottom: 10px;
 }
-
-.formText {
-  font-weight: 600;
-  margin-bottom: 10px;
-  text-align: left;
-}
-
 
 .radioButtons{
   width: 100%;
@@ -250,19 +290,27 @@ input, textarea {
 #optionalsContainer {
   display: flex;
   flex-direction: row;
-  margin-top: 10px;
-}
-
-.optionalsInfo {
   margin-top: 20px;
-  display: flex;
-  flex-direction: column;
 }
 
-.optionalsBlock {
+.createForbruk, .createBudsjett {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+.forbrukBlock {
+  margin-right:10px;
   display: flex;
   flex-direction: column;
-  margin: 0 10px;
+  width: 30%;
+}
+
+.budsjettBlock {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
 }
 
 #finishButton {

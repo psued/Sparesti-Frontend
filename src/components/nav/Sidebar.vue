@@ -12,21 +12,37 @@ for mobile view. * The component accepts a prop for the dark mode theme. */
     <div class="line" :class="{ 'line-dark': darkMode }" />
     <div class="top-bar-items">
       <div
-        class="theme-mode"
-        :class="{ 'theme-mode-dark': darkMode }"
+        class="top-mode"
+        :class="{ 'top-mode-dark': darkMode }"
         @click="toggleTheme"
         @mouseenter="toggleHoverTheme"
         @mouseleave="toggleHoverTheme"
       >
         <i
-          :class="[
+        :class="[
             darkMode
               ? 'icon-light-mode'
               : !hoverTheme
                 ? 'icon-dark-mode'
                 : 'icon-dark-mode-hover',
           ]"
-          @click="toggleTheme"
+        />
+      </div>
+      <div
+        class="top-mode"
+        :class="{ 'top-mode-dark': darkMode }"
+        @click="toggleMute"
+        @mouseenter="toggleHoverMute"
+        @mouseleave="toggleHoverMute"
+      >
+        <i
+        :class="[
+            darkMode
+                ? (userStore.getMuted ? 'icon-mute-dark' : 'icon-sound-dark')
+              : !hoverMute
+                ? (userStore.getMuted ? 'icon-mute-light' : 'icon-sound-light')
+                : (userStore.getMuted ? 'icon-mute-light-hover' : 'icon-sound-light-hover'),
+          ]"
         />
       </div>
     </div>
@@ -118,6 +134,7 @@ const isOpen = ref(false);
 const isPhone = ref(false);
 const hoverSign = ref(false);
 const hoverTheme = ref(false);
+const hoverMute = ref(false);
 
 // Emit functions
 const emit = defineEmits();
@@ -134,6 +151,11 @@ const toggleTheme = () => {
   emit("theme");
 };
 
+// Toggle mute mode
+const toggleMute = () => {
+  userStore.toggleMuted();
+};
+
 // Toggle sidebar
 const toggleBar = () => {
   emit("bar");
@@ -147,6 +169,11 @@ const toggleHoverSign = () => {
 // Toggle hover state for theme mode toggle
 const toggleHoverTheme = () => {
   hoverTheme.value = !hoverTheme.value;
+};
+
+// Toggle hover state for mute mode toggle
+const toggleHoverMute = () => {
+  hoverMute.value = !hoverMute.value;
 };
 
 /**
@@ -208,9 +235,9 @@ onMounted(() => {
 }
 
 /* Styles for the theme mode toggle */
-.theme-mode {
+.top-mode {
   height: 120px;
-  width: 120px;
+  width: 90px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -219,7 +246,7 @@ onMounted(() => {
   transition: 0.5s;
 }
 
-.theme-mode:hover {
+.top-mode:hover {
   background-color: #4b644a;
   .icon-dark-mode {
     stroke: #f0f0f0;
@@ -227,7 +254,7 @@ onMounted(() => {
   color: #f0f0f0;
 }
 
-.theme-mode-dark:hover {
+.top-mode-dark:hover {
   background: #757bfd;
 }
 
@@ -251,7 +278,6 @@ onMounted(() => {
   align-items: center;
   height: 100%;
   width: 100%;
-  overflow-y: scroll;
   min-height: 800px;
 }
 

@@ -2,26 +2,12 @@ import { api, oauth2 } from "@/api/axiosConfig";
 import { useUserStore } from "@/stores/userStore";
 import type { UserInfo } from "@/types/UserInfo";
 
-export const getUserByUsername = async (
-  username: string,
-): Promise<any | null> => {
+export const getUserByUsername = async (): Promise<any | null> => {
   try {
-    const response = await api.get(`/users/${username}`);
+    const response = await api.get(`/users`);
     return response.data || null;
   } catch (error) {
     console.error("Error getting user by username:", error);
-    return null;
-  }
-};
-
-export const getUserByDisplayName = async (
-  displayName: string,
-): Promise<any | null> => {
-  try {
-    const response = await api.get(`/users/info/${displayName}`);
-    return response.data || null;
-  } catch (error) {
-    console.error("Error getting user by display name:", error);
     return null;
   }
 };
@@ -102,6 +88,16 @@ export const updateLoginStreak = async (): Promise<any | null> => {
     return res;
   } catch (error: any) {
     console.error("Error updating login streak:", error);
+    return error.response;
+  }
+}
+
+export const getLoginStreak = async (): Promise<number | null> => {
+  try {
+    const res = await api.get('/users/login-streak')
+    return res.data;
+  } catch (error: any) {
+    console.error("Error getting login streak:", error);
     return error.response;
   }
 }

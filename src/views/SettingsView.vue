@@ -71,7 +71,7 @@ const handleAccountDeletion = (password: string) => {
 };
 
 const getBankDetails = async () => {
-  const userByUsername = await getUserByUsername(userStore.getUserName);
+  const userByUsername = await getUserByUsername();
   checkingAccountNr.value = userByUsername.checkingAccountNr;
   savingsAccountNr.value = userByUsername.savingsAccountNr;
   if (checkingAccountNr.value !== null) {

@@ -6,7 +6,7 @@ export interface Budget {
     creationDate: string;
 }
 
-interface BudgetRow {
+export interface BudgetRow {
     id: number;
     name: string;
     usedAmount: number;

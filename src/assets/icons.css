@@ -118,6 +118,66 @@
   background-position: center;
 }
 
+.icon-sound-dark {
+  background-image: url(/svg_icons/sound-on-light-hover.svg);
+  display: inline-block;
+  width: 65px;
+  height: 65px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.icon-sound-light-hover {
+  background-image: url(/svg_icons/sound-on-light-hover.svg);
+  display: inline-block;
+  width: 65px;
+  height: 65px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.icon-sound-light {
+  background-image: url(/svg_icons/sound-on-light.svg);
+  display: inline-block;
+  width: 65px;
+  height: 65px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.icon-mute-dark {
+  background-image: url(/svg_icons/sound-off-light-hover.svg);
+  display: inline-block;
+  width: 65px;
+  height: 65px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.icon-mute-light-hover {
+  background-image: url(/svg_icons/sound-off-light-hover.svg);
+  display: inline-block;
+  width: 65px;
+  height: 65px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.icon-mute-light {
+  background-image: url(/svg_icons/sound-off-light.svg);
+  display: inline-block;
+  width: 65px;
+  height: 65px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 .icon-home {
   background-image: url(/svg_icons/icon-home.svg);
   display: inline-block;
@@ -213,6 +273,15 @@
   display: inline-block;
   width: 50px;
   height: 50px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.icon-setting {
+  background-image: url(/svg_icons/icon-setting.svg);
+  display: inline-block;
+  width: 25px;
+  height: 25px;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
