@@ -127,6 +127,7 @@ const triggerConfetti = () => {
 };
 
 const playPlingSound = () => {
+  if(userStore.getMuted) return;
   const sound = new Howl({
     src: [plingSound],
     autoplay: true,
